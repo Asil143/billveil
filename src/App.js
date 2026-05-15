@@ -16,7 +16,7 @@ export default function App() {
     setError(null);
 
     try {
-      const response = await axios.post("http://localhost:4000/analyze", { bill });
+      const response = await axios.post("https://billveil-production.up.railway.app/analyze", { bill });
       setResult(response.data.result);
     } catch (err) {
       setError("Something went wrong. Please try again.");
