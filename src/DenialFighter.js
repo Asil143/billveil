@@ -23,59 +23,8 @@ const STATES = [
   "Washington", "West Virginia", "Wisconsin", "Wyoming",
 ];
 
-const COMMISSIONER_URLS = {
-  "Alabama": "https://www.aldoi.gov/Consumers/FileComplaint.aspx",
-  "Alaska": "https://www.commerce.alaska.gov/web/ins/ConsumersInfo/FilingaComplaint.aspx",
-  "Arizona": "https://insurance.az.gov/consumers/file-complaint",
-  "Arkansas": "https://insurance.arkansas.gov/consumers/file-a-complaint",
-  "California": "https://cdiapps.insurance.ca.gov/CDIWeb/Consumer/processCompForm.do",
-  "Colorado": "https://doi.colorado.gov/consumers/file-a-complaint",
-  "Connecticut": "https://portal.ct.gov/CID/Consumer-Affairs/File-a-Complaint",
-  "Delaware": "https://insurance.delaware.gov/divisions/consumer/complaint-center/",
-  "District of Columbia": "https://disb.dc.gov/service/file-insurance-complaint",
-  "Florida": "https://www.myfloridacfo.com/division/consumer/",
-  "Georgia": "https://oci.georgia.gov/consumers/file-complaint",
-  "Hawaii": "https://insurance.ehawaii.gov/ocs/search.html",
-  "Idaho": "https://doi.idaho.gov/consumers/file-a-complaint/",
-  "Illinois": "https://mc.insurance.illinois.gov/messagecenter.nsf",
-  "Indiana": "https://www.in.gov/idoi/consumer-information/file-a-complaint/",
-  "Iowa": "https://iid.iowa.gov/consumertools/file-a-complaint",
-  "Kansas": "https://insurance.kansas.gov/consumer/consumer-assistance/file-a-complaint/",
-  "Kentucky": "https://insurance.ky.gov/ppc/consumer/complaints.aspx",
-  "Louisiana": "https://www.ldi.la.gov/consumers/consumer_complaints",
-  "Maine": "https://www.maine.gov/pfr/insurance/consumer-services/file-complaint",
-  "Maryland": "https://insurance.maryland.gov/consumer/Pages/FileAComplaint.aspx",
-  "Massachusetts": "https://consumer.doi.mass.gov/",
-  "Michigan": "https://www.michigan.gov/difs/consumer-assistance/complaints",
-  "Minnesota": "https://mn.gov/commerce/consumers/your-insurance/insurance-complaints/",
-  "Mississippi": "https://www.mid.ms.gov/consumers/file-a-complaint.aspx",
-  "Missouri": "https://insurance.mo.gov/consumers/hmo/complaint.htm",
-  "Montana": "https://csimt.gov/consumers/consumer-complaints/",
-  "Nebraska": "https://doi.nebraska.gov/consumer-complaint",
-  "Nevada": "https://doi.nv.gov/Consumers/Complaint_Process/File_a_Complaint/",
-  "New Hampshire": "https://www.nh.gov/insurance/consumers/complaint.htm",
-  "New Jersey": "https://www.njconsumeraffairs.gov/dbi/Pages/Complaints.aspx",
-  "New Mexico": "https://www.osi.state.nm.us/consumers/file-complaint/",
-  "New York": "https://myportal.dfs.ny.gov/web/guest-applications/file-a-complaint",
-  "North Carolina": "https://www.ncdoi.gov/consumers/file-complaint",
-  "North Dakota": "https://www.nd.gov/ndins/consumer-services/file-complaint.html",
-  "Ohio": "https://insurance.ohio.gov/consumer/file-a-complaint",
-  "Oklahoma": "https://www.oid.ok.gov/consumers-page/complaint-form/",
-  "Oregon": "https://dfr.oregon.gov/insurer/complaint",
-  "Pennsylvania": "https://www.insurance.pa.gov/Coverage/Pages/Complaints.aspx",
-  "Rhode Island": "https://dbr.ri.gov/divisions/insurance/consumer-assistance",
-  "South Carolina": "https://doi.sc.gov/consumer/complaint",
-  "South Dakota": "https://dlr.sd.gov/insurance/consumer_assistance.aspx",
-  "Tennessee": "https://www.tn.gov/commerce/insurance/consumers/complaint.html",
-  "Texas": "https://www.tdi.texas.gov/consumer/complain.html",
-  "Utah": "https://insurance.utah.gov/consumers/file-complaint/",
-  "Vermont": "https://dfr.vermont.gov/consumers/insurance-consumers/file-complaint",
-  "Virginia": "https://www.scc.virginia.gov/pages/insurance-forms",
-  "Washington": "https://www.insurance.wa.gov/file-complaint-or-check-complaint-status",
-  "West Virginia": "https://www.wvinsurance.gov/Consumers/Filing-a-Complaint",
-  "Wisconsin": "https://oci.wi.gov/Pages/Consumers/ConsumerComplaint.aspx",
-  "Wyoming": "https://doi.wyo.gov/consumers/file-a-complaint/",
-};
+const getCommissionerUrl = (state) =>
+  `https://www.google.com/search?q=${encodeURIComponent(state + " insurance commissioner file complaint online official")}+site:.gov`;
 
 export default function DenialFighter() {
   const [denial, setDenial] = useState("");
@@ -315,15 +264,15 @@ export default function DenialFighter() {
                     <option value="">Select your state...</option>
                     {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
                   </select>
-                  {selectedState && COMMISSIONER_URLS[selectedState] && (
+                  {selectedState && (
                     <a
-                      href={COMMISSIONER_URLS[selectedState]}
+                      href={getCommissionerUrl(selectedState)}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => markDone("state")}
                       style={{ padding: "10px 16px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", display: "flex", alignItems: "center" }}
                     >
-                      File Complaint →
+                      Find Portal →
                     </a>
                   )}
                 </div>
