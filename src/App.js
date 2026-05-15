@@ -1,6 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import Landing from "./Landing";
+import DisputeLetter from "./DisputeLetter";
+import DrugComparator from "./DrugComparator";
+import DenialFighter from "./DenialFighter";
 
 const EXAMPLES = [
   "CPT 99214 — $385",
@@ -55,6 +58,7 @@ const CSS = `
 
 export default function App() {
   const [view, setView] = useState("landing");
+  const [tab, setTab] = useState("analyzer");
   const [bill, setBill] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -63,6 +67,13 @@ export default function App() {
   const [focused, setFocused] = useState(false);
 
   if (view === "landing") return <Landing onStart={() => setView("app")} />;
+
+  const TABS = [
+    { id: "analyzer", label: "⚡ Bill Analyzer" },
+    { id: "dispute", label: "✉️ Dispute Letter" },
+    { id: "drug", label: "💊 Drug Prices" },
+    { id: "denial", label: "⚔️ Denial Fighter" },
+  ];
 
   const analyzeBill = async () => {
     if (!bill.trim()) return;
@@ -166,20 +177,38 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 700, margin: "0 auto", padding: "60px 20px 40px" }}>
+      {/* Tab bar */}
+      <div style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(6,9,18,0.6)", backdropFilter: "blur(20px)", overflowX: "auto" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto", display: "flex", padding: "0 20px" }}>
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              style={{ padding: "14px 18px", background: "transparent", border: "none", borderBottom: `2px solid ${tab === t.id ? "#10b981" : "transparent"}`, color: tab === t.id ? "#10b981" : "#475569", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, whiteSpace: "nowrap", transition: "all 0.2s" }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 700, margin: "0 auto", padding: "36px 20px 40px" }}>
+
+        {/* Non-analyzer tabs */}
+        {tab === "dispute" && <DisputeLetter />}
+        {tab === "drug" && <DrugComparator />}
+        {tab === "denial" && <DenialFighter />}
+
+        {/* Analyzer tab */}
+        {tab === "analyzer" && <>
 
         {/* Hero */}
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#10b981", padding: "6px 16px", borderRadius: 24, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 24 }}>
-            <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%" }} />
-            AI-POWERED · FREE · INSTANT
-          </div>
-
-          <h1 style={{ fontSize: 52, fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.04em", marginBottom: 20 }}>
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <h1 style={{ fontSize: 36, fontWeight: 900, lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 12 }}>
             <span style={{ background: "linear-gradient(135deg, #f8fafc 0%, #f8fafc 50%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Is your medical
             </span>
-            <br />
+            {" "}
             <span style={{ background: "linear-gradient(135deg, #10b981 0%, #34d399 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               bill fair?
             </span>
@@ -331,6 +360,8 @@ export default function App() {
           <div>🔒 BillVeil does not store your medical information</div>
           <div>Built for the 330 million Americans who deserve better</div>
         </div>
+
+        </>}
       </div>
     </div>
   );
