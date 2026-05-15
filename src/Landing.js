@@ -211,6 +211,76 @@ export default function Landing({ onStart }) {
         </div>
       </section>
 
+      {/* Tools section */}
+      <section style={{ position: "relative", zIndex: 1, padding: "80px 20px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 16 }}>YOUR TOOLKIT</div>
+            <h2 style={{ fontSize: 38, fontWeight: 900, letterSpacing: "-0.03em" }}>
+              <span style={{ background: "linear-gradient(135deg, #f8fafc, #94a3b8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                Four weapons. One mission.
+              </span>
+            </h2>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
+            {[
+              {
+                tab: "analyzer",
+                emoji: "⚡",
+                label: "Bill Analyzer",
+                tag: "Most Popular",
+                tagColor: "#10b981",
+                desc: "Paste any CPT code or charge. Get a plain-English explanation, fair price comparison, overcharge verdict, and exact action steps.",
+                cta: "Analyze a Bill →",
+              },
+              {
+                tab: "dispute",
+                emoji: "✉️",
+                label: "Dispute Letter",
+                tag: "Save Money",
+                tagColor: "#60a5fa",
+                desc: "Describe what you were charged. We write a professional, ready-to-send dispute letter that hospitals and insurers take seriously.",
+                cta: "Write a Letter →",
+              },
+              {
+                tab: "drug",
+                emoji: "💊",
+                label: "Drug Price Comparator",
+                tag: "Cut Costs",
+                tagColor: "#a78bfa",
+                desc: "Enter any medication. We show the fair price, Cost Plus Drugs rate, cheapest alternatives, and how much you could save monthly.",
+                cta: "Compare Prices →",
+              },
+              {
+                tab: "denial",
+                emoji: "⚔️",
+                label: "Denial Fighter",
+                tag: "Fight Back",
+                tagColor: "#f87171",
+                desc: "Insurance denied your claim? We analyze the denial, write your appeal letter, and walk you through every escalation step including CFPB.",
+                cta: "Fight a Denial →",
+              },
+            ].map(({ tab, emoji, label, tag, tagColor, desc, cta }) => (
+              <div
+                key={tab}
+                className="feature-card"
+                onClick={() => onStart(tab)}
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: "24px 22px", cursor: "pointer", transition: "all 0.2s", display: "flex", flexDirection: "column", gap: 0 }}
+              >
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16 }}>
+                  <div style={{ fontSize: 32 }}>{emoji}</div>
+                  <div style={{ background: tagColor + "20", border: `1px solid ${tagColor}40`, color: tagColor, padding: "3px 10px", borderRadius: 20, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em" }}>{tag}</div>
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#f1f5f9", marginBottom: 10, letterSpacing: "-0.01em" }}>{label}</div>
+                <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.7, marginBottom: 20, flex: 1 }}>{desc}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#10b981" }}>{cta}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Bottom CTA */}
       <section style={{ position: "relative", zIndex: 1, padding: "80px 20px", textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ maxWidth: 560, margin: "0 auto" }}>

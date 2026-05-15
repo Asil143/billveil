@@ -66,7 +66,7 @@ export default function App() {
   const [tip, setTip] = useState(false);
   const [focused, setFocused] = useState(false);
 
-  if (view === "landing") return <Landing onStart={() => setView("app")} />;
+  if (view === "landing") return <Landing onStart={(t) => { setTab(t || "analyzer"); setView("app"); }} />;
 
   const TABS = [
     { id: "analyzer", label: "⚡ Bill Analyzer" },
