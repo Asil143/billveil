@@ -255,11 +255,11 @@ export default function DenialFighter() {
                     <div style={{ fontSize: 11, color: "#475569" }}>Select your state to go directly to your state's official complaint portal.</div>
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   <select
                     value={selectedState}
                     onChange={(e) => setSelectedState(e.target.value)}
-                    style={{ flex: 1, padding: "10px 12px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: selectedState ? "#f1f5f9" : "#475569", fontSize: 13, fontFamily: FONT, outline: "none", cursor: "pointer" }}
+                    style={{ flex: 1, minWidth: 180, padding: "10px 12px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: selectedState ? "#f1f5f9" : "#475569", fontSize: 13, fontFamily: FONT, outline: "none", cursor: "pointer" }}
                   >
                     <option value="">Select your state...</option>
                     {STATES.map((s) => <option key={s} value={s}>{s}</option>)}

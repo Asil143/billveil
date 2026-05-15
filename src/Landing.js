@@ -20,6 +20,18 @@ const CSS = `
   .secondary-cta:hover {
     background: rgba(255,255,255,0.06) !important;
   }
+
+  @media (max-width: 640px) {
+    .land-nav-center { display: none !important; }
+    .land-hero { padding: 60px 20px 50px !important; }
+    .land-hero-h1 { font-size: 34px !important; line-height: 1.1 !important; letter-spacing: -0.02em !important; }
+    .land-hero-p { font-size: 15px !important; }
+    .land-4col { grid-template-columns: repeat(2, 1fr) !important; }
+    .land-4col > div { border-right: none !important; }
+    .land-2col, .land-3col { grid-template-columns: 1fr !important; }
+    .land-hero-btns { flex-direction: column !important; align-items: stretch !important; }
+    .land-hero-btns button { text-align: center; }
+  }
 `;
 
 export default function Landing({ onStart }) {
@@ -44,7 +56,7 @@ export default function Landing({ onStart }) {
         </div>
 
         {/* Centered nav links */}
-        <div style={{ display: "flex", alignItems: "center", gap: 4, position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+        <div className="land-nav-center" style={{ display: "flex", alignItems: "center", gap: 4, position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
           {[
             { tab: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
             { tab: "dispute", emoji: "✉️", label: "Dispute Letter" },
@@ -79,13 +91,13 @@ export default function Landing({ onStart }) {
       </nav>
 
       {/* Hero */}
-      <section style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "100px 20px 80px", maxWidth: 800, margin: "0 auto" }}>
+      <section className="land-hero" style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "100px 20px 80px", maxWidth: 800, margin: "0 auto" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#10b981", padding: "7px 18px", borderRadius: 24, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 32, animation: "fadeUp 0.6s ease forwards" }}>
           <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", animation: "glow 2s ease-in-out infinite" }} />
           AI-POWERED · FREE · NO SIGNUP REQUIRED
         </div>
 
-        <h1 style={{ fontSize: 62, fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.04em", marginBottom: 28, animation: "fadeUp 0.6s 0.1s ease both" }}>
+        <h1 className="land-hero-h1" style={{ fontSize: 62, fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.04em", marginBottom: 28, animation: "fadeUp 0.6s 0.1s ease both" }}>
           <span style={{ background: "linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             Your hospital just
           </span>
@@ -99,12 +111,12 @@ export default function Landing({ onStart }) {
           </span>
         </h1>
 
-        <p style={{ fontSize: 19, color: "#64748b", lineHeight: 1.75, maxWidth: 560, margin: "0 auto 40px", animation: "fadeUp 0.6s 0.2s ease both" }}>
+        <p className="land-hero-p" style={{ fontSize: 19, color: "#64748b", lineHeight: 1.75, maxWidth: 560, margin: "0 auto 40px", animation: "fadeUp 0.6s 0.2s ease both" }}>
           BillVeil uses AI to decode your medical bills, expose overcharges, and give you the exact steps to get your money back.
           <strong style={{ color: "#94a3b8" }}> In 30 seconds. Free.</strong>
         </p>
 
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", animation: "fadeUp 0.6s 0.3s ease both" }}>
+        <div className="land-hero-btns" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", animation: "fadeUp 0.6s 0.3s ease both" }}>
           <button
             className="hero-cta"
             onClick={onStart}
@@ -128,7 +140,7 @@ export default function Landing({ onStart }) {
 
       {/* Stats */}
       <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.02)", padding: "40px 20px" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 0 }}>
+        <div className="land-4col" style={{ maxWidth: 800, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 0 }}>
           {[
             { stat: "$935B", label: "Americans overpay yearly", sub: "on medical bills" },
             { stat: "80%", label: "Of bills contain errors", sub: "billing mistakes are common" },
@@ -160,7 +172,7 @@ export default function Landing({ onStart }) {
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
+        <div className="land-2col" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
           {[
             { icon: "💸", title: "Inflated charges", desc: "Hospitals charge 10x the actual cost. A $15 aspirin becomes $150. A $200 test becomes $4,000." },
             { icon: "🤯", title: "Confusing codes", desc: "CPT codes, ICD codes, modifiers. Medical bills are designed to be unreadable so you give up." },
@@ -188,7 +200,7 @@ export default function Landing({ onStart }) {
             </h2>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 48 }}>
+          <div className="land-3col" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 48 }}>
             {[
               { step: "01", icon: "📋", title: "Paste your bill", desc: "Any CPT code, charge, or full bill. No formatting needed. Takes 5 seconds." },
               { step: "02", icon: "🤖", title: "AI analyzes it", desc: "Our AI cross-references fair market rates and spots every overcharge instantly." },
@@ -216,7 +228,7 @@ export default function Landing({ onStart }) {
           </h2>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 14 }}>
+        <div className="land-2col" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 14 }}>
           {[
             { icon: "🔍", title: "Plain English explanation", desc: "We decode every code and charge so you know exactly what you paid for." },
             { icon: "💰", title: "Fair price benchmark", desc: "See what the same service costs at fair market rates, not hospital rack rates." },
@@ -248,7 +260,7 @@ export default function Landing({ onStart }) {
             </h2>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
+          <div className="land-2col" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
             {[
               {
                 tab: "analyzer",

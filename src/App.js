@@ -54,6 +54,16 @@ const CSS = `
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+
+  @media (max-width: 640px) {
+    .app-header { flex-wrap: wrap !important; height: auto !important; padding: 12px 16px 8px !important; row-gap: 6px; }
+    .app-nav-center { position: static !important; transform: none !important; order: 3; width: 100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom: 4px; justify-content: flex-start !important; flex-shrink: 0; }
+    .app-nav-center::-webkit-scrollbar { display: none; }
+    .app-hero-h1 { font-size: 24px !important; letter-spacing: -0.02em !important; }
+    .app-hero-p { font-size: 15px !important; margin-bottom: 20px !important; }
+    .app-stats > div { padding: 8px 12px !important; border-right: none !important; }
+    .how-grid { grid-template-columns: 1fr !important; }
+  }
 `;
 
 export default function App() {
@@ -155,7 +165,7 @@ export default function App() {
       <div style={{ position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: 800, height: 400, background: "radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
 
       {/* Header with centered nav */}
-      <div style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
+      <div className="app-header" style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
 
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
@@ -168,7 +178,7 @@ export default function App() {
         </div>
 
         {/* Centered nav links */}
-        <div style={{ display: "flex", alignItems: "center", gap: 4, position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+        <div className="app-nav-center" style={{ display: "flex", alignItems: "center", gap: 4, position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -211,7 +221,7 @@ export default function App() {
 
         {/* Hero */}
         <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <h1 style={{ fontSize: 36, fontWeight: 900, lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 12 }}>
+          <h1 className="app-hero-h1" style={{ fontSize: 36, fontWeight: 900, lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 12 }}>
             <span style={{ background: "linear-gradient(135deg, #f8fafc 0%, #f8fafc 50%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Is your medical
             </span>
@@ -221,12 +231,12 @@ export default function App() {
             </span>
           </h1>
 
-          <p style={{ fontSize: 18, color: "#64748b", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 36px" }}>
+          <p className="app-hero-p" style={{ fontSize: 18, color: "#64748b", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 36px" }}>
             Americans overpay <strong style={{ color: "#94a3b8" }}>$935 billion</strong> every year on medical bills. We give you the weapon to fight back.
           </p>
 
           {/* Stats */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 0, marginBottom: 0 }}>
+          <div className="app-stats" style={{ display: "flex", justifyContent: "center", gap: 0, marginBottom: 0 }}>
             {[
               { stat: "$935B", label: "Overpaid yearly" },
               { stat: "80%", label: "Bills have errors" },
@@ -301,7 +311,7 @@ export default function App() {
         {!result && !loading && (
           <div style={{ marginTop: 48 }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.12em", textAlign: "center", marginBottom: 24 }}>HOW IT WORKS</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            <div className="how-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
               {[
                 { step: "01", title: "Paste your bill", desc: "Any charge, CPT code, or full bill. No formatting needed." },
                 { step: "02", title: "AI scans it", desc: "We compare against fair market rates and flag every overcharge." },
