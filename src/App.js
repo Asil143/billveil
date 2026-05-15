@@ -69,10 +69,10 @@ export default function App() {
   if (view === "landing") return <Landing onStart={(t) => { setTab(t || "analyzer"); setView("app"); }} />;
 
   const TABS = [
-    { id: "analyzer", label: "⚡ Bill Analyzer" },
-    { id: "dispute", label: "✉️ Dispute Letter" },
-    { id: "drug", label: "💊 Drug Prices" },
-    { id: "denial", label: "⚔️ Denial Fighter" },
+    { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
+    { id: "dispute", emoji: "✉️", label: "Dispute Letter" },
+    { id: "drug", emoji: "💊", label: "Drug Prices" },
+    { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
   ];
 
   const analyzeBill = async () => {
@@ -178,15 +178,29 @@ export default function App() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(6,9,18,0.6)", backdropFilter: "blur(20px)", overflowX: "auto" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto", display: "flex", padding: "0 20px" }}>
+      <div style={{ position: "relative", zIndex: 1, background: "rgba(6,9,18,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 20px" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              style={{ padding: "14px 18px", background: "transparent", border: "none", borderBottom: `2px solid ${tab === t.id ? "#10b981" : "transparent"}`, color: tab === t.id ? "#10b981" : "#475569", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, whiteSpace: "nowrap", transition: "all 0.2s" }}
+              style={{
+                padding: "12px 8px",
+                background: tab === t.id ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.03)",
+                border: `1px solid ${tab === t.id ? "rgba(16,185,129,0.4)" : "rgba(255,255,255,0.07)"}`,
+                borderRadius: 10,
+                color: tab === t.id ? "#10b981" : "#475569",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                fontFamily: FONT,
+                transition: "all 0.2s",
+                textAlign: "center",
+                lineHeight: 1.4,
+              }}
             >
-              {t.label}
+              <div style={{ fontSize: 20, marginBottom: 5 }}>{t.emoji}</div>
+              <div>{t.label}</div>
             </button>
           ))}
         </div>
