@@ -11,6 +11,110 @@ const EXAMPLES = [
   "Duplicate claim",
 ];
 
+const STATES = [
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+  "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia",
+  "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+  "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+  "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota",
+  "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+  "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
+  "Washington", "West Virginia", "Wisconsin", "Wyoming",
+];
+
+const COMMISSIONER_URLS = {
+  "Alabama": "https://www.aldoi.gov/Consumers/FileComplaint.aspx",
+  "Alaska": "https://www.commerce.alaska.gov/web/ins/ConsumersInfo/FilingaComplaint.aspx",
+  "Arizona": "https://insurance.az.gov/consumers/file-complaint",
+  "Arkansas": "https://insurance.arkansas.gov/consumers/file-a-complaint",
+  "California": "https://cdiapps.insurance.ca.gov/CDIWeb/Consumer/processCompForm.do",
+  "Colorado": "https://doi.colorado.gov/consumers/file-a-complaint",
+  "Connecticut": "https://portal.ct.gov/CID/Consumer-Affairs/File-a-Complaint",
+  "Delaware": "https://insurance.delaware.gov/divisions/consumer/complaint-center/",
+  "District of Columbia": "https://disb.dc.gov/service/file-insurance-complaint",
+  "Florida": "https://www.myfloridacfo.com/division/consumer/",
+  "Georgia": "https://oci.georgia.gov/consumers/file-complaint",
+  "Hawaii": "https://insurance.ehawaii.gov/ocs/search.html",
+  "Idaho": "https://doi.idaho.gov/consumers/file-a-complaint/",
+  "Illinois": "https://mc.insurance.illinois.gov/messagecenter.nsf",
+  "Indiana": "https://www.in.gov/idoi/consumer-information/file-a-complaint/",
+  "Iowa": "https://iid.iowa.gov/consumertools/file-a-complaint",
+  "Kansas": "https://insurance.kansas.gov/consumer/consumer-assistance/file-a-complaint/",
+  "Kentucky": "https://insurance.ky.gov/ppc/consumer/complaints.aspx",
+  "Louisiana": "https://www.ldi.la.gov/consumers/consumer_complaints",
+  "Maine": "https://www.maine.gov/pfr/insurance/consumer-services/file-complaint",
+  "Maryland": "https://insurance.maryland.gov/consumer/Pages/FileAComplaint.aspx",
+  "Massachusetts": "https://consumer.doi.mass.gov/",
+  "Michigan": "https://www.michigan.gov/difs/consumer-assistance/complaints",
+  "Minnesota": "https://mn.gov/commerce/consumers/your-insurance/insurance-complaints/",
+  "Mississippi": "https://www.mid.ms.gov/consumers/file-a-complaint.aspx",
+  "Missouri": "https://insurance.mo.gov/consumers/hmo/complaint.htm",
+  "Montana": "https://csimt.gov/consumers/consumer-complaints/",
+  "Nebraska": "https://doi.nebraska.gov/consumer-complaint",
+  "Nevada": "https://doi.nv.gov/Consumers/Complaint_Process/File_a_Complaint/",
+  "New Hampshire": "https://www.nh.gov/insurance/consumers/complaint.htm",
+  "New Jersey": "https://www.njconsumeraffairs.gov/dbi/Pages/Complaints.aspx",
+  "New Mexico": "https://www.osi.state.nm.us/consumers/file-complaint/",
+  "New York": "https://myportal.dfs.ny.gov/web/guest-applications/file-a-complaint",
+  "North Carolina": "https://www.ncdoi.gov/consumers/file-complaint",
+  "North Dakota": "https://www.nd.gov/ndins/consumer-services/file-complaint.html",
+  "Ohio": "https://insurance.ohio.gov/consumer/file-a-complaint",
+  "Oklahoma": "https://www.oid.ok.gov/consumers-page/complaint-form/",
+  "Oregon": "https://dfr.oregon.gov/insurer/complaint",
+  "Pennsylvania": "https://www.insurance.pa.gov/Coverage/Pages/Complaints.aspx",
+  "Rhode Island": "https://dbr.ri.gov/divisions/insurance/consumer-assistance",
+  "South Carolina": "https://doi.sc.gov/consumer/complaint",
+  "South Dakota": "https://dlr.sd.gov/insurance/consumer_assistance.aspx",
+  "Tennessee": "https://www.tn.gov/commerce/insurance/consumers/complaint.html",
+  "Texas": "https://www.tdi.texas.gov/consumer/complain.html",
+  "Utah": "https://insurance.utah.gov/consumers/file-complaint/",
+  "Vermont": "https://dfr.vermont.gov/consumers/insurance-consumers/file-complaint",
+  "Virginia": "https://www.scc.virginia.gov/pages/insurance-forms",
+  "Washington": "https://www.insurance.wa.gov/file-complaint-or-check-complaint-status",
+  "West Virginia": "https://www.wvinsurance.gov/Consumers/Filing-a-Complaint",
+  "Wisconsin": "https://oci.wi.gov/Pages/Consumers/ConsumerComplaint.aspx",
+  "Wyoming": "https://doi.wyo.gov/consumers/file-a-complaint/",
+};
+
+function ActionButton({ emoji, label, sublabel, onClick, href, color = "#10b981", done }) {
+  const content = (
+    <div
+      onClick={onClick}
+      style={{
+        background: done ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.03)",
+        border: `1px solid ${done ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`,
+        borderRadius: 12,
+        padding: "16px 18px",
+        cursor: href || onClick ? "pointer" : "default",
+        transition: "all 0.2s",
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        textDecoration: "none",
+      }}
+    >
+      <div style={{ fontSize: 24, flexShrink: 0 }}>{done ? "✅" : emoji}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: done ? "#10b981" : "#f1f5f9", marginBottom: 3 }}>{label}</div>
+        <div style={{ fontSize: 11, color: "#475569", lineHeight: 1.5 }}>{sublabel}</div>
+      </div>
+      {(href || onClick) && !done && (
+        <div style={{ fontSize: 16, color: "#334155", flexShrink: 0 }}>→</div>
+      )}
+    </div>
+  );
+
+  if (href) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
+        {content}
+      </a>
+    );
+  }
+  return content;
+}
+
 export default function DenialFighter() {
   const [denial, setDenial] = useState("");
   const [amount, setAmount] = useState("");
@@ -19,11 +123,20 @@ export default function DenialFighter() {
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
 
+  // Action Center state
+  const [selectedState, setSelectedState] = useState("");
+  const [externalLetter, setExternalLetter] = useState(null);
+  const [externalLoading, setExternalLoading] = useState(false);
+  const [externalCopied, setExternalCopied] = useState(false);
+  const [actionsDone, setActionsDone] = useState({});
+
   const analyze = async () => {
     if (!denial.trim()) return;
     setLoading(true);
     setResult(null);
     setError(null);
+    setExternalLetter(null);
+    setActionsDone({});
     try {
       const response = await axios.post("/api/denial", { denial, amount });
       setResult(response.data.result);
@@ -31,6 +144,18 @@ export default function DenialFighter() {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generateExternalLetter = async () => {
+    setExternalLoading(true);
+    try {
+      const response = await axios.post("/api/external-review", { denial, amount });
+      setExternalLetter(response.data.result);
+    } catch (err) {
+      setError("Failed to generate letter. Please try again.");
+    } finally {
+      setExternalLoading(false);
     }
   };
 
@@ -42,6 +167,14 @@ export default function DenialFighter() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const copyExternal = () => {
+    navigator.clipboard.writeText(externalLetter);
+    setExternalCopied(true);
+    setTimeout(() => setExternalCopied(false), 2000);
+  };
+
+  const markDone = (key) => setActionsDone((prev) => ({ ...prev, [key]: true }));
 
   const parseResult = (text) => {
     const sections = [
@@ -65,7 +198,7 @@ export default function DenialFighter() {
         : content.includes("POSSIBLY INVALID") ? "#fbbf24" : "#f87171";
 
       return (
-        <div key={section.key} style={{ background: "rgba(255,255,255,0.03)", border: `1px solid rgba(255,255,255,0.08)`, borderLeft: `3px solid ${isVerdict ? verdictColor : section.color}`, borderRadius: 12, padding: "18px 22px", marginBottom: 10, animation: "fadeUp 0.4s ease forwards", animationDelay: `${i * 0.07}s`, animationFillMode: "both" }}>
+        <div key={section.key} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderLeft: `3px solid ${isVerdict ? verdictColor : section.color}`, borderRadius: 12, padding: "18px 22px", marginBottom: 10, animation: "fadeUp 0.4s ease forwards", animationDelay: `${i * 0.07}s`, animationFillMode: "both" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: isVerdict ? verdictColor : section.color, letterSpacing: "0.12em", textTransform: "uppercase" }}>
               {section.emoji} {section.label}
@@ -98,7 +231,7 @@ export default function DenialFighter() {
           Insurance Denial Fighter
         </h2>
         <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.6 }}>
-          Paste the reason your claim was denied. We will tell you if the denial is valid, your legal rights, and write a complete appeal letter.
+          Paste the reason your claim was denied. We analyze it, write your appeal letter, and help you take every action step.
         </p>
       </div>
 
@@ -152,7 +285,128 @@ export default function DenialFighter() {
       </div>
 
       {error && <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 12, padding: 16, color: "#f87171", fontSize: 14, marginBottom: 16 }}>{error}</div>}
-      {result && <div>{parseResult(result)}</div>}
+
+      {result && (
+        <div>
+          {parseResult(result)}
+
+          {/* Action Center */}
+          <div style={{ marginTop: 28, background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.15)", borderRadius: 16, padding: 24 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 6 }}>ACTION CENTER</div>
+            <p style={{ fontSize: 13, color: "#475569", marginBottom: 20, lineHeight: 1.6 }}>
+              Every step you can take right now. Work through them in order for the best chance of success.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+              {/* Step 1 — Copy appeal letter */}
+              <div
+                onClick={() => { copyAppeal(); markDone("appeal"); }}
+                style={{ background: actionsDone.appeal ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.03)", border: `1px solid ${actionsDone.appeal ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`, borderRadius: 12, padding: "16px 18px", cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", gap: 14 }}
+              >
+                <div style={{ fontSize: 24, flexShrink: 0 }}>{actionsDone.appeal ? "✅" : "✉️"}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: actionsDone.appeal ? "#10b981" : "#f1f5f9", marginBottom: 3 }}>Step 1 — Copy & Send Internal Appeal Letter</div>
+                  <div style={{ fontSize: 11, color: "#475569" }}>Click to copy your AI-generated appeal letter. Send it to your insurance company via certified mail.</div>
+                </div>
+                <div style={{ fontSize: 12, color: actionsDone.appeal ? "#10b981" : "#64748b", fontWeight: 600, flexShrink: 0 }}>{actionsDone.appeal ? "Done ✓" : "Copy →"}</div>
+              </div>
+
+              {/* Step 2 — External Review */}
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "16px 18px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: externalLetter ? 16 : 0 }}>
+                  <div style={{ fontSize: 24, flexShrink: 0 }}>{actionsDone.external ? "✅" : "🔍"}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: actionsDone.external ? "#10b981" : "#f1f5f9", marginBottom: 3 }}>Step 2 — Request Independent External Review</div>
+                    <div style={{ fontSize: 11, color: "#475569" }}>If your internal appeal is denied, you have the right to an independent external review under federal law.</div>
+                  </div>
+                  <button
+                    onClick={externalLetter ? () => { copyExternal(); markDone("external"); } : generateExternalLetter}
+                    disabled={externalLoading}
+                    style={{ padding: "7px 14px", background: externalLetter ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.06)", border: `1px solid ${externalLetter ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.1)"}`, color: externalLetter ? "#10b981" : "#94a3b8", borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s", whiteSpace: "nowrap", flexShrink: 0 }}
+                  >
+                    {externalLoading ? "Writing..." : externalCopied ? "✓ Copied!" : externalLetter ? "Copy Letter" : "Generate Letter"}
+                  </button>
+                </div>
+                {externalLetter && (
+                  <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 14, fontSize: 12, color: "#94a3b8", lineHeight: 1.8, whiteSpace: "pre-line", fontFamily: "monospace", maxHeight: 200, overflowY: "auto" }}>
+                    {externalLetter}
+                  </div>
+                )}
+              </div>
+
+              {/* Step 3 — State Commissioner */}
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "16px 18px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 12 }}>
+                  <div style={{ fontSize: 24, flexShrink: 0 }}>{actionsDone.state ? "✅" : "🏛️"}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: actionsDone.state ? "#10b981" : "#f1f5f9", marginBottom: 3 }}>Step 3 — File State Insurance Commissioner Complaint</div>
+                    <div style={{ fontSize: 11, color: "#475569" }}>Select your state to go directly to your state's official complaint portal.</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <select
+                    value={selectedState}
+                    onChange={(e) => setSelectedState(e.target.value)}
+                    style={{ flex: 1, padding: "10px 12px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: selectedState ? "#f1f5f9" : "#475569", fontSize: 13, fontFamily: FONT, outline: "none", cursor: "pointer" }}
+                  >
+                    <option value="">Select your state...</option>
+                    {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                  {selectedState && COMMISSIONER_URLS[selectedState] && (
+                    <a
+                      href={COMMISSIONER_URLS[selectedState]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => markDone("state")}
+                      style={{ padding: "10px 16px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", display: "flex", alignItems: "center" }}
+                    >
+                      File Complaint →
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Step 4 — CFPB */}
+              <a
+                href="https://www.consumerfinance.gov/complaint/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => markDone("cfpb")}
+                style={{ textDecoration: "none", display: "block" }}
+              >
+                <div style={{ background: actionsDone.cfpb ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.03)", border: `1px solid ${actionsDone.cfpb ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`, borderRadius: 12, padding: "16px 18px", cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", gap: 14 }}>
+                  <div style={{ fontSize: 24, flexShrink: 0 }}>{actionsDone.cfpb ? "✅" : "🏦"}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: actionsDone.cfpb ? "#10b981" : "#f1f5f9", marginBottom: 3 }}>Step 4 — File CFPB Complaint</div>
+                    <div style={{ fontSize: 11, color: "#475569" }}>The Consumer Financial Protection Bureau investigates insurance disputes. Opens consumerfinance.gov →</div>
+                  </div>
+                  <div style={{ fontSize: 12, color: actionsDone.cfpb ? "#10b981" : "#64748b", fontWeight: 600, flexShrink: 0 }}>{actionsDone.cfpb ? "Done ✓" : "Open →"}</div>
+                </div>
+              </a>
+
+              {/* Step 5 — Patient Advocate */}
+              <a
+                href="https://www.patientadvocate.org/connect-with-services/find-a-case-manager/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => markDone("advocate")}
+                style={{ textDecoration: "none", display: "block" }}
+              >
+                <div style={{ background: actionsDone.advocate ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.03)", border: `1px solid ${actionsDone.advocate ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`, borderRadius: 12, padding: "16px 18px", cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", gap: 14 }}>
+                  <div style={{ fontSize: 24, flexShrink: 0 }}>{actionsDone.advocate ? "✅" : "🤝"}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: actionsDone.advocate ? "#10b981" : "#f1f5f9", marginBottom: 3 }}>Step 5 — Find a Free Patient Advocate</div>
+                    <div style={{ fontSize: 11, color: "#475569" }}>Patient Advocate Foundation provides free case managers who fight insurance denials for you. Opens patientadvocate.org →</div>
+                  </div>
+                  <div style={{ fontSize: 12, color: actionsDone.advocate ? "#10b981" : "#64748b", fontWeight: 600, flexShrink: 0 }}>{actionsDone.advocate ? "Done ✓" : "Open →"}</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
