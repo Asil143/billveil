@@ -299,7 +299,7 @@ export default function App() {
                 <div style={{ background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
                   <div style={{ fontSize: 32, marginBottom: 12 }}>☕</div>
                   <div style={{ fontSize: 20, fontWeight: 800, color: "#fbbf24", marginBottom: 8 }}>Did BillVeil help you?</div>
-                  <div style={{ fontSize: 14, color: "#92400e", marginBottom: 24, lineHeight: 1.7, color: "#78716c" }}>
+                  <div style={{ fontSize: 14, color: "#78716c", marginBottom: 24, lineHeight: 1.7 }}>
                     BillVeil is free forever. If we saved you money, a small tip keeps us running for the next person who needs us.
                   </div>
                   <button
