@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import Landing from "./Landing";
 
 const EXAMPLES = [
   "CPT 99214 — $385",
@@ -53,12 +54,15 @@ const CSS = `
 `;
 
 export default function App() {
+  const [view, setView] = useState("landing");
   const [bill, setBill] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [tip, setTip] = useState(false);
   const [focused, setFocused] = useState(false);
+
+  if (view === "landing") return <Landing onStart={() => setView("app")} />;
 
   const analyzeBill = async () => {
     if (!bill.trim()) return;
