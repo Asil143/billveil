@@ -77,44 +77,6 @@ const COMMISSIONER_URLS = {
   "Wyoming": "https://doi.wyo.gov/consumers/file-a-complaint/",
 };
 
-function ActionButton({ emoji, label, sublabel, onClick, href, color = "#10b981", done }) {
-  const content = (
-    <div
-      onClick={onClick}
-      style={{
-        background: done ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.03)",
-        border: `1px solid ${done ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`,
-        borderRadius: 12,
-        padding: "16px 18px",
-        cursor: href || onClick ? "pointer" : "default",
-        transition: "all 0.2s",
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        textDecoration: "none",
-      }}
-    >
-      <div style={{ fontSize: 24, flexShrink: 0 }}>{done ? "✅" : emoji}</div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: done ? "#10b981" : "#f1f5f9", marginBottom: 3 }}>{label}</div>
-        <div style={{ fontSize: 11, color: "#475569", lineHeight: 1.5 }}>{sublabel}</div>
-      </div>
-      {(href || onClick) && !done && (
-        <div style={{ fontSize: 16, color: "#334155", flexShrink: 0 }}>→</div>
-      )}
-    </div>
-  );
-
-  if (href) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
-        {content}
-      </a>
-    );
-  }
-  return content;
-}
-
 export default function DenialFighter() {
   const [denial, setDenial] = useState("");
   const [amount, setAmount] = useState("");
