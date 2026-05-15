@@ -60,6 +60,7 @@ MONEY YOU COULD SAVE:
   }
 });
 
-app.listen(4000, () => {
-  console.log("BillVeil server running on port 4000");
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`BillVeil server running on port ${PORT}`);
 });
