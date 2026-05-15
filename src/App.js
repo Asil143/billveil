@@ -3,13 +3,54 @@ import axios from "axios";
 
 const EXAMPLES = [
   "CPT 99214 — $385",
-  "Emergency room visit — $4,200",
+  "ER visit — $4,200",
   "Blood test 80053 — $189",
   "MRI brain scan — $3,800",
-  "Two Tylenol tablets — $45",
+  "Tylenol x2 — $45",
 ];
 
-const FONT = "'Inter', 'Segoe UI', system-ui, sans-serif";
+const FONT = "'Inter', system-ui, sans-serif";
+
+const CSS = `
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes glow { 0%,100% { box-shadow: 0 0 20px rgba(16,185,129,0.3); } 50% { box-shadow: 0 0 40px rgba(16,185,129,0.6); } }
+  @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+
+  body { background: #060912; }
+
+  .analyze-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(16,185,129,0.5) !important;
+  }
+  .analyze-btn:active:not(:disabled) { transform: translateY(0); }
+
+  .chip:hover {
+    background: rgba(16,185,129,0.15) !important;
+    border-color: rgba(16,185,129,0.5) !important;
+    color: #10b981 !important;
+  }
+  .chip.active {
+    background: rgba(16,185,129,0.15) !important;
+    border-color: #10b981 !important;
+    color: #10b981 !important;
+  }
+
+  .result-card { animation: fadeUp 0.4s ease forwards; }
+
+  .reset-btn:hover {
+    background: rgba(255,255,255,0.06) !important;
+    color: #f1f5f9 !important;
+  }
+
+  textarea:focus { outline: none; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+`;
 
 export default function App() {
   const [bill, setBill] = useState("");
@@ -24,7 +65,6 @@ export default function App() {
     setLoading(true);
     setResult(null);
     setError(null);
-
     try {
       const response = await axios.post("/api/analyze", { bill });
       setResult(response.data.result);
@@ -37,55 +77,53 @@ export default function App() {
 
   const parseResult = (text) => {
     const sections = [
-      { key: "WHAT IS THIS", emoji: "🔍", color: "#3b82f6", label: "What Is This" },
-      { key: "FAIR PRICE", emoji: "💰", color: "#10b981", label: "Fair Price" },
-      { key: "VERDICT", emoji: "⚖️", color: "#f59e0b", label: "Verdict" },
-      { key: "WHY", emoji: "📋", color: "#6366f1", label: "Why" },
-      { key: "WHAT TO DO", emoji: "✅", color: "#10b981", label: "What To Do" },
-      { key: "MONEY YOU COULD SAVE", emoji: "💵", color: "#10b981", label: "Money You Could Save" },
+      { key: "WHAT IS THIS", emoji: "🔍", color: "#60a5fa", label: "What Is This" },
+      { key: "FAIR PRICE", emoji: "💰", color: "#34d399", label: "Fair Price" },
+      { key: "VERDICT", emoji: "⚖️", color: "#fbbf24", label: "Verdict" },
+      { key: "WHY", emoji: "📋", color: "#a78bfa", label: "Why" },
+      { key: "WHAT TO DO", emoji: "✅", color: "#34d399", label: "What To Do" },
+      { key: "MONEY YOU COULD SAVE", emoji: "💵", color: "#34d399", label: "Money You Could Save" },
     ];
 
-    return sections.map((section) => {
+    return sections.map((section, i) => {
       const regex = new RegExp(`${section.key}:\\n([\\s\\S]*?)(?=\\n[A-Z ]+:|$)`);
       const match = text.match(regex);
       const content = match ? match[1].trim() : null;
-
       if (!content) return null;
 
       const isVerdict = section.key === "VERDICT";
       const verdictColor = content.includes("SIGNIFICANTLY OVERCHARGED")
-        ? "#ef4444"
-        : content.includes("POSSIBLY OVERCHARGED")
-        ? "#f59e0b"
-        : "#10b981";
+        ? "#f87171" : content.includes("POSSIBLY OVERCHARGED")
+        ? "#fbbf24" : "#34d399";
       const verdictBg = content.includes("SIGNIFICANTLY OVERCHARGED")
-        ? "#fef2f2"
-        : content.includes("POSSIBLY OVERCHARGED")
-        ? "#fffbeb"
-        : "#f0fdf4";
+        ? "rgba(239,68,68,0.08)" : content.includes("POSSIBLY OVERCHARGED")
+        ? "rgba(251,191,36,0.08)" : "rgba(52,211,153,0.08)";
 
       return (
         <div
           key={section.key}
+          className="result-card"
           style={{
-            background: isVerdict ? verdictBg : "#fff",
-            border: `1px solid ${isVerdict ? verdictColor + "40" : "#e5e7eb"}`,
-            borderLeft: `4px solid ${isVerdict ? verdictColor : section.color}`,
-            borderRadius: 10,
-            padding: "18px 22px",
-            marginBottom: 12,
-            boxShadow: isVerdict ? `0 0 0 1px ${verdictColor}20` : "0 1px 3px rgba(0,0,0,0.04)",
+            background: isVerdict ? verdictBg : "rgba(255,255,255,0.03)",
+            border: `1px solid ${isVerdict ? verdictColor + "40" : "rgba(255,255,255,0.08)"}`,
+            borderLeft: `3px solid ${isVerdict ? verdictColor : section.color}`,
+            borderRadius: 12,
+            padding: "20px 24px",
+            marginBottom: 10,
+            animationDelay: `${i * 0.08}s`,
+            animationFillMode: "both",
           }}
         >
-          <div style={{ fontSize: 11, fontWeight: 700, color: isVerdict ? verdictColor : section.color, letterSpacing: "0.1em", marginBottom: 10, textTransform: "uppercase" }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: isVerdict ? verdictColor : section.color, letterSpacing: "0.12em", marginBottom: 12, textTransform: "uppercase" }}>
             {section.emoji} {section.label}
           </div>
           {isVerdict ? (
-            <div style={{ display: "inline-block", background: verdictColor, color: "#fff", padding: "6px 18px", borderRadius: 20, fontSize: 13, fontWeight: 800, letterSpacing: "0.05em" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: verdictColor + "20", border: `1px solid ${verdictColor}50`, color: verdictColor, padding: "8px 20px", borderRadius: 24, fontSize: 14, fontWeight: 800, letterSpacing: "0.04em" }}>
+              <span style={{ width: 8, height: 8, background: verdictColor, borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
               {content}
             </div>
           ) : (
-            <div style={{ fontSize: 15, color: "#1f2937", lineHeight: 1.75, whiteSpace: "pre-line" }}>
+            <div style={{ fontSize: 15, color: "#cbd5e1", lineHeight: 1.8, whiteSpace: "pre-line" }}>
               {content}
             </div>
           )}
@@ -95,58 +133,78 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc", fontFamily: FONT }}>
+    <div style={{ minHeight: "100vh", background: "#060912", fontFamily: FONT, color: "#f8fafc" }}>
+      <style>{CSS}</style>
+
+      {/* Background glow */}
+      <div style={{ position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: 800, height: 400, background: "radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 38, height: 38, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
+      <div style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.8)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 34, height: 34, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, boxShadow: "0 0 20px rgba(16,185,129,0.4)" }}>
             🛡️
           </div>
           <div>
-            <div style={{ fontSize: 21, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>BillVeil</div>
-            <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 1 }}>See through every medical bill</div>
+            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(135deg, #fff 30%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              BillVeil
+            </div>
+            <div style={{ fontSize: 10, color: "#475569", marginTop: 1, letterSpacing: "0.04em" }}>
+              SEE THROUGH EVERY MEDICAL BILL
+            </div>
           </div>
         </div>
-        <div style={{ background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)", color: "#10b981", padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, letterSpacing: "0.05em" }}>
-          100% FREE
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
+            <span style={{ width: 7, height: 7, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
+            Free forever
+          </div>
         </div>
       </div>
 
-      {/* Stats bar */}
-      <div style={{ background: "#0f172a", borderBottom: "1px solid #1e293b", padding: "10px 24px" }}>
-        <div style={{ maxWidth: 680, margin: "0 auto", display: "flex", justifyContent: "center", gap: 40, flexWrap: "wrap" }}>
-          {[
-            { stat: "$935B", label: "overpaid yearly" },
-            { stat: "80%", label: "bills have errors" },
-            { stat: "10x", label: "hospital markups" },
-          ].map(({ stat, label }) => (
-            <div key={stat} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#10b981" }}>{stat}</div>
-              <div style={{ fontSize: 10, color: "#64748b", marginTop: 1 }}>{label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ maxWidth: 680, margin: "0 auto", padding: "36px 16px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 700, margin: "0 auto", padding: "60px 20px 40px" }}>
 
         {/* Hero */}
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ display: "inline-block", background: "#dcfce7", color: "#15803d", padding: "4px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, marginBottom: 14, letterSpacing: "0.06em" }}>
-            AI-POWERED BILL ANALYSIS
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#10b981", padding: "6px 16px", borderRadius: 24, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 24 }}>
+            <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%" }} />
+            AI-POWERED · FREE · INSTANT
           </div>
-          <h1 style={{ fontSize: 32, fontWeight: 900, color: "#0f172a", marginBottom: 12, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
-            Is your medical bill fair?
+
+          <h1 style={{ fontSize: 52, fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.04em", marginBottom: 20 }}>
+            <span style={{ background: "linear-gradient(135deg, #f8fafc 0%, #f8fafc 50%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              Is your medical
+            </span>
+            <br />
+            <span style={{ background: "linear-gradient(135deg, #10b981 0%, #34d399 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              bill fair?
+            </span>
           </h1>
-          <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
-            Paste any charge, CPT code, or bill below. Our AI explains what it means, whether you are being overcharged, and exactly what to do.
+
+          <p style={{ fontSize: 18, color: "#64748b", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 36px" }}>
+            Americans overpay <strong style={{ color: "#94a3b8" }}>$935 billion</strong> every year on medical bills. We give you the weapon to fight back.
           </p>
+
+          {/* Stats */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 0, marginBottom: 0 }}>
+            {[
+              { stat: "$935B", label: "Overpaid yearly" },
+              { stat: "80%", label: "Bills have errors" },
+              { stat: "10x", label: "Hospital markups" },
+            ].map(({ stat, label }, i) => (
+              <div key={stat} style={{ padding: "16px 32px", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.06)" : "none", textAlign: "center" }}>
+                <div style={{ fontSize: 26, fontWeight: 900, background: "linear-gradient(135deg, #10b981, #34d399)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: "-0.02em" }}>
+                  {stat}
+                </div>
+                <div style={{ fontSize: 11, color: "#475569", marginTop: 3, fontWeight: 500 }}>{label}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Input card */}
-        <div style={{ background: "#fff", border: focused ? "1.5px solid #10b981" : "1.5px solid #e2e8f0", borderRadius: 14, padding: 24, marginBottom: 16, boxShadow: focused ? "0 0 0 4px rgba(16,185,129,0.08)" : "0 2px 8px rgba(0,0,0,0.06)", transition: "all 0.2s" }}>
-          <label style={{ fontSize: 13, fontWeight: 700, color: "#374151", display: "block", marginBottom: 10 }}>
+        <div style={{ background: "rgba(255,255,255,0.03)", border: focused ? "1px solid rgba(16,185,129,0.5)" : "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 28, marginBottom: 20, backdropFilter: "blur(20px)", boxShadow: focused ? "0 0 0 4px rgba(16,185,129,0.08), 0 20px 60px rgba(0,0,0,0.4)" : "0 20px 60px rgba(0,0,0,0.3)", transition: "all 0.25s" }}>
+          <label style={{ fontSize: 12, fontWeight: 700, color: "#94a3b8", display: "block", marginBottom: 12, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Paste your bill, charge, or CPT code
           </label>
           <textarea
@@ -155,18 +213,19 @@ export default function App() {
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             placeholder="e.g. CPT 99214 — $385, or paste your full bill here..."
-            style={{ width: "100%", height: 120, padding: 14, border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#1f2937", resize: "vertical", fontFamily: FONT, lineHeight: 1.6, outline: "none", background: "#f8fafc", boxSizing: "border-box" }}
+            style={{ width: "100%", height: 110, padding: 16, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, fontSize: 15, color: "#f1f5f9", resize: "vertical", fontFamily: FONT, lineHeight: 1.6, background: "rgba(255,255,255,0.04)", boxSizing: "border-box", transition: "border 0.2s" }}
           />
 
           {/* Example chips */}
-          <div style={{ marginTop: 10, marginBottom: 14 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", marginBottom: 7 }}>TRY AN EXAMPLE:</div>
+          <div style={{ marginTop: 14, marginBottom: 20 }}>
+            <div style={{ fontSize: 10, fontWeight: 600, color: "#334155", marginBottom: 8, letterSpacing: "0.08em" }}>TRY AN EXAMPLE</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {EXAMPLES.map((ex) => (
                 <button
                   key={ex}
+                  className={`chip${bill === ex ? " active" : ""}`}
                   onClick={() => setBill(ex)}
-                  style={{ padding: "5px 12px", background: bill === ex ? "#0f172a" : "#f1f5f9", color: bill === ex ? "#fff" : "#475569", border: "1px solid #e2e8f0", borderRadius: 20, fontSize: 12, fontWeight: 500, cursor: "pointer", transition: "all 0.15s" }}
+                  style={{ padding: "5px 13px", background: "rgba(255,255,255,0.04)", color: "#64748b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 24, fontSize: 12, fontWeight: 500, cursor: "pointer", transition: "all 0.15s", fontFamily: FONT }}
                 >
                   {ex}
                 </button>
@@ -175,45 +234,43 @@ export default function App() {
           </div>
 
           <button
+            className="analyze-btn"
             onClick={analyzeBill}
             disabled={loading || !bill.trim()}
-            style={{ width: "100%", padding: "15px", background: loading || !bill.trim() ? "#cbd5e1" : "linear-gradient(135deg, #0f172a, #1e293b)", color: loading || !bill.trim() ? "#94a3b8" : "#fff", border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: loading || !bill.trim() ? "default" : "pointer", transition: "all 0.2s", letterSpacing: "0.01em", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+            style={{ width: "100%", padding: "16px", background: loading || !bill.trim() ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #10b981, #059669)", color: loading || !bill.trim() ? "#334155" : "#fff", border: loading || !bill.trim() ? "1px solid rgba(255,255,255,0.06)" : "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: loading || !bill.trim() ? "default" : "pointer", transition: "all 0.25s", letterSpacing: "0.01em", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading || !bill.trim() ? "none" : "0 8px 25px rgba(16,185,129,0.35)", fontFamily: FONT }}
           >
             {loading ? (
               <>
-                <span style={{ display: "inline-block", width: 16, height: 16, border: "2px solid #94a3b8", borderTop: "2px solid #fff", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                <span style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.2)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />
                 Analyzing your bill...
               </>
             ) : (
-              "⚡ Analyze My Bill — Free"
+              <>⚡ Analyze My Bill — Free</>
             )}
           </button>
         </div>
 
-        {/* Spinner keyframe */}
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-
         {/* Error */}
         {error && (
-          <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: 16, color: "#dc2626", fontSize: 14, marginBottom: 16 }}>
+          <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 12, padding: 16, color: "#f87171", fontSize: 14, marginBottom: 16 }}>
             {error}
           </div>
         )}
 
-        {/* How it works — shown only before results */}
+        {/* How it works */}
         {!result && !loading && (
-          <div style={{ marginTop: 32, marginBottom: 8 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", letterSpacing: "0.12em", textAlign: "center", marginBottom: 20 }}>HOW IT WORKS</div>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ marginTop: 48 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.12em", textAlign: "center", marginBottom: 24 }}>HOW IT WORKS</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
               {[
-                { step: "1", title: "Paste your bill", desc: "Any charge, CPT code, or full bill. No formatting needed." },
-                { step: "2", title: "AI analyzes it", desc: "We check fair market rates and flag overcharges instantly." },
-                { step: "3", title: "Take action", desc: "Get exact steps to dispute, negotiate, or walk away." },
+                { step: "01", title: "Paste your bill", desc: "Any charge, CPT code, or full bill. No formatting needed." },
+                { step: "02", title: "AI scans it", desc: "We compare against fair market rates and flag every overcharge." },
+                { step: "03", title: "Fight back", desc: "Get exact steps to dispute, negotiate, or demand a refund." },
               ].map(({ step, title, desc }) => (
-                <div key={step} style={{ flex: "1 1 180px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 12, padding: "18px 16px", textAlign: "center" }}>
-                  <div style={{ width: 32, height: 32, background: "linear-gradient(135deg, #0f172a, #1e293b)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: 13, fontWeight: 800, color: "#10b981" }}>{step}</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>{title}</div>
-                  <div style={{ fontSize: 12, color: "#64748b", lineHeight: 1.6 }}>{desc}</div>
+                <div key={step} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, padding: "22px 18px" }}>
+                  <div style={{ fontSize: 28, fontWeight: 900, background: "linear-gradient(135deg, #10b981, #34d399)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 10, letterSpacing: "-0.02em" }}>{step}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#f1f5f9", marginBottom: 6 }}>{title}</div>
+                  <div style={{ fontSize: 12, color: "#475569", lineHeight: 1.7 }}>{desc}</div>
                 </div>
               ))}
             </div>
@@ -223,49 +280,52 @@ export default function App() {
         {/* Results */}
         {result && (
           <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", letterSpacing: "0.12em", marginBottom: 16, textTransform: "uppercase" }}>
-              Analysis Results
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.12em" }}>ANALYSIS RESULTS</div>
+              <button
+                className="reset-btn"
+                onClick={() => { setResult(null); setBill(""); setTip(false); }}
+                style={{ fontSize: 12, color: "#475569", background: "transparent", border: "1px solid rgba(255,255,255,0.06)", padding: "5px 12px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}
+              >
+                ← Analyze another
+              </button>
             </div>
+
             {parseResult(result)}
 
-            <button
-              onClick={() => { setResult(null); setBill(""); setTip(false); }}
-              style={{ width: "100%", marginTop: 4, marginBottom: 20, padding: "12px", background: "transparent", color: "#64748b", border: "1.5px solid #e2e8f0", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}
-            >
-              Analyze Another Bill
-            </button>
-
             {/* Tip Jar */}
-            {!tip ? (
-              <div style={{ background: "linear-gradient(135deg, #fffbeb, #fef3c7)", border: "1px solid #fde68a", borderRadius: 14, padding: 28, textAlign: "center" }}>
-                <div style={{ fontSize: 28, marginBottom: 10 }}>☕</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#92400e", marginBottom: 6 }}>Did BillVeil help you?</div>
-                <div style={{ fontSize: 14, color: "#78350f", marginBottom: 20, lineHeight: 1.6 }}>
-                  BillVeil is free forever. If we saved you money, consider a small tip to keep us running.
+            <div style={{ marginTop: 24 }}>
+              {!tip ? (
+                <div style={{ background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>☕</div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: "#fbbf24", marginBottom: 8 }}>Did BillVeil help you?</div>
+                  <div style={{ fontSize: 14, color: "#92400e", marginBottom: 24, lineHeight: 1.7, color: "#78716c" }}>
+                    BillVeil is free forever. If we saved you money, a small tip keeps us running for the next person who needs us.
+                  </div>
+                  <button
+                    onClick={() => setTip(true)}
+                    style={{ padding: "13px 36px", background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", boxShadow: "0 8px 25px rgba(245,158,11,0.35)", fontFamily: FONT, transition: "all 0.2s" }}
+                  >
+                    Leave a Tip ❤️
+                  </button>
                 </div>
-                <button
-                  onClick={() => setTip(true)}
-                  style={{ padding: "12px 32px", background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff", border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(245,158,11,0.3)", fontFamily: FONT }}
-                >
-                  Leave a Tip ❤️
-                </button>
-              </div>
-            ) : (
-              <div style={{ background: "linear-gradient(135deg, #f0fdf4, #dcfce7)", border: "1px solid #86efac", borderRadius: 14, padding: 28, textAlign: "center" }}>
-                <div style={{ fontSize: 36, marginBottom: 10 }}>🙏</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#15803d", marginBottom: 6 }}>Thank you so much!</div>
-                <div style={{ fontSize: 14, color: "#166534", lineHeight: 1.6 }}>
-                  Your support keeps BillVeil free for every American who needs it. You are part of the solution.
+              ) : (
+                <div style={{ background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
+                  <div style={{ fontSize: 40, marginBottom: 12 }}>🙏</div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: "#34d399", marginBottom: 8 }}>Thank you so much!</div>
+                  <div style={{ fontSize: 14, color: "#475569", lineHeight: 1.7 }}>
+                    Your support keeps BillVeil free for every American who needs it. You are part of the solution.
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
 
         {/* Footer */}
-        <div style={{ textAlign: "center", marginTop: 48, fontSize: 12, color: "#94a3b8", lineHeight: 2 }}>
-          <div style={{ marginBottom: 4 }}>🔒 BillVeil does not store your medical information.</div>
-          <div>Built for the 330 million Americans who deserve better.</div>
+        <div style={{ textAlign: "center", marginTop: 60, paddingTop: 32, borderTop: "1px solid rgba(255,255,255,0.04)", fontSize: 12, color: "#1e293b", lineHeight: 2.2 }}>
+          <div>🔒 BillVeil does not store your medical information</div>
+          <div>Built for the 330 million Americans who deserve better</div>
         </div>
       </div>
     </div>
