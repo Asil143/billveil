@@ -342,12 +342,15 @@ export default function App() {
                   <div style={{ fontSize: 14, color: "#78716c", marginBottom: 24, lineHeight: 1.7 }}>
                     BillVeil is free forever. If we saved you money, a small tip keeps us running for the next person who needs us.
                   </div>
-                  <button
+                  <a
+                    href="https://buy.stripe.com/test_00w00l79g8hO6kq0AjfMA00"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => setTip(true)}
-                    style={{ padding: "13px 36px", background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", boxShadow: "0 8px 25px rgba(245,158,11,0.35)", fontFamily: FONT, transition: "all 0.2s" }}
+                    style={{ display: "inline-block", padding: "13px 36px", background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", boxShadow: "0 8px 25px rgba(245,158,11,0.35)", textDecoration: "none", transition: "all 0.2s" }}
                   >
                     Leave a Tip ❤️
-                  </button>
+                  </a>
                 </div>
               ) : (
                 <div style={{ background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
