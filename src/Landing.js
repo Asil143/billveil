@@ -32,23 +32,48 @@ export default function Landing({ onStart }) {
       <div style={{ position: "fixed", bottom: 0, right: 0, width: 600, height: 400, background: "radial-gradient(ellipse at bottom right, rgba(99,102,241,0.07) 0%, transparent 65%)", pointerEvents: "none", zIndex: 0 }} />
 
       {/* Nav */}
-      <nav style={{ position: "relative", zIndex: 10, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.8)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 34, height: 34, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, boxShadow: "0 0 20px rgba(16,185,129,0.4)" }}>
+      <nav style={{ position: "relative", zIndex: 10, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <div style={{ width: 30, height: 30, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, boxShadow: "0 0 16px rgba(16,185,129,0.4)" }}>
             🛡️
           </div>
-          <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(135deg, #fff 30%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+          <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(135deg, #fff 30%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             BillVeil
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ fontSize: 12, color: "#475569", fontWeight: 500 }}>Free forever</div>
+
+        {/* Centered nav links */}
+        <div style={{ display: "flex", alignItems: "center", gap: 4, position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+          {[
+            { tab: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
+            { tab: "dispute", emoji: "✉️", label: "Dispute Letter" },
+            { tab: "drug", emoji: "💊", label: "Drug Prices" },
+            { tab: "denial", emoji: "⚔️", label: "Denial Fighter" },
+          ].map(({ tab, emoji, label }) => (
+            <button
+              key={tab}
+              onClick={() => onStart(tab)}
+              className="nav-cta"
+              style={{ padding: "6px 14px", background: "transparent", border: "1px solid transparent", borderRadius: 8, color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s", whiteSpace: "nowrap" }}
+            >
+              {emoji} {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Right */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
+            <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%" }} />
+            Free forever
+          </div>
           <button
             className="nav-cta"
-            onClick={onStart}
-            style={{ padding: "8px 20px", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "#10b981", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}
+            onClick={() => onStart("analyzer")}
+            style={{ padding: "7px 16px", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "#10b981", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}
           >
-            Analyze My Bill →
+            Get Started →
           </button>
         </div>
       </nav>
