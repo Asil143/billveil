@@ -154,55 +154,48 @@ export default function App() {
       {/* Background glow */}
       <div style={{ position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: 800, height: 400, background: "radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
 
-      {/* Header */}
-      <div style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.8)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 34, height: 34, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, boxShadow: "0 0 20px rgba(16,185,129,0.4)" }}>
+      {/* Header with centered nav */}
+      <div style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
+
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <div style={{ width: 30, height: 30, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, boxShadow: "0 0 16px rgba(16,185,129,0.4)" }}>
             🛡️
           </div>
-          <div>
-            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(135deg, #fff 30%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              BillVeil
-            </div>
-            <div style={{ fontSize: 10, color: "#475569", marginTop: 1, letterSpacing: "0.04em" }}>
-              SEE THROUGH EVERY MEDICAL BILL
-            </div>
+          <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(135deg, #fff 30%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            BillVeil
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
-            <span style={{ width: 7, height: 7, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
-            Free forever
-          </div>
-        </div>
-      </div>
 
-      {/* Tab bar */}
-      <div style={{ position: "relative", zIndex: 1, background: "rgba(6,9,18,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 20px" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+        {/* Centered nav links */}
+        <div style={{ display: "flex", alignItems: "center", gap: 4, position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
               style={{
-                padding: "12px 8px",
-                background: tab === t.id ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.03)",
-                border: `1px solid ${tab === t.id ? "rgba(16,185,129,0.4)" : "rgba(255,255,255,0.07)"}`,
-                borderRadius: 10,
-                color: tab === t.id ? "#10b981" : "#475569",
-                fontSize: 12,
-                fontWeight: 700,
+                padding: "6px 14px",
+                background: tab === t.id ? "rgba(16,185,129,0.12)" : "transparent",
+                border: `1px solid ${tab === t.id ? "rgba(16,185,129,0.3)" : "transparent"}`,
+                borderRadius: 8,
+                color: tab === t.id ? "#10b981" : "#64748b",
+                fontSize: 13,
+                fontWeight: 600,
                 cursor: "pointer",
                 fontFamily: FONT,
                 transition: "all 0.2s",
-                textAlign: "center",
-                lineHeight: 1.4,
+                whiteSpace: "nowrap",
               }}
             >
-              <div style={{ fontSize: 20, marginBottom: 5 }}>{t.emoji}</div>
-              <div>{t.label}</div>
+              {t.emoji} {t.label}
             </button>
           ))}
+        </div>
+
+        {/* Right badge */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600, flexShrink: 0 }}>
+          <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
+          Free forever
         </div>
       </div>
 
