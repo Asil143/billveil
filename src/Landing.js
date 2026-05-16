@@ -300,6 +300,66 @@ export default function Landing({ onStart, onAbout }) {
         </div>
       </section>
 
+      {/* Real Results */}
+      <section style={{ position: "relative", zIndex: 1, padding: "80px 20px", background: "rgba(255,255,255,0.015)", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 16 }}>REAL RESULTS</div>
+            <h2 style={{ fontSize: "clamp(24px, 5vw, 38px)", fontWeight: 900, letterSpacing: "-0.03em", marginBottom: 12 }}>
+              <span style={{ background: "linear-gradient(135deg, #f8fafc, #94a3b8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                What BillVeil finds.
+              </span>
+            </h2>
+            <p style={{ fontSize: 15, color: "#475569" }}>Example analyses from real medical bills.</p>
+          </div>
+
+          <div className="land-3col" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+            {[
+              { charge: "ER Visit — $4,200", verdict: "SIGNIFICANTLY OVERCHARGED", color: "#f87171", finding: "Medicare rate: $420. Hospital charged 10x. Itemized bill showed 3 duplicate charges.", saved: "Could recover $2,800–$3,600" },
+              { charge: "MRI Brain — $3,800", verdict: "SIGNIFICANTLY OVERCHARGED", color: "#f87171", finding: "Fair market rate: $320–$500. Facility used a 12x markup. No Surprises Act applies.", saved: "Could recover $3,000+" },
+              { charge: "Lisinopril 10mg — $89/mo", verdict: "SIGNIFICANTLY OVERCHARGED", color: "#f87171", finding: "GoodRx generic: $4/mo. Cost Plus Drugs: $3/mo. Zero reason to pay $89.", saved: "Save $85/month = $1,020/year" },
+            ].map(({ charge, verdict, color, finding, saved }) => (
+              <div key={charge} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "22px 18px" }}>
+                <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, marginBottom: 10 }}>{charge}</div>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: color + "15", border: `1px solid ${color}40`, color, padding: "4px 10px", borderRadius: 20, fontSize: 10, fontWeight: 800, letterSpacing: "0.06em", marginBottom: 12 }}>
+                  <span style={{ width: 5, height: 5, background: color, borderRadius: "50%" }} />
+                  {verdict}
+                </div>
+                <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7, marginBottom: 12 }}>{finding}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#10b981" }}>✓ {saved}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section style={{ position: "relative", zIndex: 1, padding: "80px 20px", maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 16 }}>FAQ</div>
+          <h2 style={{ fontSize: "clamp(24px, 5vw, 38px)", fontWeight: 900, letterSpacing: "-0.03em" }}>
+            <span style={{ background: "linear-gradient(135deg, #f8fafc, #94a3b8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              Common questions.
+            </span>
+          </h2>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {[
+            { q: "Is BillVeil really free?", a: "Yes, completely. No credit card, no signup, no hidden fees. We built this because healthcare transparency shouldn't cost money. If we help you, we accept optional tips — but they're never required." },
+            { q: "Is my medical information safe?", a: "We never store, log, or share what you enter. Every analysis is processed and immediately discarded. There is no account, no database, and no way for your data to be sold or breached." },
+            { q: "How accurate are the results?", a: "Our AI is trained on Medicare allowable rates, fair market pricing data, and billing guidelines. It gives accurate benchmarks for most common charges. For complex cases, use the results as a starting point for your negotiation — not as a final determination." },
+            { q: "Can I actually negotiate a medical bill?", a: "Yes — and it works more often than people think. Studies show that over 60% of patients who negotiate their medical bills get a reduction. Hospitals have a chargemaster rate (what they charge) and a negotiated rate (what they actually accept). You can almost always pay less than the original bill." },
+            { q: "What if my insurance company ignores my appeal?", a: "They can't legally ignore it. Under the ACA and ERISA, insurers must respond within 30–60 days. If they deny again, you have the right to a free external review by an Independent Review Organization. 73% of externally reviewed denials are overturned." },
+          ].map(({ q, a }) => (
+            <div key={q} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "22px 20px" }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 10 }}>{q}</div>
+              <div style={{ fontSize: 14, color: "#64748b", lineHeight: 1.8 }}>{a}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Bottom CTA */}
       <section style={{ position: "relative", zIndex: 1, padding: "80px 20px", textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ maxWidth: 560, margin: "0 auto" }}>

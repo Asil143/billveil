@@ -11,37 +11,47 @@ module.exports = async function (req, res) {
   try {
     const message = await client.chat.completions.create({
       model: "llama-3.3-70b-versatile",
-      max_tokens: 1000,
-      messages: [{
-        role: "user",
-        content: `You are a drug pricing expert helping Americans find fair prices for their medications.
+      max_tokens: 1100,
+      messages: [
+        {
+          role: "system",
+          content: "You are a pharmaceutical pricing expert who helps Americans find the lowest legal price for their medications. You have deep knowledge of GoodRx pricing, Mark Cuban's Cost Plus Drugs (costplusdrugs.com), manufacturer patient assistance programs, pharmacy discount cards, and generic drug availability. Always give specific dollar amounts, not ranges where possible."
+        },
+        {
+          role: "user",
+          content: `Help this patient find the lowest price for their medication: "${drug}"
+${price ? `They are currently paying: $${price}` : ""}
 
-Drug: "${drug}"
-${price ? `What they were charged: $${price}` : ""}
-
-Respond in this exact format:
+Respond in this EXACT format:
 
 WHAT IS THIS DRUG:
-[Plain English explanation of what this drug is and what it treats. 2 sentences max.]
+[2 sentences max. What it treats, who typically takes it, and whether a generic is available.]
 
 FAIR PRICE RANGE:
-[What this drug should realistically cost. Give specific dollar amounts for generic and brand name.]
+[What this drug should cost. Separate generic vs brand name prices. Reference actual market prices, not retail.]
 
 COST PLUS DRUGS PRICE:
-[Estimate the Mark Cuban Cost Plus Drugs price for this medication if available. Be specific.]
+[Mark Cuban's Cost Plus Drugs price at costplusdrugs.com. If not listed there, say so and explain why (brand-only, controlled substance, etc).]
 
 CHEAPEST OPTIONS:
-[List 3-4 specific ways to get this drug cheaper: GoodRx, generic version, Cost Plus Drugs, pharmacy discount programs, manufacturer coupons. Include estimated prices.]
+[List 4 specific ways to get this cheaper, with approximate prices for each:
+1. Generic version at [pharmacy] using GoodRx: ~$X
+2. Cost Plus Drugs (costplusdrugs.com): ~$X
+3. Manufacturer patient assistance program (if brand-name): free or reduced cost
+4. [Another specific option like NeedyMeds, RxAssist, or 90-day supply discount]]
 
 VERDICT:
-[One of: FAIR PRICE | POSSIBLY OVERCHARGED | SIGNIFICANTLY OVERCHARGED]
+[Exactly one of: FAIR PRICE | POSSIBLY OVERCHARGED | SIGNIFICANTLY OVERCHARGED]
 
 MONEY YOU COULD SAVE:
-[Specific dollar amount they could save by switching to the cheapest option.]
+[Specific monthly AND annual savings if they switch to the cheapest option. Be exact.]
 
 WHAT TO DO:
-[3 numbered action steps to get this drug at the lowest possible price right now.]`,
-      }],
+1. [Go to goodrx.com right now, search "[drug name]", show the coupon to your pharmacist — takes 2 minutes]
+2. [Check costplusdrugs.com — if listed, order online or transfer prescription]
+3. [If brand-name only: go to [manufacturer] website and apply for their patient assistance program — many are free for qualifying patients]`
+        }
+      ],
     });
     res.json({ result: message.choices[0].message.content });
   } catch (err) {
