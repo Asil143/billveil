@@ -5,7 +5,7 @@ import {
   linkWithCredential, EmailAuthProvider,
 } from "firebase/auth";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "./firebase";
+import { auth, db, projectId } from "./firebase";
 import PhoneLogin from "./PhoneLogin";
 
 const USE_LIMIT = 3;
@@ -135,7 +135,6 @@ export function AuthProvider({ children }) {
         // Write verification via Firestore REST API (plain HTTPS — no WebSocket, works on mobile)
         try {
           const idToken = await auth.currentUser.getIdToken();
-          const projectId = db.app.options.projectId;
           const docId = emailKey(email);
           const controller = new AbortController();
           const timer = setTimeout(() => controller.abort(), 12000);
