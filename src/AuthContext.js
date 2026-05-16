@@ -132,31 +132,26 @@ export function AuthProvider({ children }) {
           await withTimeout(signInWithEmailLink(auth, email, pendingEmailLink), 15000);
         }
 
-        // Write verification to Firestore (SDK uses HTTP long-polling — reliable on mobile)
-        try {
-          await withTimeout(
-            setDoc(doc(db, "email_verifications", emailKey(email)), {
-              verified: true,
-              email,
-              ownerUid,
-              verifiedAt: serverTimestamp(),
-            }),
-            15000
-          );
-          setLinkSyncOk(true);
-        } catch (fsErr) {
-          const fsCode = fsErr.code || fsErr.message || "unknown";
-          console.warn("Firestore sync failed:", fsCode);
+        // Fire-and-forget Firestore write — SDK queues and retries automatically.
+        // Don't await: show success immediately, laptop onSnapshot picks it up when it lands.
+        const currentUser = auth.currentUser;
+        setDoc(doc(db, "email_verifications", emailKey(email)), {
+          verified: true,
+          email,
+          ownerUid,
+          verifiedAt: serverTimestamp(),
+        }).then(() => setLinkSyncOk(true)).catch(err => {
           setLinkSyncOk(false);
-          setLinkSyncError(fsCode);
-        }
+          setLinkSyncError(err.code || err.message || "unknown");
+        });
 
         // Sign out the temporary session (not needed on same-device phone user)
-        if (!auth.currentUser?.phoneNumber) {
+        if (!currentUser?.phoneNumber) {
           await signOut(auth);
         }
 
         localStorage.removeItem("bv_pending_email");
+        setLinkSyncOk(true);
         setLinkStatus("success");
       } catch (err) {
         console.error("Email link error:", err.code, err.message);
