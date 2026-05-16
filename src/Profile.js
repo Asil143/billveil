@@ -21,11 +21,11 @@ const US_STATES = [
 const inputStyle = {
   width: "100%",
   padding: "11px 14px",
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: "#f8fafc",
+  border: "1px solid #e2e8f0",
   borderRadius: 10,
   fontSize: 14,
-  color: "#f1f5f9",
+  color: "#0f172a",
   fontFamily: FONT,
   outline: "none",
   boxSizing: "border-box",
@@ -35,7 +35,7 @@ const inputStyle = {
 const labelStyle = {
   fontSize: 11,
   fontWeight: 700,
-  color: "#64748b",
+  color: "#94a3b8",
   display: "block",
   marginBottom: 6,
   letterSpacing: "0.06em",
@@ -90,8 +90,8 @@ export default function Profile() {
       value={form[field]}
       onChange={set(field)}
       style={inputStyle}
-      onFocus={(e) => (e.target.style.border = "1px solid rgba(16,185,129,0.5)")}
-      onBlur={(e) => (e.target.style.border = "1px solid rgba(255,255,255,0.1)")}
+      onFocus={(e) => (e.target.style.border = "1px solid #10b981")}
+      onBlur={(e) => (e.target.style.border = "1px solid #e2e8f0")}
       {...extra}
     />
   );
@@ -111,10 +111,10 @@ export default function Profile() {
     <div>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#f1f5f9", marginBottom: 8, letterSpacing: "-0.02em" }}>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#0f172a", marginBottom: 8, letterSpacing: "-0.02em" }}>
           My Profile
         </h2>
-        <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.6 }}>
+        <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.6 }}>
           Your information helps us give more accurate advice. Stored securely — never shared.
         </p>
       </div>
@@ -122,7 +122,7 @@ export default function Profile() {
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
         {/* Name */}
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 24 }}>
+        <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 24, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 16 }}>PERSONAL INFORMATION</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
             <Field label="First Name">{inp("firstName", { placeholder: "Jane" })}</Field>
@@ -136,7 +136,7 @@ export default function Profile() {
         </div>
 
         {/* Address */}
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 24 }}>
+        <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 24, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 16 }}>ADDRESS</div>
           <div style={{ marginBottom: 12 }}>
             <Field label="Street Address">{inp("street", { placeholder: "123 Main St" })}</Field>
@@ -149,7 +149,7 @@ export default function Profile() {
         </div>
 
         {/* Insurance */}
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 24 }}>
+        <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 24, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 16 }}>INSURANCE</div>
           <Field label="Current Insurance Provider">{sel("insuranceProvider", INSURERS)}</Field>
         </div>
@@ -158,13 +158,13 @@ export default function Profile() {
         <button
           onClick={save}
           disabled={saving}
-          style={{ width: "100%", padding: "15px", background: saved ? "rgba(16,185,129,0.15)" : saving ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #10b981, #059669)", color: saved ? "#10b981" : saving ? "#475569" : "#fff", border: saved ? "1px solid rgba(16,185,129,0.3)" : "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: saving ? "default" : "pointer", fontFamily: FONT, transition: "all 0.2s", boxShadow: saved || saving ? "none" : "0 8px 25px rgba(16,185,129,0.3)" }}
+          style={{ width: "100%", padding: "15px", background: saved ? "#f0fdf4" : saving ? "#f1f5f9" : "linear-gradient(135deg, #10b981, #059669)", color: saved ? "#059669" : saving ? "#94a3b8" : "#fff", border: saved ? "1px solid #bbf7d0" : "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: saving ? "default" : "pointer", fontFamily: FONT, transition: "all 0.2s", boxShadow: saved || saving ? "none" : "0 4px 16px rgba(16,185,129,0.3)" }}
         >
           {saved ? "✓ Profile saved!" : saving ? "Saving..." : "Save Profile"}
         </button>
 
         {/* Phone info */}
-        <div style={{ textAlign: "center", fontSize: 12, color: "#1e293b", paddingBottom: 8 }}>
+        <div style={{ textAlign: "center", fontSize: 12, color: "#94a3b8", paddingBottom: 8 }}>
           Account phone: {user?.phoneNumber}
         </div>
       </div>

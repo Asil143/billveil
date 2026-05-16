@@ -39,26 +39,26 @@ export default function DisputeLetter() {
   return (
     <div>
       <div style={{ marginBottom: 28 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#f1f5f9", marginBottom: 8, letterSpacing: "-0.02em" }}>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#0f172a", marginBottom: 8, letterSpacing: "-0.02em" }}>
           Dispute Letter Generator
         </h2>
-        <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.6 }}>
+        <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.6 }}>
           Describe the charge you want to dispute. We will write a professional letter you can send to the hospital or insurance company today.
         </p>
       </div>
 
-      <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 24, marginBottom: 16 }}>
-        <label style={{ fontSize: 11, fontWeight: 700, color: "#64748b", display: "block", marginBottom: 10, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+      <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 24, marginBottom: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
+        <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", display: "block", marginBottom: 10, letterSpacing: "0.06em", textTransform: "uppercase" }}>
           Describe the charge you are disputing
         </label>
         <textarea
           value={bill}
           onChange={(e) => setBill(e.target.value)}
           placeholder="e.g. I was charged $4,200 for an emergency room visit for a sprained ankle. The doctor spent 10 minutes with me."
-          style={{ width: "100%", height: 110, padding: 14, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, fontSize: 14, color: "#f1f5f9", resize: "vertical", fontFamily: FONT, lineHeight: 1.6, background: "rgba(255,255,255,0.04)", boxSizing: "border-box", outline: "none" }}
+          style={{ width: "100%", height: 110, padding: 14, border: "1px solid #e2e8f0", borderRadius: 10, fontSize: 14, color: "#0f172a", resize: "vertical", fontFamily: FONT, lineHeight: 1.6, background: "#f8fafc", boxSizing: "border-box", outline: "none" }}
         />
         <div style={{ marginTop: 12 }}>
-          <label style={{ fontSize: 11, fontWeight: 700, color: "#64748b", display: "block", marginBottom: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", display: "block", marginBottom: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Amount being disputed (optional)
           </label>
           <input
@@ -66,17 +66,17 @@ export default function DisputeLetter() {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="385"
-            style={{ width: "100%", padding: "12px 14px", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, fontSize: 14, color: "#f1f5f9", fontFamily: FONT, background: "rgba(255,255,255,0.04)", outline: "none", boxSizing: "border-box" }}
+            style={{ width: "100%", padding: "12px 14px", border: "1px solid #e2e8f0", borderRadius: 10, fontSize: 14, color: "#0f172a", fontFamily: FONT, background: "#f8fafc", outline: "none", boxSizing: "border-box" }}
           />
         </div>
         <button
           onClick={generate}
           disabled={loading || !bill.trim()}
-          style={{ width: "100%", marginTop: 16, padding: "15px", background: loading || !bill.trim() ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #10b981, #059669)", color: loading || !bill.trim() ? "#334155" : "#fff", border: loading || !bill.trim() ? "1px solid rgba(255,255,255,0.06)" : "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading || !bill.trim() ? "default" : "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: FONT, boxShadow: loading || !bill.trim() ? "none" : "0 8px 25px rgba(16,185,129,0.3)" }}
+          style={{ width: "100%", marginTop: 16, padding: "15px", background: loading || !bill.trim() ? "#f1f5f9" : "linear-gradient(135deg, #10b981, #059669)", color: loading || !bill.trim() ? "#94a3b8" : "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading || !bill.trim() ? "default" : "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: FONT, boxShadow: loading || !bill.trim() ? "none" : "0 4px 16px rgba(16,185,129,0.3)" }}
         >
           {loading ? (
             <>
-              <span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.2)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />
+              <span style={{ width: 16, height: 16, border: "2px solid #e2e8f0", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />
               Writing your letter...
             </>
           ) : "✉️ Generate Dispute Letter"}
@@ -84,23 +84,23 @@ export default function DisputeLetter() {
       </div>
 
       {error && (
-        <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 12, padding: 16, color: "#f87171", fontSize: 14, marginBottom: 16 }}>
+        <div style={{ background: "#fff5f5", border: "1px solid #fecaca", borderRadius: 12, padding: 16, color: "#ef4444", fontSize: 14, marginBottom: 16 }}>
           {error}
         </div>
       )}
 
       {result && (
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 16, padding: 24 }}>
+        <div style={{ background: "#ffffff", border: "1px solid #bbf7d0", borderRadius: 16, padding: 24, boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.1em" }}>YOUR DISPUTE LETTER</div>
             <button
               onClick={copy}
-              style={{ padding: "6px 16px", background: copied ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.06)", border: `1px solid ${copied ? "rgba(16,185,129,0.4)" : "rgba(255,255,255,0.1)"}`, color: copied ? "#10b981" : "#94a3b8", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}
+              style={{ padding: "6px 16px", background: copied ? "#f0fdf4" : "#f8fafc", border: `1px solid ${copied ? "#10b981" : "#e2e8f0"}`, color: copied ? "#059669" : "#64748b", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}
             >
               {copied ? "✓ Copied!" : "Copy Letter"}
             </button>
           </div>
-          <div style={{ fontSize: 14, color: "#cbd5e1", lineHeight: 1.9, whiteSpace: "pre-line", fontFamily: "monospace" }}>
+          <div style={{ fontSize: 14, color: "#374151", lineHeight: 1.9, whiteSpace: "pre-line", fontFamily: "monospace", background: "#f8fafc", padding: 16, borderRadius: 10, border: "1px solid #e2e8f0" }}>
             {result}
           </div>
         </div>

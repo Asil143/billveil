@@ -61,11 +61,11 @@ export default function PhoneLogin({ onClose, onSuccess }) {
 
   const inputStyle = {
     padding: "13px 14px",
-    background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.12)",
+    background: "#f8fafc",
+    border: "1px solid #e2e8f0",
     borderRadius: 10,
     fontSize: 15,
-    color: "#f1f5f9",
+    color: "#0f172a",
     fontFamily: FONT,
     outline: "none",
     boxSizing: "border-box",
@@ -74,31 +74,31 @@ export default function PhoneLogin({ onClose, onSuccess }) {
   const btnStyle = (disabled) => ({
     width: "100%",
     padding: "14px",
-    background: disabled ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #10b981, #059669)",
-    color: disabled ? "#475569" : "#fff",
+    background: disabled ? "#f1f5f9" : "linear-gradient(135deg, #10b981, #059669)",
+    color: disabled ? "#94a3b8" : "#fff",
     border: "none",
     borderRadius: 12,
     fontSize: 15,
     fontWeight: 700,
     cursor: disabled ? "default" : "pointer",
     fontFamily: FONT,
-    boxShadow: disabled ? "none" : "0 8px 25px rgba(16,185,129,0.3)",
+    boxShadow: disabled ? "none" : "0 4px 16px rgba(16,185,129,0.3)",
     transition: "all 0.2s",
   });
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, fontFamily: FONT }}>
-      <div style={{ background: "#0f172a", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: "36px 32px", width: "100%", maxWidth: 400, position: "relative" }}>
-        <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", color: "#475569", fontSize: 22, cursor: "pointer", lineHeight: 1, padding: "0 4px" }}>×</button>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.6)", backdropFilter: "blur(8px)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, fontFamily: FONT }}>
+      <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 20, padding: "36px 32px", width: "100%", maxWidth: 400, position: "relative", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
+        <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "#f8fafc", border: "1px solid #e2e8f0", color: "#64748b", fontSize: 18, cursor: "pointer", lineHeight: 1, padding: "4px 9px", borderRadius: 8 }}>×</button>
 
-        <div style={{ width: 48, height: 48, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 20, boxShadow: "0 0 24px rgba(16,185,129,0.3)" }}>🛡️</div>
+        <div style={{ width: 48, height: 48, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 20, boxShadow: "0 4px 16px rgba(16,185,129,0.3)" }}>🛡️</div>
 
         {step === "phone" ? (
           <>
-            <div style={{ fontSize: 20, fontWeight: 800, color: "#f1f5f9", marginBottom: 6 }}>Create your free account</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", marginBottom: 6 }}>Create your free account</div>
             <div style={{ fontSize: 14, color: "#64748b", lineHeight: 1.6, marginBottom: 28 }}>Sign up with your phone number. No passwords, no credit card — ever.</div>
 
-            <label style={{ fontSize: 11, fontWeight: 700, color: "#64748b", display: "block", marginBottom: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>Phone Number</label>
+            <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", display: "block", marginBottom: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>Phone Number</label>
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <input
                 value={countryCode}
@@ -116,22 +116,22 @@ export default function PhoneLogin({ onClose, onSuccess }) {
               />
             </div>
 
-            {error && <div style={{ color: "#f87171", fontSize: 13, marginBottom: 14 }}>{error}</div>}
+            {error && <div style={{ color: "#ef4444", fontSize: 13, marginBottom: 14, background: "#fff5f5", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 12px" }}>{error}</div>}
 
             <button onClick={sendOtp} disabled={loading} style={btnStyle(loading)}>
               {loading ? "Sending..." : "Send Code →"}
             </button>
 
-            <div style={{ textAlign: "center", fontSize: 12, color: "#334155", marginTop: 14 }}>
+            <div style={{ textAlign: "center", fontSize: 12, color: "#94a3b8", marginTop: 14 }}>
               One-time code via SMS. No spam.
             </div>
           </>
         ) : (
           <>
-            <div style={{ fontSize: 20, fontWeight: 800, color: "#f1f5f9", marginBottom: 6 }}>Enter your code</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", marginBottom: 6 }}>Enter your code</div>
             <div style={{ fontSize: 14, color: "#64748b", marginBottom: 28 }}>Sent to {countryCode} {phone}</div>
 
-            <label style={{ fontSize: 11, fontWeight: 700, color: "#64748b", display: "block", marginBottom: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>6-Digit Code</label>
+            <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", display: "block", marginBottom: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>6-Digit Code</label>
             <input
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
@@ -143,13 +143,13 @@ export default function PhoneLogin({ onClose, onSuccess }) {
               autoFocus
             />
 
-            {error && <div style={{ color: "#f87171", fontSize: 13, marginBottom: 14 }}>{error}</div>}
+            {error && <div style={{ color: "#ef4444", fontSize: 13, marginBottom: 14, background: "#fff5f5", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 12px" }}>{error}</div>}
 
             <button onClick={verifyOtp} disabled={loading || otp.length < 6} style={btnStyle(loading || otp.length < 6)}>
               {loading ? "Verifying..." : "Verify & Continue →"}
             </button>
 
-            <button onClick={() => { setStep("phone"); setOtp(""); setError(""); }} style={{ width: "100%", marginTop: 10, padding: "10px", background: "none", border: "none", color: "#475569", fontSize: 13, cursor: "pointer", fontFamily: FONT }}>
+            <button onClick={() => { setStep("phone"); setOtp(""); setError(""); }} style={{ width: "100%", marginTop: 10, padding: "10px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer", fontFamily: FONT }}>
               ← Change number
             </button>
           </>
