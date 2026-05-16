@@ -1,7 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import { sendSignInLinkToEmail } from "firebase/auth";
 import { auth } from "./firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "./firebase";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -109,10 +111,29 @@ export default function Profile() {
   const [suggestions, setSuggestions] = useState([]);
   const [verifyStatus, setVerifyStatus] = useState(null);
   const debounceRef = useRef(null);
+  const pollRef = useRef(null);
 
   const form = { ...EMPTY, ...(profileData || {}) };
   const hasAnyData = Object.entries(form).some(([k, v]) => k !== "hasHSA" ? String(v).trim() !== "" : v);
   const isEmailVerified = emailVerified && !!form.email;
+
+  // Poll Firestore every 4s after sending verification link
+  const startPolling = (email) => {
+    clearInterval(pollRef.current);
+    pollRef.current = setInterval(async () => {
+      try {
+        const key = email.toLowerCase().replace(/\./g, "_dot_").replace(/@/g, "_at_");
+        const snap = await getDoc(doc(db, "email_verifications", key));
+        if (snap.exists() && snap.data().verified) {
+          clearInterval(pollRef.current);
+          setVerifyStatus("confirmed");
+          window.location.reload(); // reload to pick up fresh auth state
+        }
+      } catch {}
+    }, 4000);
+  };
+
+  useEffect(() => () => clearInterval(pollRef.current), []);
 
   const set = (field) => (e) => setDraft((d) => ({ ...d, [field]: e.target.value }));
 
@@ -180,6 +201,7 @@ export default function Profile() {
       });
       localStorage.setItem("bv_pending_email", form.email);
       setVerifyStatus("sent");
+      startPolling(form.email);
     } catch (err) {
       console.error("Email verify:", err.code, err.message);
       setVerifyStatus("error");
@@ -319,8 +341,10 @@ export default function Profile() {
                   <span style={{ fontSize: 14, color: "#f1f5f9" }}>{form.email}</span>
                   {isEmailVerified ? (
                     <VerifiedBadge />
+                  ) : verifyStatus === "confirmed" ? (
+                    <span style={{ fontSize: 11, color: "#10b981", fontWeight: 600 }}>✓ Verified! Refreshing…</span>
                   ) : verifyStatus === "sent" ? (
-                    <span style={{ fontSize: 11, color: "#10b981", fontWeight: 600 }}>✓ Link sent — check inbox &amp; spam</span>
+                    <span style={{ fontSize: 11, color: "#64748b", fontWeight: 600 }}>Link sent — waiting for you to click it…</span>
                   ) : verifyStatus === "error" ? (
                     <button onClick={sendVerification} style={{ fontSize: 11, fontWeight: 700, color: "#f87171", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 8, padding: "3px 10px", cursor: "pointer", fontFamily: FONT }}>
                       Failed — retry →

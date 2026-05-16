@@ -73,18 +73,23 @@ export function AuthProvider({ children }) {
           await linkWithCredential(auth.currentUser, cred);
           await auth.currentUser.reload();
         } else {
-          // Different device: sign in with email link just to consume the OTP
+          // Different device: sign in with email link to get an authenticated session
           await signInWithEmailLink(auth, email, pendingEmailLink);
-          await signOut(auth); // sign back out — phone auth is the primary method
+          // NOTE: write to Firestore BEFORE signing out — we need auth for the write
         }
 
-        // Write verified status to Firestore under the email key
+        // Write verified status while authenticated (phone-linked or email-link user)
         await setDoc(doc(db, "email_verifications", emailKey(email)), {
           verified: true,
           email,
           ownerUid,
           verifiedAt: serverTimestamp(),
         });
+
+        // Now sign out the temporary email-link session if needed
+        if (!auth.currentUser?.phoneNumber) {
+          await signOut(auth);
+        }
 
         localStorage.removeItem("bv_pending_email");
         setEmailVerified(true);
