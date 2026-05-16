@@ -344,7 +344,7 @@ export default function App() {
                     BillVeil is free forever. If we saved you money, a small tip keeps us running for the next person who needs us.
                   </div>
                   <a
-                    href="https://buy.stripe.com/test_00w00l79g8hO6kq0AjfMA00"
+                    href="https://buy.stripe.com/7sY3cxalf2f769Pf71bfO00"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setTip(true)}
