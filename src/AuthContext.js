@@ -197,6 +197,14 @@ export function AuthProvider({ children }) {
     if (!user?.uid) return;
     localStorage.setItem(`bv_profile_${user.uid}`, JSON.stringify(data));
     setProfileData(data);
+
+    // Reset verification if the email was changed to something not already linked
+    const linkedEmail = auth.currentUser?.providerData
+      ?.find(p => p.providerId === "password")?.email?.toLowerCase();
+    const newEmail = data.email?.trim()?.toLowerCase();
+    if (newEmail && newEmail !== linkedEmail) {
+      setEmailVerified(false);
+    }
   };
 
   const consumeCredit = () => {
