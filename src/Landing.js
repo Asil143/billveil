@@ -22,8 +22,6 @@ const CSS = `
   }
 
   @media (max-width: 640px) {
-    .land-nav { grid-template-columns: 1fr 1fr !important; }
-    .land-nav-center { display: none !important; }
     .land-hero { padding: 60px 16px 50px !important; }
     .land-hero-p { font-size: 15px !important; }
     .land-4col { grid-template-columns: repeat(2, 1fr) !important; }
@@ -34,7 +32,7 @@ const CSS = `
   }
 `;
 
-export default function Landing({ onStart }) {
+export default function Landing({ onStart, onAbout }) {
   return (
     <div style={{ minHeight: "100vh", background: "#060912", fontFamily: FONT, color: "#f8fafc", overflowX: "hidden" }}>
       <style>{CSS}</style>
@@ -44,7 +42,7 @@ export default function Landing({ onStart }) {
       <div style={{ position: "fixed", bottom: 0, right: 0, width: 600, height: 400, background: "radial-gradient(ellipse at bottom right, rgba(99,102,241,0.07) 0%, transparent 65%)", pointerEvents: "none", zIndex: 0 }} />
 
       {/* Nav */}
-      <nav className="land-nav" style={{ position: "relative", zIndex: 10, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
+      <nav style={{ position: "relative", zIndex: 10, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 30, height: 30, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, boxShadow: "0 0 16px rgba(16,185,129,0.4)" }}>
@@ -55,31 +53,15 @@ export default function Landing({ onStart }) {
           </div>
         </div>
 
-        {/* Centered nav links */}
-        <div className="land-nav-center" style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {[
-            { tab: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
-            { tab: "dispute", emoji: "✉️", label: "Dispute Letter" },
-            { tab: "drug", emoji: "💊", label: "Drug Prices" },
-            { tab: "denial", emoji: "⚔️", label: "Denial Fighter" },
-          ].map(({ tab, emoji, label }) => (
-            <button
-              key={tab}
-              onClick={() => onStart(tab)}
-              className="nav-cta"
-              style={{ padding: "6px 14px", background: "transparent", border: "1px solid transparent", borderRadius: 8, color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s", whiteSpace: "nowrap" }}
-            >
-              {emoji} {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Right */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "flex-end" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
-            <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%" }} />
-            Free forever
-          </div>
+        {/* Right: About + Get Started */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            className="nav-cta"
+            onClick={onAbout}
+            style={{ padding: "6px 14px", background: "transparent", border: "1px solid transparent", borderRadius: 8, color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}
+          >
+            About
+          </button>
           <button
             className="nav-cta"
             onClick={() => onStart("analyzer")}

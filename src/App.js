@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import Landing from "./Landing";
+import About from "./About";
 import DisputeLetter from "./DisputeLetter";
 import DrugComparator from "./DrugComparator";
 import DenialFighter from "./DenialFighter";
@@ -70,7 +71,10 @@ export default function App() {
   const [tip, setTip] = useState(false);
   const [focused, setFocused] = useState(false);
 
-  if (view === "landing") return <Landing onStart={(t) => { setTab(t || "analyzer"); setView("app"); }} />;
+  const goToApp = (t) => { setTab(t || "analyzer"); setView("app"); };
+
+  if (view === "landing") return <Landing onStart={goToApp} onAbout={() => setView("about")} />;
+  if (view === "about") return <About onBack={() => setView("landing")} onStart={goToApp} />;
 
   const TABS = [
     { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
@@ -170,9 +174,12 @@ export default function App() {
               BillVeil
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
-            <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
-            Free forever
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <button onClick={() => setView("about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
+              <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
+              Free forever
+            </div>
           </div>
         </div>
         {/* Tabs row — scrolls horizontally if needed */}
