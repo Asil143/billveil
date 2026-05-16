@@ -56,11 +56,6 @@ const CSS = `
   ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
 
   @media (max-width: 640px) {
-    .app-header { grid-template-columns: 1fr 1fr !important; height: auto !important; padding: 10px 16px !important; }
-    .app-nav-center { grid-column: 1 / -1 !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding: 4px 0 6px; justify-content: flex-start !important; }
-    .app-nav-center::-webkit-scrollbar { display: none; }
-    .app-hero-p { font-size: 15px !important; }
-    .app-stats > div { padding: 8px 12px !important; border-right: none !important; }
     .how-grid { grid-template-columns: 1fr !important; }
   }
 `;
@@ -163,29 +158,33 @@ export default function App() {
       {/* Background glow */}
       <div style={{ position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: 800, height: 400, background: "radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
 
-      {/* Header with centered nav */}
-      <div className="app-header" style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
-
-        {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 30, height: 30, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, boxShadow: "0 0 16px rgba(16,185,129,0.4)" }}>
-            🛡️
+      {/* Header */}
+      <div style={{ position: "sticky", top: 0, zIndex: 10, backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.95)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+        {/* Logo row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 20px 6px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 28, height: 28, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: "0 0 16px rgba(16,185,129,0.4)" }}>
+              🛡️
+            </div>
+            <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(135deg, #fff 30%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              BillVeil
+            </div>
           </div>
-          <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(135deg, #fff 30%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            BillVeil
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
+            <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
+            Free forever
           </div>
         </div>
-
-        {/* Centered nav links */}
-        <div className="app-nav-center" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        {/* Tabs row — scrolls horizontally if needed */}
+        <div style={{ display: "flex", gap: 4, padding: "0 12px 10px", overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
               style={{
-                padding: "6px 14px",
-                background: tab === t.id ? "rgba(16,185,129,0.12)" : "transparent",
-                border: `1px solid ${tab === t.id ? "rgba(16,185,129,0.3)" : "transparent"}`,
+                padding: "7px 14px",
+                background: tab === t.id ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.04)",
+                border: `1px solid ${tab === t.id ? "rgba(16,185,129,0.4)" : "rgba(255,255,255,0.08)"}`,
                 borderRadius: 8,
                 color: tab === t.id ? "#10b981" : "#64748b",
                 fontSize: 13,
@@ -194,21 +193,16 @@ export default function App() {
                 fontFamily: FONT,
                 transition: "all 0.2s",
                 whiteSpace: "nowrap",
+                flexShrink: 0,
               }}
             >
               {t.emoji} {t.label}
             </button>
           ))}
         </div>
-
-        {/* Right badge */}
-        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600, justifyContent: "flex-end" }}>
-          <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
-          Free forever
-        </div>
       </div>
 
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 700, margin: "0 auto", padding: "36px 20px 40px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 700, margin: "0 auto", padding: "24px 16px 40px" }}>
 
         {/* Non-analyzer tabs */}
         {tab === "dispute" && <DisputeLetter />}
@@ -219,40 +213,31 @@ export default function App() {
         {tab === "analyzer" && <>
 
         {/* Hero */}
-        <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <h1 style={{ fontSize: "clamp(22px, 6vw, 36px)", fontWeight: 900, lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 12 }}>
-            <span style={{ background: "linear-gradient(135deg, #f8fafc 0%, #f8fafc 50%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Is your medical
-            </span>
-            {" "}
-            <span style={{ background: "linear-gradient(135deg, #10b981 0%, #34d399 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              bill fair?
-            </span>
+        <div style={{ textAlign: "center", marginBottom: "clamp(16px, 4vw, 32px)" }}>
+          <h1 style={{ fontSize: "clamp(22px, 6vw, 36px)", fontWeight: 900, lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 10, color: "#f1f5f9" }}>
+            Is your medical{" "}
+            <span style={{ color: "#10b981" }}>bill fair?</span>
           </h1>
-
-          <p className="app-hero-p" style={{ fontSize: 18, color: "#64748b", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 36px" }}>
-            Americans overpay <strong style={{ color: "#94a3b8" }}>$935 billion</strong> every year on medical bills. We give you the weapon to fight back.
+          <p style={{ fontSize: "clamp(14px, 4vw, 17px)", color: "#64748b", lineHeight: 1.6, maxWidth: 480, margin: "0 auto clamp(16px, 4vw, 28px)" }}>
+            Americans overpay <strong style={{ color: "#94a3b8" }}>$935 billion</strong> yearly. Paste your bill and we'll tell you in seconds.
           </p>
-
           {/* Stats */}
-          <div className="app-stats" style={{ display: "flex", justifyContent: "center", gap: 0, marginBottom: 0 }}>
+          <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 0 }}>
             {[
               { stat: "$935B", label: "Overpaid yearly" },
               { stat: "80%", label: "Bills have errors" },
               { stat: "10x", label: "Hospital markups" },
             ].map(({ stat, label }, i) => (
-              <div key={stat} style={{ padding: "16px 32px", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.06)" : "none", textAlign: "center" }}>
-                <div style={{ fontSize: 26, fontWeight: 900, background: "linear-gradient(135deg, #10b981, #34d399)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: "-0.02em" }}>
-                  {stat}
-                </div>
-                <div style={{ fontSize: 11, color: "#475569", marginTop: 3, fontWeight: 500 }}>{label}</div>
+              <div key={stat} style={{ padding: "10px clamp(12px, 4vw, 28px)", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.08)" : "none", textAlign: "center" }}>
+                <div style={{ fontSize: "clamp(18px, 5vw, 26px)", fontWeight: 900, color: "#10b981", letterSpacing: "-0.02em" }}>{stat}</div>
+                <div style={{ fontSize: 11, color: "#475569", marginTop: 2, fontWeight: 500 }}>{label}</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Input card */}
-        <div style={{ background: "rgba(255,255,255,0.03)", border: focused ? "1px solid rgba(16,185,129,0.5)" : "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 28, marginBottom: 20, backdropFilter: "blur(20px)", boxShadow: focused ? "0 0 0 4px rgba(16,185,129,0.08), 0 20px 60px rgba(0,0,0,0.4)" : "0 20px 60px rgba(0,0,0,0.3)", transition: "all 0.25s" }}>
+        <div style={{ background: "rgba(255,255,255,0.06)", border: focused ? "1px solid rgba(16,185,129,0.5)" : "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: "20px 20px 20px", marginBottom: 20, backdropFilter: "blur(20px)", boxShadow: focused ? "0 0 0 4px rgba(16,185,129,0.08)" : "none", transition: "all 0.25s" }}>
           <label style={{ fontSize: 12, fontWeight: 700, color: "#94a3b8", display: "block", marginBottom: 12, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Paste your bill, charge, or CPT code
           </label>
@@ -262,19 +247,19 @@ export default function App() {
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             placeholder="e.g. CPT 99214 — $385, or paste your full bill here..."
-            style={{ width: "100%", height: 110, padding: 16, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, fontSize: 15, color: "#f1f5f9", resize: "vertical", fontFamily: FONT, lineHeight: 1.6, background: "rgba(255,255,255,0.04)", boxSizing: "border-box", transition: "border 0.2s" }}
+            style={{ width: "100%", height: 110, padding: 14, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, fontSize: 15, color: "#f1f5f9", resize: "vertical", fontFamily: FONT, lineHeight: 1.6, background: "rgba(255,255,255,0.06)", boxSizing: "border-box", transition: "border 0.2s" }}
           />
 
           {/* Example chips */}
-          <div style={{ marginTop: 14, marginBottom: 20 }}>
-            <div style={{ fontSize: 10, fontWeight: 600, color: "#334155", marginBottom: 8, letterSpacing: "0.08em" }}>TRY AN EXAMPLE</div>
+          <div style={{ marginTop: 14, marginBottom: 18 }}>
+            <div style={{ fontSize: 10, fontWeight: 600, color: "#475569", marginBottom: 8, letterSpacing: "0.08em" }}>TRY AN EXAMPLE</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {EXAMPLES.map((ex) => (
                 <button
                   key={ex}
                   className={`chip${bill === ex ? " active" : ""}`}
                   onClick={() => setBill(ex)}
-                  style={{ padding: "5px 13px", background: "rgba(255,255,255,0.04)", color: "#64748b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 24, fontSize: 12, fontWeight: 500, cursor: "pointer", transition: "all 0.15s", fontFamily: FONT }}
+                  style={{ padding: "5px 13px", background: "rgba(255,255,255,0.06)", color: "#94a3b8", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 24, fontSize: 12, fontWeight: 500, cursor: "pointer", transition: "all 0.15s", fontFamily: FONT }}
                 >
                   {ex}
                 </button>
@@ -286,7 +271,7 @@ export default function App() {
             className="analyze-btn"
             onClick={analyzeBill}
             disabled={loading || !bill.trim()}
-            style={{ width: "100%", padding: "16px", background: loading || !bill.trim() ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #10b981, #059669)", color: loading || !bill.trim() ? "#334155" : "#fff", border: loading || !bill.trim() ? "1px solid rgba(255,255,255,0.06)" : "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: loading || !bill.trim() ? "default" : "pointer", transition: "all 0.25s", letterSpacing: "0.01em", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading || !bill.trim() ? "none" : "0 8px 25px rgba(16,185,129,0.35)", fontFamily: FONT }}
+            style={{ width: "100%", padding: "16px", background: loading || !bill.trim() ? "rgba(255,255,255,0.08)" : "linear-gradient(135deg, #10b981, #059669)", color: loading || !bill.trim() ? "#64748b" : "#fff", border: loading || !bill.trim() ? "1px solid rgba(255,255,255,0.12)" : "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: loading || !bill.trim() ? "default" : "pointer", transition: "all 0.25s", letterSpacing: "0.01em", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading || !bill.trim() ? "none" : "0 8px 25px rgba(16,185,129,0.35)", fontFamily: FONT }}
           >
             {loading ? (
               <>
@@ -309,7 +294,7 @@ export default function App() {
         {/* How it works */}
         {!result && !loading && (
           <div style={{ marginTop: 48 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.12em", textAlign: "center", marginBottom: 24 }}>HOW IT WORKS</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", letterSpacing: "0.12em", textAlign: "center", marginBottom: 24 }}>HOW IT WORKS</div>
             <div className="how-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
               {[
                 { step: "01", title: "Paste your bill", desc: "Any charge, CPT code, or full bill. No formatting needed." },
