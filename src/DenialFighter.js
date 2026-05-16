@@ -72,7 +72,7 @@ export default function DenialFighter() {
 
   const copyAppeal = () => {
     if (!result) return;
-    const match = result.match(/APPEAL LETTER:\n([\s\S]*?)(?=\n[A-Z ]+:|$)/);
+    const match = result.match(/(?:#{1,3}\s*)?APPEAL LETTER:\n([\s\S]*?)(?=\n(?:#{1,3}\s*)?[A-Z][A-Z ]+:|$)/);
     const letter = match ? match[1].trim() : result;
     navigator.clipboard.writeText(letter);
     setCopied(true);
@@ -91,17 +91,18 @@ export default function DenialFighter() {
     const sections = [
       { key: "WHY THEY DENIED IT", emoji: "🚫", color: "#f87171", label: "Why They Denied It" },
       { key: "IS THIS DENIAL VALID", emoji: "⚖️", color: "#fbbf24", label: "Is This Denial Valid" },
-      { key: "YOUR RIGHTS", emoji: "📜", color: "#a78bfa", label: "Your Rights" },
+      { key: "YOUR LEGAL RIGHTS", emoji: "📜", color: "#a78bfa", label: "Your Legal Rights" },
       { key: "APPEAL LETTER", emoji: "✉️", color: "#10b981", label: "Appeal Letter" },
       { key: "WHAT TO DO NEXT", emoji: "✅", color: "#34d399", label: "What To Do Next" },
       { key: "CHANCE OF SUCCESS", emoji: "📊", color: "#60a5fa", label: "Chance of Success" },
     ];
 
     return sections.map((section, i) => {
-      const regex = new RegExp(`${section.key}:\\n([\\s\\S]*?)(?=\\n[A-Z ]+:|$)`);
+      const regex = new RegExp(`(?:#{1,3}\\s*)?${section.key}:\\n([\\s\\S]*?)(?=\\n(?:#{1,3}\\s*)?[A-Z][A-Z ]+:|$)`);
       const match = text.match(regex);
-      const content = match ? match[1].trim() : null;
-      if (!content) return null;
+      const raw = match ? match[1].trim() : null;
+      if (!raw) return null;
+      const content = raw.replace(/^#{1,3}\s*/gm, "").replace(/\*\*/g, "").trim();
 
       const isVerdict = section.key === "IS THIS DENIAL VALID";
       const isLetter = section.key === "APPEAL LETTER";

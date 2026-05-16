@@ -39,10 +39,11 @@ export default function DrugComparator() {
     ];
 
     return sections.map((section, i) => {
-      const regex = new RegExp(`${section.key}:\\n([\\s\\S]*?)(?=\\n[A-Z ]+:|$)`);
+      const regex = new RegExp(`(?:#{1,3}\\s*)?${section.key}:\\n([\\s\\S]*?)(?=\\n(?:#{1,3}\\s*)?[A-Z][A-Z ]+:|$)`);
       const match = text.match(regex);
-      const content = match ? match[1].trim() : null;
-      if (!content) return null;
+      const raw = match ? match[1].trim() : null;
+      if (!raw) return null;
+      const content = raw.replace(/^#{1,3}\s*/gm, "").replace(/\*\*/g, "").trim();
 
       const isVerdict = section.key === "VERDICT";
       const verdictColor = content.includes("SIGNIFICANTLY OVERCHARGED") ? "#f87171"
