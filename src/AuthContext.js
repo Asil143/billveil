@@ -108,9 +108,14 @@ export function AuthProvider({ children }) {
       try {
         if (u?.phoneNumber) {
           // Same device as the logged-in phone user — link the credential
-          const cred = EmailAuthProvider.credentialWithLink(email, pendingEmailLink);
-          await withTimeout(linkWithCredential(u, cred), 15000);
-          await u.reload();
+          try {
+            const cred = EmailAuthProvider.credentialWithLink(email, pendingEmailLink);
+            await withTimeout(linkWithCredential(u, cred), 15000);
+            await u.reload();
+          } catch (linkErr) {
+            // Already linked from a previous attempt — still write Firestore record
+            if (linkErr.code !== "auth/provider-already-linked") throw linkErr;
+          }
         } else {
           // Different device — sign in temporarily to get write access
           await withTimeout(signInWithEmailLink(auth, email, pendingEmailLink), 15000);
