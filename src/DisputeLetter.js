@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useAuth } from "./AuthContext";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -11,8 +12,11 @@ export default function DisputeLetter() {
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
 
+  const { useCredit } = useAuth();
+
   const generate = async () => {
     if (!bill.trim()) return;
+    if (!useCredit()) return;
     setLoading(true);
     setResult(null);
     setError(null);

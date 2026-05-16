@@ -5,6 +5,7 @@ import About from "./About";
 import DisputeLetter from "./DisputeLetter";
 import DrugComparator from "./DrugComparator";
 import DenialFighter from "./DenialFighter";
+import { AuthProvider, useAuth } from "./AuthContext";
 
 const EXAMPLES = [
   "CPT 99214 — $385",
@@ -62,6 +63,15 @@ const CSS = `
 `;
 
 export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
+
+function AppContent() {
+  const { user, usesLeft, useCredit, logout, showLoginModal } = useAuth();
   const [view, setView] = useState("landing");
   const [tab, setTab] = useState("analyzer");
   const [bill, setBill] = useState("");
@@ -85,6 +95,7 @@ export default function App() {
 
   const analyzeBill = async () => {
     if (!bill.trim()) return;
+    if (!useCredit()) return;
     setLoading(true);
     setResult(null);
     setError(null);
@@ -176,12 +187,27 @@ export default function App() {
               BillVeil
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <button onClick={() => setView("about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
-              <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
-              Free forever
-            </div>
+            {user ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ fontSize: 12, color: "#10b981", fontWeight: 600 }}>
+                  📱 ···{user.phoneNumber?.slice(-4)}
+                </div>
+                <button onClick={logout} style={{ background: "none", border: "1px solid rgba(255,255,255,0.1)", color: "#475569", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: FONT, borderRadius: 6, padding: "3px 8px" }}>
+                  Sign out
+                </button>
+              </div>
+            ) : usesLeft > 0 ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
+                <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
+                {usesLeft} free {usesLeft === 1 ? "analysis" : "analyses"} left
+              </div>
+            ) : (
+              <button onClick={showLoginModal} style={{ background: "linear-gradient(135deg, #10b981, #059669)", border: "none", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: FONT, borderRadius: 8, padding: "6px 14px", boxShadow: "0 4px 12px rgba(16,185,129,0.3)" }}>
+                Sign in free →
+              </button>
+            )}
           </div>
         </div>
         {/* Tabs row — scrolls horizontally if needed */}

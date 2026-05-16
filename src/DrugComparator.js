@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useAuth } from "./AuthContext";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -12,8 +13,11 @@ export default function DrugComparator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const { useCredit } = useAuth();
+
   const analyze = async () => {
     if (!drug.trim()) return;
+    if (!useCredit()) return;
     setLoading(true);
     setResult(null);
     setError(null);

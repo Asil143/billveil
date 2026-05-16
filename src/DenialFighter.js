@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useAuth } from "./AuthContext";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -41,8 +42,11 @@ export default function DenialFighter() {
   const [externalCopied, setExternalCopied] = useState(false);
   const [actionsDone, setActionsDone] = useState({});
 
+  const { useCredit } = useAuth();
+
   const analyze = async () => {
     if (!denial.trim()) return;
+    if (!useCredit()) return;
     setLoading(true);
     setResult(null);
     setError(null);
