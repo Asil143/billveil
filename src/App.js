@@ -56,11 +56,10 @@ const CSS = `
   ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
 
   @media (max-width: 640px) {
-    .app-header { flex-wrap: wrap !important; height: auto !important; padding: 12px 16px 8px !important; row-gap: 6px; }
-    .app-nav-center { position: static !important; transform: none !important; order: 3; width: 100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding-bottom: 4px; justify-content: flex-start !important; flex-shrink: 0; }
+    .app-header { grid-template-columns: 1fr 1fr !important; height: auto !important; padding: 10px 16px !important; }
+    .app-nav-center { grid-column: 1 / -1 !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; padding: 4px 0 6px; justify-content: flex-start !important; }
     .app-nav-center::-webkit-scrollbar { display: none; }
-    .app-hero-h1 { font-size: 24px !important; letter-spacing: -0.02em !important; }
-    .app-hero-p { font-size: 15px !important; margin-bottom: 20px !important; }
+    .app-hero-p { font-size: 15px !important; }
     .app-stats > div { padding: 8px 12px !important; border-right: none !important; }
     .how-grid { grid-template-columns: 1fr !important; }
   }
@@ -165,10 +164,10 @@ export default function App() {
       <div style={{ position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: 800, height: 400, background: "radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
 
       {/* Header with centered nav */}
-      <div className="app-header" style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
+      <div className="app-header" style={{ position: "relative", zIndex: 1, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
 
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 30, height: 30, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, boxShadow: "0 0 16px rgba(16,185,129,0.4)" }}>
             🛡️
           </div>
@@ -178,7 +177,7 @@ export default function App() {
         </div>
 
         {/* Centered nav links */}
-        <div className="app-nav-center" style={{ display: "flex", alignItems: "center", gap: 4, position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+        <div className="app-nav-center" style={{ display: "flex", alignItems: "center", gap: 4 }}>
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -203,7 +202,7 @@ export default function App() {
         </div>
 
         {/* Right badge */}
-        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600, justifyContent: "flex-end" }}>
           <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", display: "inline-block", animation: "glow 2s ease-in-out infinite" }} />
           Free forever
         </div>
@@ -221,7 +220,7 @@ export default function App() {
 
         {/* Hero */}
         <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <h1 className="app-hero-h1" style={{ fontSize: 36, fontWeight: 900, lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 12 }}>
+          <h1 style={{ fontSize: "clamp(22px, 6vw, 36px)", fontWeight: 900, lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 12 }}>
             <span style={{ background: "linear-gradient(135deg, #f8fafc 0%, #f8fafc 50%, #10b981 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Is your medical
             </span>

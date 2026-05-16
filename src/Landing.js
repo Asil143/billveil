@@ -22,9 +22,9 @@ const CSS = `
   }
 
   @media (max-width: 640px) {
+    .land-nav { grid-template-columns: 1fr 1fr !important; }
     .land-nav-center { display: none !important; }
-    .land-hero { padding: 60px 20px 50px !important; }
-    .land-hero-h1 { font-size: 34px !important; line-height: 1.1 !important; letter-spacing: -0.02em !important; }
+    .land-hero { padding: 60px 16px 50px !important; }
     .land-hero-p { font-size: 15px !important; }
     .land-4col { grid-template-columns: repeat(2, 1fr) !important; }
     .land-4col > div { border-right: none !important; }
@@ -44,9 +44,9 @@ export default function Landing({ onStart }) {
       <div style={{ position: "fixed", bottom: 0, right: 0, width: 600, height: 400, background: "radial-gradient(ellipse at bottom right, rgba(99,102,241,0.07) 0%, transparent 65%)", pointerEvents: "none", zIndex: 0 }} />
 
       {/* Nav */}
-      <nav style={{ position: "relative", zIndex: 10, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
+      <nav className="land-nav" style={{ position: "relative", zIndex: 10, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", backdropFilter: "blur(20px)", background: "rgba(6,9,18,0.9)", height: 60 }}>
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 30, height: 30, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, boxShadow: "0 0 16px rgba(16,185,129,0.4)" }}>
             🛡️
           </div>
@@ -56,7 +56,7 @@ export default function Landing({ onStart }) {
         </div>
 
         {/* Centered nav links */}
-        <div className="land-nav-center" style={{ display: "flex", alignItems: "center", gap: 4, position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+        <div className="land-nav-center" style={{ display: "flex", alignItems: "center", gap: 4 }}>
           {[
             { tab: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
             { tab: "dispute", emoji: "✉️", label: "Dispute Letter" },
@@ -75,7 +75,7 @@ export default function Landing({ onStart }) {
         </div>
 
         {/* Right */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "flex-end" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600 }}>
             <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%" }} />
             Free forever
@@ -97,7 +97,7 @@ export default function Landing({ onStart }) {
           AI-POWERED · FREE · NO SIGNUP REQUIRED
         </div>
 
-        <h1 className="land-hero-h1" style={{ fontSize: 62, fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.04em", marginBottom: 28, animation: "fadeUp 0.6s 0.1s ease both" }}>
+        <h1 style={{ fontSize: "clamp(28px, 8vw, 62px)", fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.04em", marginBottom: 28, animation: "fadeUp 0.6s 0.1s ease both" }}>
           <span style={{ background: "linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             Your hospital just
           </span>
