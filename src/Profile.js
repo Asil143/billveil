@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "./AuthContext";
+import { verifyBeforeUpdateEmail } from "firebase/auth";
+import { auth } from "./firebase";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -18,46 +20,37 @@ const US_STATES = [
   "VA","WA","WV","WI","WY","DC",
 ];
 
-const EMPTY = {
-  firstName: "", middleName: "", lastName: "",
-  dob: "", gender: "", email: "",
-  street: "", city: "", state: "", zip: "",
-  insuranceProvider: "",
+const STATE_MAP = {
+  "Alabama":"AL","Alaska":"AK","Arizona":"AZ","Arkansas":"AR","California":"CA",
+  "Colorado":"CO","Connecticut":"CT","Delaware":"DE","Florida":"FL","Georgia":"GA",
+  "Hawaii":"HI","Idaho":"ID","Illinois":"IL","Indiana":"IN","Iowa":"IA",
+  "Kansas":"KS","Kentucky":"KY","Louisiana":"LA","Maine":"ME","Maryland":"MD",
+  "Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS",
+  "Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV","New Hampshire":"NH",
+  "New Jersey":"NJ","New Mexico":"NM","New York":"NY","North Carolina":"NC",
+  "North Dakota":"ND","Ohio":"OH","Oklahoma":"OK","Oregon":"OR","Pennsylvania":"PA",
+  "Rhode Island":"RI","South Carolina":"SC","South Dakota":"SD","Tennessee":"TN",
+  "Texas":"TX","Utah":"UT","Vermont":"VT","Virginia":"VA","Washington":"WA",
+  "West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY","District of Columbia":"DC",
 };
 
-const inp = (value, onChange, extra = {}) => (
-  <input
-    value={value}
-    onChange={onChange}
-    style={{
-      width: "100%", padding: "11px 14px",
-      background: "rgba(255,255,255,0.04)",
-      border: "1px solid rgba(255,255,255,0.08)",
-      borderRadius: 10, fontSize: 14, color: "#f1f5f9",
-      fontFamily: FONT, outline: "none", boxSizing: "border-box",
-    }}
-    onFocus={(e) => (e.target.style.borderColor = "rgba(16,185,129,0.5)")}
-    onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.08)")}
-    {...extra}
-  />
-);
+const EMPTY = {
+  firstName: "", middleName: "", lastName: "", dob: "", gender: "",
+  insuranceProvider: "", planName: "", memberId: "", groupNumber: "",
+  email: "",
+  street: "", city: "", state: "", zip: "",
+  primaryDoctor: "", hasHSA: false,
+};
 
-const sel = (value, onChange, options) => (
-  <select
-    value={value}
-    onChange={onChange}
-    style={{
-      width: "100%", padding: "11px 14px",
-      background: "rgba(255,255,255,0.04)",
-      border: "1px solid rgba(255,255,255,0.08)",
-      borderRadius: 10, fontSize: 14, color: "#f1f5f9",
-      fontFamily: FONT, outline: "none", boxSizing: "border-box", cursor: "pointer",
-    }}
-  >
-    <option value="">Select...</option>
-    {options.map((o) => <option key={o} value={o}>{o}</option>)}
-  </select>
-);
+const IS = {
+  width: "100%", padding: "11px 14px",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: 10, fontSize: 14, color: "#f1f5f9",
+  fontFamily: FONT, outline: "none", boxSizing: "border-box",
+};
+const onFo = (e) => (e.target.style.borderColor = "rgba(16,185,129,0.5)");
+const onBl = (e) => (e.target.style.borderColor = "rgba(255,255,255,0.08)");
 
 const Label = ({ children, optional }) => (
   <div style={{ fontSize: 11, fontWeight: 700, color: "#475569", marginBottom: 6, letterSpacing: "0.06em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
@@ -66,60 +59,138 @@ const Label = ({ children, optional }) => (
   </div>
 );
 
-const InfoVal = ({ label, value, optional, badge }) => (
+const InfoRow = ({ label, value, optional, right }) => (
   <div>
     <Label optional={optional}>{label}</Label>
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 22, flexWrap: "wrap" }}>
       <span style={{ fontSize: 14, color: value ? "#f1f5f9" : "#334155" }}>{value || "—"}</span>
-      {badge}
+      {right}
     </div>
   </div>
 );
 
 const VerifiedBadge = ({ verified }) => (
   <span style={{
-    display: "inline-flex", alignItems: "center", gap: 4,
-    padding: "2px 8px", borderRadius: 20, fontSize: 10, fontWeight: 700,
+    display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 9px",
+    borderRadius: 20, fontSize: 10, fontWeight: 700, flexShrink: 0,
     background: verified ? "rgba(16,185,129,0.1)" : "rgba(245,158,11,0.1)",
-    border: verified ? "1px solid rgba(16,185,129,0.3)" : "1px solid rgba(245,158,11,0.3)",
+    border: `1px solid ${verified ? "rgba(16,185,129,0.3)" : "rgba(245,158,11,0.3)"}`,
     color: verified ? "#10b981" : "#fbbf24",
   }}>
-    {verified ? "✓ Verified" : "Unverified"}
+    {verified ? "✓ Verified" : "○ Unverified"}
   </span>
 );
 
-const Divider = () => (
-  <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "20px 0" }} />
+const Divider = () => <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "22px 0" }} />;
+
+const SectionTitle = ({ children }) => (
+  <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>
+    {children}
+  </div>
 );
+
+const formatSuggestion = (item) => {
+  const a = item.address;
+  const street = [a.house_number, a.road].filter(Boolean).join(" ");
+  const city = a.city || a.town || a.village || a.municipality || a.county || "";
+  const state = STATE_MAP[a.state] || a.state || "";
+  const zip = a.postcode?.split("-")[0] || "";
+  return [street, city, state, zip].filter(Boolean).join(", ");
+};
 
 export default function Profile() {
   const { user, profileData, updateProfile } = useAuth();
   const [draft, setDraft] = useState(EMPTY);
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [verifyStatus, setVerifyStatus] = useState(null);
+  const debounceRef = useRef(null);
 
-  useEffect(() => {
-    if (profileData) setDraft({ ...EMPTY, ...profileData });
-  }, [profileData]);
-
-  const form = profileData ? { ...EMPTY, ...profileData } : EMPTY;
-  const hasAnyData = Object.values(form).some((v) => v.trim?.() !== "");
+  const form = { ...EMPTY, ...(profileData || {}) };
+  const hasAnyData = Object.entries(form).some(([k, v]) => k !== "hasHSA" ? String(v).trim() !== "" : v);
+  const emailVerified = !!form.email && user?.email === form.email && user?.emailVerified;
 
   const set = (field) => (e) => setDraft((d) => ({ ...d, [field]: e.target.value }));
 
-  const startEdit = () => { setDraft({ ...EMPTY, ...form }); setEditing(true); setSaved(false); };
-  const cancel = () => { setDraft({ ...EMPTY, ...form }); setEditing(false); };
+  const startEdit = () => { setDraft({ ...EMPTY, ...form }); setEditing(true); setSaved(false); setVerifyStatus(null); };
+  const cancel = () => { setEditing(false); setSuggestions([]); };
+  const save = () => { updateProfile(draft); setSaved(true); setEditing(false); setSuggestions([]); setTimeout(() => setSaved(false), 3000); };
 
-  const save = () => {
-    updateProfile(draft);
-    setSaved(true);
-    setEditing(false);
-    setTimeout(() => setSaved(false), 3000);
+  // Address autocomplete
+  const handleStreetChange = (e) => {
+    const value = e.target.value;
+    setDraft((d) => ({ ...d, street: value }));
+    setSuggestions([]);
+    clearTimeout(debounceRef.current);
+    if (value.length < 5) return;
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(value)}&format=json&addressdetails=1&limit=5&countrycodes=us`,
+          { headers: { "Accept-Language": "en" } }
+        );
+        const data = await res.json();
+        setSuggestions(data.filter((d) => d.address?.road));
+      } catch {}
+    }, 450);
   };
+
+  const pickAddress = (item) => {
+    const a = item.address;
+    setDraft((d) => ({
+      ...d,
+      street: [a.house_number, a.road].filter(Boolean).join(" "),
+      city: a.city || a.town || a.village || a.municipality || a.county || "",
+      state: STATE_MAP[a.state] || a.state || "",
+      zip: a.postcode?.split("-")[0] || "",
+    }));
+    setSuggestions([]);
+  };
+
+  // ZIP → city + state auto-fill
+  const handleZipChange = async (e) => {
+    const zip = e.target.value.replace(/\D/g, "").slice(0, 5);
+    setDraft((d) => ({ ...d, zip }));
+    if (zip.length === 5) {
+      try {
+        const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
+        if (res.ok) {
+          const data = await res.json();
+          setDraft((d) => ({
+            ...d, zip,
+            city: data.places[0]["place name"],
+            state: data.places[0]["state abbreviation"],
+          }));
+        }
+      } catch {}
+    }
+  };
+
+  // Email verification via Firebase
+  const sendVerification = async () => {
+    setVerifyStatus("sending");
+    try {
+      await verifyBeforeUpdateEmail(auth.currentUser, form.email);
+      setVerifyStatus("sent");
+    } catch {
+      setVerifyStatus("error");
+    }
+  };
+
+  const inp = (field, extra = {}) => (
+    <input value={draft[field]} onChange={set(field)} style={IS} onFocus={onFo} onBlur={onBl} {...extra} />
+  );
+
+  const sel = (field, options) => (
+    <select value={draft[field]} onChange={set(field)} style={{ ...IS, cursor: "pointer" }}>
+      <option value="">Select...</option>
+      {options.map((o) => <option key={o} value={o}>{o}</option>)}
+    </select>
+  );
 
   return (
     <div>
-      {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#f1f5f9", marginBottom: 6, letterSpacing: "-0.02em" }}>My Profile</h2>
@@ -138,103 +209,209 @@ export default function Profile() {
         </div>
       )}
 
-      {/* Single card for everything */}
       <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 18, padding: 28 }}>
 
-        {/* Account / Verification section */}
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>ACCOUNT</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <InfoVal
-            label="Phone Number"
-            value={user?.phoneNumber}
-            badge={<VerifiedBadge verified={true} />}
-          />
-          {editing ? (
-            <div>
-              <Label optional>Email</Label>
-              {inp(draft.email, set("email"), { type: "email", placeholder: "you@example.com" })}
-            </div>
-          ) : (
-            <InfoVal
-              label="Email"
-              value={form.email}
-              optional
-              badge={form.email ? <VerifiedBadge verified={false} /> : null}
-            />
-          )}
-        </div>
-
-        <Divider />
-
-        {/* Personal info */}
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>PERSONAL INFORMATION</div>
+        {/* 1 — PERSONAL INFO */}
+        <SectionTitle>PERSONAL INFORMATION</SectionTitle>
         {editing ? (
           <>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
-              <div><Label>First Name</Label>{inp(draft.firstName, set("firstName"), { placeholder: "Jane" })}</div>
-              <div><Label optional>Middle Name</Label>{inp(draft.middleName, set("middleName"), { placeholder: "Optional" })}</div>
-              <div><Label>Last Name</Label>{inp(draft.lastName, set("lastName"), { placeholder: "Doe" })}</div>
+              <div><Label>First Name</Label>{inp("firstName", { placeholder: "Jane" })}</div>
+              <div><Label optional>Middle Name</Label>{inp("middleName", { placeholder: "Optional" })}</div>
+              <div><Label>Last Name</Label>{inp("lastName", { placeholder: "Doe" })}</div>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <div><Label>Date of Birth</Label>{inp(draft.dob, set("dob"), { type: "date" })}</div>
-              <div><Label>Gender</Label>{sel(draft.gender, set("gender"), GENDERS)}</div>
+              <div><Label>Date of Birth</Label>{inp("dob", { type: "date" })}</div>
+              <div><Label>Gender</Label>{sel("gender", GENDERS)}</div>
             </div>
           </>
         ) : (
           <>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
-              <InfoVal label="First Name" value={form.firstName} />
-              <InfoVal label="Middle Name" value={form.middleName} optional />
-              <InfoVal label="Last Name" value={form.lastName} />
+              <InfoRow label="First Name" value={form.firstName} />
+              <InfoRow label="Middle Name" value={form.middleName} optional />
+              <InfoRow label="Last Name" value={form.lastName} />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <InfoVal label="Date of Birth" value={form.dob} />
-              <InfoVal label="Gender" value={form.gender} />
+              <InfoRow label="Date of Birth" value={form.dob} />
+              <InfoRow label="Gender" value={form.gender} />
             </div>
           </>
         )}
 
         <Divider />
 
-        {/* Address */}
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>ADDRESS</div>
+        {/* 2 — INSURANCE */}
+        <SectionTitle>INSURANCE</SectionTitle>
         {editing ? (
           <>
             <div style={{ marginBottom: 12 }}>
-              <Label>Street Address</Label>
-              {inp(draft.street, set("street"), { placeholder: "123 Main St" })}
+              <Label>Insurance Provider</Label>
+              {sel("insuranceProvider", INSURERS)}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 90px", gap: 12 }}>
-              <div><Label>City</Label>{inp(draft.city, set("city"), { placeholder: "El Centro" })}</div>
-              <div><Label>State</Label>{sel(draft.state, set("state"), US_STATES)}</div>
-              <div><Label>ZIP</Label>{inp(draft.zip, set("zip"), { placeholder: "92243" })}</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+              <div><Label optional>Plan Name</Label>{inp("planName", { placeholder: "e.g. PPO Gold" })}</div>
+              <div><Label optional>Member ID</Label>{inp("memberId", { placeholder: "e.g. W123456789" })}</div>
+            </div>
+            <div>
+              <Label optional>Group Number</Label>
+              {inp("groupNumber", { placeholder: "e.g. 78234" })}
             </div>
           </>
         ) : (
           <>
             <div style={{ marginBottom: 16 }}>
-              <InfoVal label="Street Address" value={form.street} />
+              <InfoRow label="Insurance Provider" value={form.insuranceProvider} />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 90px", gap: 16 }}>
-              <InfoVal label="City" value={form.city} />
-              <InfoVal label="State" value={form.state} />
-              <InfoVal label="ZIP" value={form.zip} />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+              <InfoRow label="Plan Name" value={form.planName} optional />
+              <InfoRow label="Member ID" value={form.memberId} optional />
+            </div>
+            <InfoRow label="Group Number" value={form.groupNumber} optional />
+          </>
+        )}
+
+        <Divider />
+
+        {/* 3 — CONTACT & VERIFICATION */}
+        <SectionTitle>CONTACT &amp; VERIFICATION</SectionTitle>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: editing ? 12 : 16 }}>
+
+          {/* Phone — always verified */}
+          <div>
+            <Label>Phone Number</Label>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
+              <span style={{ fontSize: 14, color: "#f1f5f9" }}>{user?.phoneNumber || "—"}</span>
+              <VerifiedBadge verified={true} />
+            </div>
+          </div>
+
+          {/* Email */}
+          {editing ? (
+            <div>
+              <Label optional>Email Address</Label>
+              {inp("email", { type: "email", placeholder: "you@example.com" })}
+            </div>
+          ) : (
+            <div>
+              <Label optional>Email Address</Label>
+              {form.email ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 2 }}>
+                  <span style={{ fontSize: 14, color: "#f1f5f9" }}>{form.email}</span>
+                  <VerifiedBadge verified={emailVerified} />
+                  {!emailVerified && (
+                    verifyStatus === "sent"
+                      ? <span style={{ fontSize: 11, color: "#10b981", fontWeight: 600 }}>✓ Check your inbox</span>
+                      : verifyStatus === "error"
+                      ? <span style={{ fontSize: 11, color: "#f87171", fontWeight: 600 }}>Failed — try again</span>
+                      : (
+                        <button onClick={sendVerification} disabled={verifyStatus === "sending"} style={{ fontSize: 11, fontWeight: 700, color: "#10b981", background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.25)", borderRadius: 8, padding: "3px 10px", cursor: "pointer", fontFamily: FONT }}>
+                          {verifyStatus === "sending" ? "Sending..." : "Verify Now →"}
+                        </button>
+                      )
+                  )}
+                </div>
+              ) : (
+                <div style={{ marginTop: 4 }}>
+                  <button onClick={startEdit} style={{ fontSize: 12, fontWeight: 600, color: "#10b981", background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontFamily: FONT }}>
+                    + Add &amp; Verify Email
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <Divider />
+
+        {/* 4 — ADDRESS */}
+        <SectionTitle>ADDRESS</SectionTitle>
+        {editing ? (
+          <>
+            <div style={{ marginBottom: 12, position: "relative" }}>
+              <Label>Street Address</Label>
+              <input
+                value={draft.street}
+                onChange={handleStreetChange}
+                placeholder="Start typing your address…"
+                style={IS}
+                onFocus={onFo}
+                onBlur={(e) => { onBl(e); setTimeout(() => setSuggestions([]), 200); }}
+                autoComplete="off"
+              />
+              {suggestions.length > 0 && (
+                <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, zIndex: 50, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}>
+                  {suggestions.map((s, i) => (
+                    <button key={i} onMouseDown={() => pickAddress(s)}
+                      style={{ width: "100%", padding: "10px 14px", background: "none", border: "none", borderBottom: i < suggestions.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none", color: "#94a3b8", fontSize: 13, textAlign: "left", cursor: "pointer", fontFamily: FONT, display: "block" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
+                    >
+                      📍 {formatSuggestion(s)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 100px", gap: 12 }}>
+              <div><Label>City</Label>{inp("city", { placeholder: "City" })}</div>
+              <div><Label>State</Label>{sel("state", US_STATES)}</div>
+              <div>
+                <Label>ZIP</Label>
+                <input value={draft.zip} onChange={handleZipChange} placeholder="12345" maxLength={5} style={IS} onFocus={onFo} onBlur={onBl} />
+              </div>
+            </div>
+            <div style={{ marginTop: 8, fontSize: 11, color: "#334155" }}>💡 Type your street address to auto-fill city, state &amp; ZIP — or enter ZIP alone to auto-fill city &amp; state</div>
+          </>
+        ) : (
+          <>
+            <div style={{ marginBottom: 16 }}>
+              <InfoRow label="Street Address" value={form.street} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 100px", gap: 16 }}>
+              <InfoRow label="City" value={form.city} />
+              <InfoRow label="State" value={form.state} />
+              <InfoRow label="ZIP" value={form.zip} />
             </div>
           </>
         )}
 
         <Divider />
 
-        {/* Insurance */}
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>INSURANCE</div>
+        {/* 5 — HEALTHCARE DETAILS */}
+        <SectionTitle>HEALTHCARE DETAILS</SectionTitle>
         {editing ? (
-          <div><Label>Insurance Provider</Label>{sel(draft.insuranceProvider, set("insuranceProvider"), INSURERS)}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <Label optional>Primary Care Doctor</Label>
+              {inp("primaryDoctor", { placeholder: "Dr. Smith" })}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", padding: "11px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10 }}>
+                <input
+                  type="checkbox"
+                  checked={draft.hasHSA}
+                  onChange={(e) => setDraft((d) => ({ ...d, hasHSA: e.target.checked }))}
+                  style={{ width: 16, height: 16, accentColor: "#10b981", cursor: "pointer" }}
+                />
+                <span style={{ fontSize: 14, color: "#94a3b8" }}>I have an HSA / FSA account</span>
+              </label>
+            </div>
+          </div>
         ) : (
-          <InfoVal label="Insurance Provider" value={form.insuranceProvider} />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <InfoRow label="Primary Care Doctor" value={form.primaryDoctor} optional />
+            <div>
+              <Label optional>HSA / FSA</Label>
+              <span style={{ fontSize: 14, color: form.hasHSA ? "#10b981" : "#334155" }}>
+                {form.hasHSA ? "✓ Has HSA/FSA account" : "—"}
+              </span>
+            </div>
+          </div>
         )}
+
       </div>
 
-      {/* Edit actions */}
       {editing && (
         <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
           <button onClick={cancel} style={{ flex: 1, padding: "14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, color: "#64748b", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>
