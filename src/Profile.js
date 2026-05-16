@@ -36,11 +36,14 @@ const STATE_MAP = {
 
 const EMPTY = {
   firstName: "", middleName: "", lastName: "", dob: "", gender: "",
-  insuranceProvider: "", planName: "", memberId: "", groupNumber: "",
+  insuranceProvider: "", insuranceOther: "", planName: "", memberId: "", groupNumber: "",
   email: "",
   street: "", city: "", state: "", zip: "",
   primaryDoctor: "", hasHSA: false,
 };
+
+const toProperCase = (str) =>
+  str.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
 
 const IS = {
   width: "100%", padding: "11px 14px",
@@ -69,15 +72,15 @@ const InfoRow = ({ label, value, optional, right }) => (
   </div>
 );
 
-const VerifiedBadge = ({ verified }) => (
+const VerifiedBadge = () => (
   <span style={{
     display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 9px",
     borderRadius: 20, fontSize: 10, fontWeight: 700, flexShrink: 0,
-    background: verified ? "rgba(16,185,129,0.1)" : "rgba(245,158,11,0.1)",
-    border: `1px solid ${verified ? "rgba(16,185,129,0.3)" : "rgba(245,158,11,0.3)"}`,
-    color: verified ? "#10b981" : "#fbbf24",
+    background: "rgba(16,185,129,0.1)",
+    border: "1px solid rgba(16,185,129,0.3)",
+    color: "#10b981",
   }}>
-    {verified ? "✓ Verified" : "○ Unverified"}
+    ✓ Verified
   </span>
 );
 
@@ -248,6 +251,17 @@ export default function Profile() {
             <div style={{ marginBottom: 12 }}>
               <Label>Insurance Provider</Label>
               {sel("insuranceProvider", INSURERS)}
+              {draft.insuranceProvider === "Other" && (
+                <input
+                  value={draft.insuranceOther}
+                  onChange={(e) => setDraft((d) => ({ ...d, insuranceOther: toProperCase(e.target.value) }))}
+                  placeholder="Type your insurance company name"
+                  style={{ ...IS, marginTop: 8 }}
+                  onFocus={onFo}
+                  onBlur={onBl}
+                  autoFocus
+                />
+              )}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
               <div><Label optional>Plan Name</Label>{inp("planName", { placeholder: "e.g. PPO Gold" })}</div>
@@ -261,7 +275,7 @@ export default function Profile() {
         ) : (
           <>
             <div style={{ marginBottom: 16 }}>
-              <InfoRow label="Insurance Provider" value={form.insuranceProvider} />
+              <InfoRow label="Insurance Provider" value={form.insuranceProvider === "Other" ? form.insuranceOther || "Other" : form.insuranceProvider} />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
               <InfoRow label="Plan Name" value={form.planName} optional />
@@ -282,7 +296,7 @@ export default function Profile() {
             <Label>Phone Number</Label>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
               <span style={{ fontSize: 14, color: "#f1f5f9" }}>{user?.phoneNumber || "—"}</span>
-              <VerifiedBadge verified={true} />
+              <VerifiedBadge />
             </div>
           </div>
 
@@ -298,17 +312,18 @@ export default function Profile() {
               {form.email ? (
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 2 }}>
                   <span style={{ fontSize: 14, color: "#f1f5f9" }}>{form.email}</span>
-                  <VerifiedBadge verified={emailVerified} />
-                  {!emailVerified && (
-                    verifyStatus === "sent"
-                      ? <span style={{ fontSize: 11, color: "#10b981", fontWeight: 600 }}>✓ Check your inbox</span>
-                      : verifyStatus === "error"
-                      ? <span style={{ fontSize: 11, color: "#f87171", fontWeight: 600 }}>Failed — try again</span>
-                      : (
-                        <button onClick={sendVerification} disabled={verifyStatus === "sending"} style={{ fontSize: 11, fontWeight: 700, color: "#10b981", background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.25)", borderRadius: 8, padding: "3px 10px", cursor: "pointer", fontFamily: FONT }}>
-                          {verifyStatus === "sending" ? "Sending..." : "Verify Now →"}
-                        </button>
-                      )
+                  {emailVerified ? (
+                    <VerifiedBadge />
+                  ) : verifyStatus === "sent" ? (
+                    <span style={{ fontSize: 11, color: "#10b981", fontWeight: 600 }}>✓ Check your inbox</span>
+                  ) : verifyStatus === "error" ? (
+                    <button onClick={sendVerification} style={{ fontSize: 11, fontWeight: 700, color: "#f87171", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 8, padding: "3px 10px", cursor: "pointer", fontFamily: FONT }}>
+                      Failed — retry →
+                    </button>
+                  ) : (
+                    <button onClick={sendVerification} disabled={verifyStatus === "sending"} style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b", background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.3)", borderRadius: 8, padding: "3px 10px", cursor: "pointer", fontFamily: FONT }}>
+                      {verifyStatus === "sending" ? "Sending..." : "Verify →"}
+                    </button>
                   )}
                 </div>
               ) : (
