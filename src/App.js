@@ -6,6 +6,7 @@ import DisputeLetter from "./DisputeLetter";
 import DrugComparator from "./DrugComparator";
 import DenialFighter from "./DenialFighter";
 import { AuthProvider, useAuth } from "./AuthContext";
+import Profile from "./Profile";
 
 const EXAMPLES = [
   "CPT 99214 — $385",
@@ -91,6 +92,7 @@ function AppContent() {
     { id: "dispute", emoji: "✉️", label: "Dispute Letter" },
     { id: "drug", emoji: "💊", label: "Drug Prices" },
     { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
+    ...(user ? [{ id: "profile", emoji: "👤", label: "My Profile" }] : []),
   ];
 
   const analyzeBill = async () => {
@@ -243,6 +245,7 @@ function AppContent() {
         {tab === "dispute" && <DisputeLetter />}
         {tab === "drug" && <DrugComparator />}
         {tab === "denial" && <DenialFighter />}
+        {tab === "profile" && <Profile />}
 
         {/* Analyzer tab */}
         {tab === "analyzer" && <>
