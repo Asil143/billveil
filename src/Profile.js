@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useAuth } from "./AuthContext";
-import { verifyBeforeUpdateEmail } from "firebase/auth";
+import { sendSignInLinkToEmail } from "firebase/auth";
 import { auth } from "./firebase";
 
 const FONT = "'Inter', system-ui, sans-serif";
@@ -170,13 +170,18 @@ export default function Profile() {
     }
   };
 
-  // Email verification via Firebase
+  // Email verification via Firebase Email Link
   const sendVerification = async () => {
     setVerifyStatus("sending");
     try {
-      await verifyBeforeUpdateEmail(auth.currentUser, form.email);
+      await sendSignInLinkToEmail(auth, form.email, {
+        url: window.location.origin,
+        handleCodeInApp: true,
+      });
+      localStorage.setItem("bv_pending_email", form.email);
       setVerifyStatus("sent");
-    } catch {
+    } catch (err) {
+      console.error("Email verify:", err.code, err.message);
       setVerifyStatus("error");
     }
   };

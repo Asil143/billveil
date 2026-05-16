@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, isSignInWithEmailLink, linkWithCredential, EmailAuthProvider } from "firebase/auth";
 import { auth } from "./firebase";
 import PhoneLogin from "./PhoneLogin";
 
@@ -13,10 +13,25 @@ export function AuthProvider({ children }) {
   const [uses, setUses] = useState(() => parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10));
   const [showModal, setShowModal] = useState(false);
   const [profileData, setProfileData] = useState(null);
+  const [pendingEmailLink] = useState(() =>
+    isSignInWithEmailLink(auth, window.location.href) ? window.location.href : null
+  );
 
   useEffect(() => {
     return onAuthStateChanged(auth, (u) => setUser(u || null));
   }, []);
+
+  // When user is ready and there's a pending email link, link the credential
+  useEffect(() => {
+    if (!pendingEmailLink || !user) return;
+    const email = localStorage.getItem("bv_pending_email");
+    if (!email) return;
+    window.history.replaceState({}, document.title, window.location.pathname);
+    const credential = EmailAuthProvider.credentialWithLink(email, pendingEmailLink);
+    linkWithCredential(user, credential)
+      .then(() => localStorage.removeItem("bv_pending_email"))
+      .catch((err) => console.error("Email link error:", err.code, err.message));
+  }, [user, pendingEmailLink]);
 
   useEffect(() => {
     if (user?.uid) {
