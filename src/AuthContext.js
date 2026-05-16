@@ -18,8 +18,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const useCredit = () => {
-    // While Firebase is loading (user === undefined), treat as logged in to avoid false modal
-    if (user !== null) return true;
+    if (user) return true; // truthy only for a real logged-in Firebase User
     if (uses < USE_LIMIT) {
       const next = uses + 1;
       localStorage.setItem(STORAGE_KEY, String(next));
