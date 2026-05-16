@@ -22,9 +22,14 @@ export function AuthProvider({ children }) {
   );
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (u) => {
-      setUser(u || null);
-      if (u?.emailVerified) setEmailVerified(true);
+    return onAuthStateChanged(auth, async (u) => {
+      if (u) {
+        try { await u.reload(); } catch {}
+        setUser(auth.currentUser);
+        if (auth.currentUser?.emailVerified) setEmailVerified(true);
+      } else {
+        setUser(null);
+      }
     });
   }, []);
 
