@@ -60,6 +60,42 @@ MONEY YOU COULD SAVE:
   }
 });
 
+const emailKey = (e) =>
+  e.toLowerCase().replace(/\./g, "_dot_").replace(/@/g, "_at_");
+
+// Phone calls this after email-link verification — server writes to Firestore reliably
+app.post("/api/verify-email", async (req, res) => {
+  const { email, ownerUid } = req.body;
+  if (!email || !ownerUid) return res.status(400).json({ error: "Missing email or ownerUid" });
+
+  const docId = emailKey(email);
+  const url = `https://firestore.googleapis.com/v1/projects/billveil/databases/(default)/documents/email_verifications/${docId}`;
+
+  try {
+    const resp = await fetch(url, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fields: {
+          verified: { booleanValue: true },
+          email: { stringValue: email },
+          ownerUid: { stringValue: ownerUid },
+          verifiedAt: { timestampValue: new Date().toISOString() },
+        },
+      }),
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      return res.status(500).json({ error: err.error?.message || "Firestore write failed" });
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`BillVeil server running on port ${PORT}`);

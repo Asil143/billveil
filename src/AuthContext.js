@@ -4,7 +4,7 @@ import {
   isSignInWithEmailLink, signInWithEmailLink,
   linkWithCredential, EmailAuthProvider,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import PhoneLogin from "./PhoneLogin";
 
@@ -132,18 +132,23 @@ export function AuthProvider({ children }) {
           await withTimeout(signInWithEmailLink(auth, email, pendingEmailLink), 15000);
         }
 
-        // Fire-and-forget Firestore write — SDK queues and retries automatically.
-        // Don't await: show success immediately, laptop onSnapshot picks it up when it lands.
+        // Write via our server — avoids Firestore SDK connection issues on mobile
         const currentUser = auth.currentUser;
-        setDoc(doc(db, "email_verifications", emailKey(email)), {
-          verified: true,
-          email,
-          ownerUid,
-          verifiedAt: serverTimestamp(),
-        }).then(() => setLinkSyncOk(true)).catch(err => {
+        try {
+          const resp = await fetch("/api/verify-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, ownerUid }),
+          });
+          if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.error || `HTTP ${resp.status}`);
+          }
+          setLinkSyncOk(true);
+        } catch (fsErr) {
           setLinkSyncOk(false);
-          setLinkSyncError(err.code || err.message || "unknown");
-        });
+          setLinkSyncError(fsErr.message || "unknown");
+        }
 
         // Sign out the temporary session (not needed on same-device phone user)
         if (!currentUser?.phoneNumber) {
@@ -151,7 +156,6 @@ export function AuthProvider({ children }) {
         }
 
         localStorage.removeItem("bv_pending_email");
-        setLinkSyncOk(true);
         setLinkStatus("success");
       } catch (err) {
         console.error("Email link error:", err.code, err.message);
