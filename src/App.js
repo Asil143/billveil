@@ -71,7 +71,7 @@ export default function App() {
 }
 
 function AppContent() {
-  const { user, usesLeft, useCredit, logout, showLoginModal } = useAuth();
+  const { user, usesLeft, consumeCredit, logout, showLoginModal } = useAuth();
   const [view, setView] = useState("landing");
   const [tab, setTab] = useState("analyzer");
   const [bill, setBill] = useState("");
@@ -95,7 +95,7 @@ function AppContent() {
 
   const analyzeBill = async () => {
     if (!bill.trim()) return;
-    if (!useCredit()) return;
+    if (!consumeCredit()) return;
     setLoading(true);
     setResult(null);
     setError(null);

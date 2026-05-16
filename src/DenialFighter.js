@@ -42,11 +42,11 @@ export default function DenialFighter() {
   const [externalCopied, setExternalCopied] = useState(false);
   const [actionsDone, setActionsDone] = useState({});
 
-  const { useCredit } = useAuth();
+  const { consumeCredit } = useAuth();
 
   const analyze = async () => {
     if (!denial.trim()) return;
-    if (!useCredit()) return;
+    if (!consumeCredit()) return;
     setLoading(true);
     setResult(null);
     setError(null);

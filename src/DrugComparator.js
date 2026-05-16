@@ -13,11 +13,11 @@ export default function DrugComparator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { useCredit } = useAuth();
+  const { consumeCredit } = useAuth();
 
   const analyze = async () => {
     if (!drug.trim()) return;
-    if (!useCredit()) return;
+    if (!consumeCredit()) return;
     setLoading(true);
     setResult(null);
     setError(null);

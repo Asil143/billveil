@@ -12,11 +12,11 @@ export default function DisputeLetter() {
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  const { useCredit } = useAuth();
+  const { consumeCredit } = useAuth();
 
   const generate = async () => {
     if (!bill.trim()) return;
-    if (!useCredit()) return;
+    if (!consumeCredit()) return;
     setLoading(true);
     setResult(null);
     setError(null);

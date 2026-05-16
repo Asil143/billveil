@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     return onAuthStateChanged(auth, (u) => setUser(u || null));
   }, []);
 
-  const useCredit = () => {
+  const consumeCredit = () => {
     if (user) return true; // truthy only for a real logged-in Firebase User
     if (uses < USE_LIMIT) {
       const next = uses + 1;
@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
   const usesLeft = user ? null : Math.max(0, USE_LIMIT - uses);
 
   return (
-    <AuthContext.Provider value={{ user, useCredit, usesLeft, logout, showLoginModal }}>
+    <AuthContext.Provider value={{ user, consumeCredit, usesLeft, logout, showLoginModal }}>
       {children}
       {showModal && (
         <PhoneLogin
