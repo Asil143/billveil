@@ -16,7 +16,7 @@ const emailKey = (email) =>
 
 const AuthContext = createContext(null);
 
-function EmailLinkScreen({ status, errorCode, syncOk }) {
+function EmailLinkScreen({ status, errorCode, syncOk, syncError }) {
   const isSuccess = status === "success";
   const isError = status === "error";
   const isPending = status === "pending";
@@ -58,9 +58,14 @@ function EmailLinkScreen({ status, errorCode, syncOk }) {
           border: syncOk ? "1px solid rgba(16,185,129,0.3)" : "1px solid rgba(245,158,11,0.3)",
           borderRadius: 12,
           color: syncOk ? "#10b981" : "#f59e0b",
-          fontSize: 14, fontWeight: 600,
+          fontSize: 14, fontWeight: 600, textAlign: "center",
         }}>
           {syncOk ? "✓ All done — you can close this tab" : "⚠ Refresh your other device to see verified status"}
+          {!syncOk && syncError && (
+            <div style={{ marginTop: 6, fontSize: 11, opacity: 0.7, fontFamily: "monospace", fontWeight: 400 }}>
+              {syncError}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -77,6 +82,7 @@ export function AuthProvider({ children }) {
   const [linkStatus, setLinkStatus] = useState(null);   // null | "pending" | "success" | "error"
   const [linkErrorCode, setLinkErrorCode] = useState(null);
   const [linkSyncOk, setLinkSyncOk] = useState(false);
+  const [linkSyncError, setLinkSyncError] = useState(null);
 
   const pendingEmailLink = useRef(
     isSignInWithEmailLink(auth, window.location.href) ? window.location.href : null
@@ -139,8 +145,10 @@ export function AuthProvider({ children }) {
           );
           setLinkSyncOk(true);
         } catch (fsErr) {
-          console.warn("Firestore sync failed:", fsErr.code || fsErr.message);
+          const fsCode = fsErr.code || fsErr.message || "unknown";
+          console.warn("Firestore sync failed:", fsCode);
           setLinkSyncOk(false);
+          setLinkSyncError(fsCode);
         }
 
         // Sign out the temporary session (not needed on same-device phone user)
@@ -260,7 +268,7 @@ export function AuthProvider({ children }) {
       emailVerified, emailJustVerified, clearEmailJustVerified,
     }}>
       {linkStatus ? (
-        <EmailLinkScreen status={linkStatus} errorCode={linkErrorCode} syncOk={linkSyncOk} />
+        <EmailLinkScreen status={linkStatus} errorCode={linkErrorCode} syncOk={linkSyncOk} syncError={linkSyncError} />
       ) : (
         children
       )}
