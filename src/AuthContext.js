@@ -121,16 +121,20 @@ export function AuthProvider({ children }) {
           await withTimeout(signInWithEmailLink(auth, email, pendingEmailLink), 15000);
         }
 
-        // Write verification to Firestore while authenticated
-        await withTimeout(
-          setDoc(doc(db, "email_verifications", emailKey(email)), {
-            verified: true,
-            email,
-            ownerUid,
-            verifiedAt: serverTimestamp(),
-          }),
-          10000
-        );
+        // Write verification to Firestore (best-effort — don't fail if rules aren't set up)
+        try {
+          await withTimeout(
+            setDoc(doc(db, "email_verifications", emailKey(email)), {
+              verified: true,
+              email,
+              ownerUid,
+              verifiedAt: serverTimestamp(),
+            }),
+            8000
+          );
+        } catch (fsErr) {
+          console.warn("Firestore write skipped:", fsErr.code || fsErr.message);
+        }
 
         // Sign out the temporary session (not needed on same-device phone user)
         if (!auth.currentUser?.phoneNumber) {
@@ -159,6 +163,13 @@ export function AuthProvider({ children }) {
           const profile = localStorage.getItem(`bv_profile_${u.uid}`);
           const profileEmail = profile ? JSON.parse(profile)?.email : null;
           if (profileEmail) {
+            // Check 1: email linked directly to Firebase account (same-device verification)
+            const isLinked = auth.currentUser?.providerData?.some(
+              p => p.providerId === "password" && p.email?.toLowerCase() === profileEmail.toLowerCase()
+            );
+            if (isLinked) { setEmailVerified(true); return; }
+
+            // Check 2: Firestore record (cross-device verification)
             const snap = await getDoc(doc(db, "email_verifications", emailKey(profileEmail)));
             if (snap.exists() && snap.data().verified) setEmailVerified(true);
           }
