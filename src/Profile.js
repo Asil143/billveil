@@ -196,7 +196,7 @@ export default function Profile() {
     setVerifyStatus("sending");
     try {
       await sendSignInLinkToEmail(auth, form.email, {
-        url: `${window.location.origin}/?uid=${encodeURIComponent(user.uid)}`,
+        url: `${window.location.origin}/?uid=${encodeURIComponent(user.uid)}&bvemail=${encodeURIComponent(form.email)}`,
         handleCodeInApp: true,
       });
       localStorage.setItem("bv_pending_email", form.email);
