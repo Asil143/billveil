@@ -65,11 +65,13 @@ export default function Profile() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
-    getDoc(doc(db, "users", user.uid)).then((snap) => {
-      if (snap.exists()) setForm((f) => ({ ...f, ...snap.data() }));
-      setLoading(false);
-    });
+    if (!user) { setLoading(false); return; }
+    getDoc(doc(db, "users", user.uid))
+      .then((snap) => {
+        if (snap.exists()) setForm((f) => ({ ...f, ...snap.data() }));
+      })
+      .catch((err) => console.error("Firestore read error:", err))
+      .finally(() => setLoading(false));
   }, [user]);
 
   const set = (field) => (e) => {
