@@ -4,7 +4,7 @@ import {
   isSignInWithEmailLink, signInWithEmailLink,
   linkWithCredential, EmailAuthProvider,
 } from "firebase/auth";
-import { doc, setDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, setDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import PhoneLogin from "./PhoneLogin";
 
@@ -16,7 +16,7 @@ const emailKey = (email) =>
 
 const AuthContext = createContext(null);
 
-function EmailLinkScreen({ status, errorCode }) {
+function EmailLinkScreen({ status, errorCode, syncOk }) {
   const isSuccess = status === "success";
   const isError = status === "error";
   const isPending = status === "pending";
@@ -41,7 +41,8 @@ function EmailLinkScreen({ status, errorCode }) {
       </div>
       <div style={{ fontSize: 15, color: "#64748b", textAlign: "center", lineHeight: 1.7, maxWidth: 320 }}>
         {isPending && "Please wait a moment."}
-        {isSuccess && "You can close this tab and go back to BillVeil on your other device. It will update automatically."}
+        {isSuccess && syncOk && "Your email is verified. Your other device will update automatically — you can close this tab."}
+        {isSuccess && !syncOk && "Your email is verified on this device. Go to your other device and refresh the page to see the update."}
         {isError && isAuthError && "This link has expired or was already used. Go back to BillVeil, open your Profile, and tap Verify → to send a fresh link."}
         {isError && !isAuthError && "Something went wrong. Please try again."}
       </div>
@@ -53,10 +54,13 @@ function EmailLinkScreen({ status, errorCode }) {
       {isSuccess && (
         <div style={{
           marginTop: 32, padding: "14px 28px",
-          background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)",
-          borderRadius: 12, color: "#10b981", fontSize: 14, fontWeight: 600,
+          background: syncOk ? "rgba(16,185,129,0.12)" : "rgba(245,158,11,0.1)",
+          border: syncOk ? "1px solid rgba(16,185,129,0.3)" : "1px solid rgba(245,158,11,0.3)",
+          borderRadius: 12,
+          color: syncOk ? "#10b981" : "#f59e0b",
+          fontSize: 14, fontWeight: 600,
         }}>
-          ✓ All done — you can close this tab
+          {syncOk ? "✓ All done — you can close this tab" : "⚠ Refresh your other device to see verified status"}
         </div>
       )}
     </div>
@@ -72,6 +76,7 @@ export function AuthProvider({ children }) {
   const [emailJustVerified, setEmailJustVerified] = useState(false);
   const [linkStatus, setLinkStatus] = useState(null);   // null | "pending" | "success" | "error"
   const [linkErrorCode, setLinkErrorCode] = useState(null);
+  const [linkSyncOk, setLinkSyncOk] = useState(false);
 
   const pendingEmailLink = useRef(
     isSignInWithEmailLink(auth, window.location.href) ? window.location.href : null
@@ -121,7 +126,7 @@ export function AuthProvider({ children }) {
           await withTimeout(signInWithEmailLink(auth, email, pendingEmailLink), 15000);
         }
 
-        // Write verification to Firestore (best-effort — don't fail if rules aren't set up)
+        // Write verification to Firestore for cross-device detection
         try {
           await withTimeout(
             setDoc(doc(db, "email_verifications", emailKey(email)), {
@@ -130,10 +135,12 @@ export function AuthProvider({ children }) {
               ownerUid,
               verifiedAt: serverTimestamp(),
             }),
-            8000
+            12000
           );
+          setLinkSyncOk(true);
         } catch (fsErr) {
-          console.warn("Firestore write skipped:", fsErr.code || fsErr.message);
+          console.warn("Firestore sync failed:", fsErr.code || fsErr.message);
+          setLinkSyncOk(false);
         }
 
         // Sign out the temporary session (not needed on same-device phone user)
@@ -163,11 +170,17 @@ export function AuthProvider({ children }) {
           const profile = localStorage.getItem(`bv_profile_${u.uid}`);
           const profileEmail = profile ? JSON.parse(profile)?.email : null;
           if (profileEmail) {
-            // Check if email is linked directly to this Firebase account (same-device)
+            // Check 1: email linked directly to Firebase account (same-device verification)
             const isLinked = auth.currentUser?.providerData?.some(
               p => p.providerId === "password" && p.email?.toLowerCase() === profileEmail.toLowerCase()
             );
-            if (isLinked) setEmailVerified(true);
+            if (isLinked) { setEmailVerified(true); return; }
+
+            // Check 2: Firestore record (cross-device verification, on page refresh)
+            try {
+              const snap = await getDoc(doc(db, "email_verifications", emailKey(profileEmail)));
+              if (snap.exists() && snap.data().verified) setEmailVerified(true);
+            } catch {}
           }
         } catch {}
       } else {
@@ -247,7 +260,7 @@ export function AuthProvider({ children }) {
       emailVerified, emailJustVerified, clearEmailJustVerified,
     }}>
       {linkStatus ? (
-        <EmailLinkScreen status={linkStatus} errorCode={linkErrorCode} />
+        <EmailLinkScreen status={linkStatus} errorCode={linkErrorCode} syncOk={linkSyncOk} />
       ) : (
         children
       )}
