@@ -36,6 +36,25 @@ const STATE_MAP = {
   "West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY","District of Columbia":"DC",
 };
 
+const rateKey = (uid) => `bv_verify_rate_${uid}`;
+const canSendVerification = (uid) => {
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const raw = localStorage.getItem(rateKey(uid));
+    const r = raw ? JSON.parse(raw) : null;
+    return !r || r.date !== today || r.count < 3;
+  } catch { return true; }
+};
+const recordVerificationSend = (uid) => {
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const raw = localStorage.getItem(rateKey(uid));
+    const r = raw ? JSON.parse(raw) : null;
+    const count = r?.date === today ? r.count + 1 : 1;
+    localStorage.setItem(rateKey(uid), JSON.stringify({ date: today, count }));
+  } catch {}
+};
+
 const EMPTY = {
   firstName: "", middleName: "", lastName: "", dob: "", gender: "",
   insuranceProvider: "", insuranceOther: "", planName: "", memberId: "", groupNumber: "",
@@ -117,6 +136,10 @@ export default function Profile() {
   const hasAnyData = Object.entries(form).some(([k, v]) => k !== "hasHSA" ? String(v).trim() !== "" : v);
   const isEmailVerified = emailVerified && !!form.email;
 
+  const emailLockDate = form.emailLockedUntil ? new Date(form.emailLockedUntil) : null;
+  const emailLocked = isEmailVerified && emailLockDate && new Date() < emailLockDate;
+  const emailUnlockDate = emailLockDate?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
   // Poll Firestore every 4s after sending verification link
   const startPolling = (email) => {
     clearInterval(pollRef.current);
@@ -135,11 +158,29 @@ export default function Profile() {
 
   useEffect(() => () => clearInterval(pollRef.current), []);
 
+  useEffect(() => {
+    if (isEmailVerified && form.email && profileData && !profileData.emailLockedUntil) {
+      const lockUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      updateProfile({ ...profileData, emailLockedUntil: lockUntil });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEmailVerified, profileData?.emailLockedUntil]);
+
   const set = (field) => (e) => setDraft((d) => ({ ...d, [field]: e.target.value }));
 
   const startEdit = () => { setDraft({ ...EMPTY, ...form }); setEditing(true); setSaved(false); setVerifyStatus(null); };
   const cancel = () => { setEditing(false); setSuggestions([]); };
-  const save = () => { updateProfile(draft); setSaved(true); setEditing(false); setSuggestions([]); setTimeout(() => setSaved(false), 3000); };
+  const save = () => {
+    const toSave = { ...draft };
+    if (draft.email?.trim()?.toLowerCase() !== form.email?.trim()?.toLowerCase()) {
+      delete toSave.emailLockedUntil;
+    }
+    updateProfile(toSave);
+    setSaved(true);
+    setEditing(false);
+    setSuggestions([]);
+    setTimeout(() => setSaved(false), 3000);
+  };
 
   // Address autocomplete
   const handleStreetChange = (e) => {
@@ -193,6 +234,10 @@ export default function Profile() {
 
   // Email verification via Firebase Email Link
   const sendVerification = async () => {
+    if (!canSendVerification(user.uid)) {
+      setVerifyStatus("rate-limited");
+      return;
+    }
     setVerifyStatus("sending");
     try {
       await sendSignInLinkToEmail(auth, form.email, {
@@ -200,6 +245,7 @@ export default function Profile() {
         handleCodeInApp: true,
       });
       localStorage.setItem("bv_pending_email", form.email);
+      recordVerificationSend(user.uid);
       setVerifyStatus("sent");
       startPolling(form.email);
     } catch (err) {
@@ -325,13 +371,27 @@ export default function Profile() {
               <span style={{ fontSize: 14, color: "#f1f5f9" }}>{user?.phoneNumber || "—"}</span>
               <VerifiedBadge />
             </div>
+            <div style={{ marginTop: 5, fontSize: 11, color: "#475569" }}>🔒 Cannot be changed</div>
           </div>
 
           {/* Email */}
           {editing ? (
             <div>
               <Label optional>Email Address</Label>
-              {inp("email", { type: "email", placeholder: "you@example.com" })}
+              {emailLocked ? (
+                <>
+                  <div style={{ ...IS, cursor: "not-allowed", color: "#64748b", display: "flex", alignItems: "center", gap: 8 }}>
+                    🔒 {form.email}
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: 11, color: "#475569", lineHeight: 1.6 }}>
+                    Locked until {emailUnlockDate}.{" "}
+                    <a href="mailto:support@billveil.com" style={{ color: "#10b981", textDecoration: "none" }}>Contact Support</a>
+                    {" "}to change it early.
+                  </div>
+                </>
+              ) : (
+                inp("email", { type: "email", placeholder: "you@example.com" })
+              )}
             </div>
           ) : (
             <div>
@@ -349,6 +409,8 @@ export default function Profile() {
                     <button onClick={sendVerification} style={{ fontSize: 11, fontWeight: 700, color: "#f87171", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 8, padding: "3px 10px", cursor: "pointer", fontFamily: FONT }}>
                       Failed — retry →
                     </button>
+                  ) : verifyStatus === "rate-limited" ? (
+                    <span style={{ fontSize: 11, color: "#f87171", fontWeight: 600 }}>3/day limit reached</span>
                   ) : (
                     <button onClick={sendVerification} disabled={verifyStatus === "sending"} style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b", background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.3)", borderRadius: 8, padding: "3px 10px", cursor: "pointer", fontFamily: FONT }}>
                       {verifyStatus === "sending" ? "Sending..." : "Verify →"}
