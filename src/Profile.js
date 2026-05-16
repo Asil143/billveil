@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "./firebase";
 import { useAuth } from "./AuthContext";
 
 const FONT = "'Inter', system-ui, sans-serif";
@@ -60,22 +58,15 @@ export default function Profile() {
     dob: "", gender: "", street: "", city: "", state: "", zip: "",
     insuranceProvider: "",
   });
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [dbError, setDbError] = useState(null);
 
   useEffect(() => {
-    if (!user) { setLoading(false); return; }
-    getDoc(doc(db, "users", user.uid))
-      .then((snap) => {
-        if (snap.exists()) setForm((f) => ({ ...f, ...snap.data() }));
-      })
-      .catch((err) => {
-        console.error("Firestore read error:", err);
-        setDbError(err.message || "Could not load profile. Check console for details.");
-      })
-      .finally(() => setLoading(false));
+    if (!user) return;
+    const stored = localStorage.getItem(`bv_profile_${user.uid}`);
+    if (stored) {
+      try { setForm((f) => ({ ...f, ...JSON.parse(stored) })); } catch {}
+    }
   }, [user]);
 
   const set = (field) => (e) => {
@@ -83,29 +74,15 @@ export default function Profile() {
     setSaved(false);
   };
 
-  const save = async () => {
+  const save = () => {
     setSaving(true);
-    await setDoc(doc(db, "users", user.uid), form, { merge: true });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    localStorage.setItem(`bv_profile_${user.uid}`, JSON.stringify(form));
+    setTimeout(() => {
+      setSaving(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    }, 400);
   };
-
-  if (loading) {
-    return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: 80 }}>
-        <span style={{ width: 24, height: 24, border: "2px solid rgba(255,255,255,0.1)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />
-      </div>
-    );
-  }
-
-  if (dbError) {
-    return (
-      <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 12, padding: 20, color: "#f87171", fontSize: 14, lineHeight: 1.7 }}>
-        <strong>Could not load profile:</strong><br />{dbError}
-      </div>
-    );
-  }
 
   const inp = (field, extra = {}) => (
     <input
