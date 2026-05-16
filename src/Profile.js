@@ -18,139 +18,115 @@ const US_STATES = [
   "VA","WA","WV","WI","WY","DC",
 ];
 
-const inputStyle = {
-  width: "100%",
-  padding: "11px 14px",
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: 10,
-  fontSize: 14,
-  color: "#f1f5f9",
-  fontFamily: FONT,
-  outline: "none",
-  boxSizing: "border-box",
-  transition: "border 0.2s",
-};
-
-const labelStyle = {
-  fontSize: 11,
-  fontWeight: 700,
-  color: "#475569",
-  display: "block",
-  marginBottom: 6,
-  letterSpacing: "0.06em",
-  textTransform: "uppercase",
-};
-
-function Field({ label, children }) {
-  return (
-    <div>
-      <label style={labelStyle}>{label}</label>
-      {children}
-    </div>
-  );
-}
-
-function InfoRow({ label, value }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-      <div style={labelStyle}>{label}</div>
-      <div style={{ fontSize: 14, color: value ? "#f1f5f9" : "#334155", fontWeight: value ? 500 : 400 }}>
-        {value || "—"}
-      </div>
-    </div>
-  );
-}
-
 const EMPTY = {
   firstName: "", middleName: "", lastName: "",
-  dob: "", gender: "", street: "", city: "", state: "", zip: "",
+  dob: "", gender: "", email: "",
+  street: "", city: "", state: "", zip: "",
   insuranceProvider: "",
 };
 
+const inp = (value, onChange, extra = {}) => (
+  <input
+    value={value}
+    onChange={onChange}
+    style={{
+      width: "100%", padding: "11px 14px",
+      background: "rgba(255,255,255,0.04)",
+      border: "1px solid rgba(255,255,255,0.08)",
+      borderRadius: 10, fontSize: 14, color: "#f1f5f9",
+      fontFamily: FONT, outline: "none", boxSizing: "border-box",
+    }}
+    onFocus={(e) => (e.target.style.borderColor = "rgba(16,185,129,0.5)")}
+    onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.08)")}
+    {...extra}
+  />
+);
+
+const sel = (value, onChange, options) => (
+  <select
+    value={value}
+    onChange={onChange}
+    style={{
+      width: "100%", padding: "11px 14px",
+      background: "rgba(255,255,255,0.04)",
+      border: "1px solid rgba(255,255,255,0.08)",
+      borderRadius: 10, fontSize: 14, color: "#f1f5f9",
+      fontFamily: FONT, outline: "none", boxSizing: "border-box", cursor: "pointer",
+    }}
+  >
+    <option value="">Select...</option>
+    {options.map((o) => <option key={o} value={o}>{o}</option>)}
+  </select>
+);
+
+const Label = ({ children, optional }) => (
+  <div style={{ fontSize: 11, fontWeight: 700, color: "#475569", marginBottom: 6, letterSpacing: "0.06em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
+    {children}
+    {optional && <span style={{ fontSize: 10, fontWeight: 500, color: "#334155", textTransform: "none", letterSpacing: 0 }}>optional</span>}
+  </div>
+);
+
+const InfoVal = ({ label, value, optional, badge }) => (
+  <div>
+    <Label optional={optional}>{label}</Label>
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <span style={{ fontSize: 14, color: value ? "#f1f5f9" : "#334155" }}>{value || "—"}</span>
+      {badge}
+    </div>
+  </div>
+);
+
+const VerifiedBadge = ({ verified }) => (
+  <span style={{
+    display: "inline-flex", alignItems: "center", gap: 4,
+    padding: "2px 8px", borderRadius: 20, fontSize: 10, fontWeight: 700,
+    background: verified ? "rgba(16,185,129,0.1)" : "rgba(245,158,11,0.1)",
+    border: verified ? "1px solid rgba(16,185,129,0.3)" : "1px solid rgba(245,158,11,0.3)",
+    color: verified ? "#10b981" : "#fbbf24",
+  }}>
+    {verified ? "✓ Verified" : "Unverified"}
+  </span>
+);
+
+const Divider = () => (
+  <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "20px 0" }} />
+);
+
 export default function Profile() {
-  const { user } = useAuth();
-  const [form, setForm] = useState(EMPTY);
+  const { user, profileData, updateProfile } = useAuth();
   const [draft, setDraft] = useState(EMPTY);
   const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const uid = user?.uid;
-
   useEffect(() => {
-    if (!uid) return;
-    const stored = localStorage.getItem(`bv_profile_${uid}`);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setForm(parsed);
-        setDraft(parsed);
-      } catch {}
-    }
-  }, [uid]);
+    if (profileData) setDraft({ ...EMPTY, ...profileData });
+  }, [profileData]);
 
+  const form = profileData ? { ...EMPTY, ...profileData } : EMPTY;
   const hasAnyData = Object.values(form).some((v) => v.trim?.() !== "");
 
   const set = (field) => (e) => setDraft((d) => ({ ...d, [field]: e.target.value }));
 
-  const startEdit = () => {
-    setDraft({ ...form });
-    setEditing(true);
-    setSaved(false);
-  };
-
-  const cancel = () => {
-    setDraft({ ...form });
-    setEditing(false);
-  };
+  const startEdit = () => { setDraft({ ...EMPTY, ...form }); setEditing(true); setSaved(false); };
+  const cancel = () => { setDraft({ ...EMPTY, ...form }); setEditing(false); };
 
   const save = () => {
-    if (!uid) return;
-    setSaving(true);
-    localStorage.setItem(`bv_profile_${uid}`, JSON.stringify(draft));
-    setForm({ ...draft });
-    setSaving(false);
+    updateProfile(draft);
     setSaved(true);
     setEditing(false);
     setTimeout(() => setSaved(false), 3000);
   };
-
-  const inp = (field, extra = {}) => (
-    <input
-      value={draft[field]}
-      onChange={set(field)}
-      style={inputStyle}
-      onFocus={(e) => (e.target.style.border = "1px solid rgba(16,185,129,0.5)")}
-      onBlur={(e) => (e.target.style.border = "1px solid rgba(255,255,255,0.08)")}
-      {...extra}
-    />
-  );
-
-  const sel = (field, options) => (
-    <select value={draft[field]} onChange={set(field)} style={{ ...inputStyle, cursor: "pointer" }}>
-      <option value="">Select...</option>
-      {options.map((o) => <option key={o} value={o}>{o}</option>)}
-    </select>
-  );
 
   return (
     <div>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#f1f5f9", marginBottom: 6, letterSpacing: "-0.02em" }}>
-            My Profile
-          </h2>
-          <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.6 }}>
-            Stored locally on your device. Never shared.
-          </p>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#f1f5f9", marginBottom: 6, letterSpacing: "-0.02em" }}>My Profile</h2>
+          <p style={{ fontSize: 14, color: "#64748b" }}>Stored locally on your device. Never shared.</p>
         </div>
         {!editing && (
-          <button
-            onClick={startEdit}
-            style={{ padding: "8px 18px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}
-          >
+          <button onClick={startEdit} style={{ padding: "8px 18px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, flexShrink: 0 }}>
             ✏️ {hasAnyData ? "Edit Profile" : "Set Up Profile"}
           </button>
         )}
@@ -158,107 +134,117 @@ export default function Profile() {
 
       {saved && (
         <div style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.25)", borderRadius: 12, padding: "12px 16px", marginBottom: 16, fontSize: 14, color: "#10b981", fontWeight: 600 }}>
-          ✓ Profile saved successfully
+          ✓ Profile saved
         </div>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Single card for everything */}
+      <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 18, padding: 28 }}>
+
+        {/* Account / Verification section */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>ACCOUNT</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <InfoVal
+            label="Phone Number"
+            value={user?.phoneNumber}
+            badge={<VerifiedBadge verified={true} />}
+          />
+          {editing ? (
+            <div>
+              <Label optional>Email</Label>
+              {inp(draft.email, set("email"), { type: "email", placeholder: "you@example.com" })}
+            </div>
+          ) : (
+            <InfoVal
+              label="Email"
+              value={form.email}
+              optional
+              badge={form.email ? <VerifiedBadge verified={false} /> : null}
+            />
+          )}
+        </div>
+
+        <Divider />
 
         {/* Personal info */}
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 24 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>PERSONAL INFORMATION</div>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>PERSONAL INFORMATION</div>
+        {editing ? (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
+              <div><Label>First Name</Label>{inp(draft.firstName, set("firstName"), { placeholder: "Jane" })}</div>
+              <div><Label optional>Middle Name</Label>{inp(draft.middleName, set("middleName"), { placeholder: "Optional" })}</div>
+              <div><Label>Last Name</Label>{inp(draft.lastName, set("lastName"), { placeholder: "Doe" })}</div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div><Label>Date of Birth</Label>{inp(draft.dob, set("dob"), { type: "date" })}</div>
+              <div><Label>Gender</Label>{sel(draft.gender, set("gender"), GENDERS)}</div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
+              <InfoVal label="First Name" value={form.firstName} />
+              <InfoVal label="Middle Name" value={form.middleName} optional />
+              <InfoVal label="Last Name" value={form.lastName} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <InfoVal label="Date of Birth" value={form.dob} />
+              <InfoVal label="Gender" value={form.gender} />
+            </div>
+          </>
+        )}
 
-          {editing ? (
-            <>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
-                <Field label="First Name">{inp("firstName", { placeholder: "Jane" })}</Field>
-                <Field label="Middle Name">{inp("middleName", { placeholder: "Optional" })}</Field>
-                <Field label="Last Name">{inp("lastName", { placeholder: "Doe" })}</Field>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <Field label="Date of Birth">{inp("dob", { type: "date" })}</Field>
-                <Field label="Gender">{sel("gender", GENDERS)}</Field>
-              </div>
-            </>
-          ) : (
-            <>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
-                <InfoRow label="First Name" value={form.firstName} />
-                <InfoRow label="Middle Name" value={form.middleName} />
-                <InfoRow label="Last Name" value={form.lastName} />
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                <InfoRow label="Date of Birth" value={form.dob} />
-                <InfoRow label="Gender" value={form.gender} />
-              </div>
-            </>
-          )}
-        </div>
+        <Divider />
 
         {/* Address */}
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 24 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>ADDRESS</div>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>ADDRESS</div>
+        {editing ? (
+          <>
+            <div style={{ marginBottom: 12 }}>
+              <Label>Street Address</Label>
+              {inp(draft.street, set("street"), { placeholder: "123 Main St" })}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 90px", gap: 12 }}>
+              <div><Label>City</Label>{inp(draft.city, set("city"), { placeholder: "El Centro" })}</div>
+              <div><Label>State</Label>{sel(draft.state, set("state"), US_STATES)}</div>
+              <div><Label>ZIP</Label>{inp(draft.zip, set("zip"), { placeholder: "92243" })}</div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ marginBottom: 16 }}>
+              <InfoVal label="Street Address" value={form.street} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 90px", gap: 16 }}>
+              <InfoVal label="City" value={form.city} />
+              <InfoVal label="State" value={form.state} />
+              <InfoVal label="ZIP" value={form.zip} />
+            </div>
+          </>
+        )}
 
-          {editing ? (
-            <>
-              <div style={{ marginBottom: 12 }}>
-                <Field label="Street Address">{inp("street", { placeholder: "123 Main St" })}</Field>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: 12 }}>
-                <Field label="City">{inp("city", { placeholder: "El Centro" })}</Field>
-                <Field label="State">{sel("state", US_STATES)}</Field>
-                <Field label="ZIP">{inp("zip", { placeholder: "92243", style: { ...inputStyle, width: 90 } })}</Field>
-              </div>
-            </>
-          ) : (
-            <>
-              <div style={{ marginBottom: 16 }}>
-                <InfoRow label="Street Address" value={form.street} />
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: 16 }}>
-                <InfoRow label="City" value={form.city} />
-                <InfoRow label="State" value={form.state} />
-                <InfoRow label="ZIP" value={form.zip} />
-              </div>
-            </>
-          )}
-        </div>
+        <Divider />
 
         {/* Insurance */}
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 24 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>INSURANCE</div>
-          {editing ? (
-            <Field label="Current Insurance Provider">{sel("insuranceProvider", INSURERS)}</Field>
-          ) : (
-            <InfoRow label="Current Insurance Provider" value={form.insuranceProvider} />
-          )}
-        </div>
-
-        {/* Account */}
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 24 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>ACCOUNT</div>
-          <InfoRow label="Phone Number" value={user?.phoneNumber} />
-        </div>
-
-        {/* Edit mode action buttons */}
-        {editing && (
-          <div style={{ display: "flex", gap: 10 }}>
-            <button
-              onClick={cancel}
-              style={{ flex: 1, padding: "14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, color: "#64748b", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={save}
-              disabled={saving}
-              style={{ flex: 2, padding: "14px", background: saving ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #10b981, #059669)", color: saving ? "#475569" : "#fff", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: saving ? "default" : "pointer", fontFamily: FONT, boxShadow: saving ? "none" : "0 8px 28px rgba(16,185,129,0.35)" }}
-            >
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
-          </div>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>INSURANCE</div>
+        {editing ? (
+          <div><Label>Insurance Provider</Label>{sel(draft.insuranceProvider, set("insuranceProvider"), INSURERS)}</div>
+        ) : (
+          <InfoVal label="Insurance Provider" value={form.insuranceProvider} />
         )}
       </div>
+
+      {/* Edit actions */}
+      {editing && (
+        <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+          <button onClick={cancel} style={{ flex: 1, padding: "14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, color: "#64748b", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>
+            Cancel
+          </button>
+          <button onClick={save} style={{ flex: 2, padding: "14px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 8px 28px rgba(16,185,129,0.35)" }}>
+            Save Changes
+          </button>
+        </div>
+      )}
     </div>
   );
 }

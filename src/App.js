@@ -70,7 +70,7 @@ export default function App() {
 }
 
 function AppContent() {
-  const { user, usesLeft, consumeCredit, logout, showLoginModal } = useAuth();
+  const { user, usesLeft, consumeCredit, logout, showLoginModal, initials } = useAuth();
   const [view, setView] = useState("landing");
   const [tab, setTab] = useState("analyzer");
   const [bill, setBill] = useState("");
@@ -127,7 +127,6 @@ function AppContent() {
     { id: "dispute", emoji: "✉️", label: "Dispute Letter" },
     { id: "drug", emoji: "💊", label: "Drug Prices" },
     { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
-    ...(user ? [{ id: "profile", emoji: "👤", label: "My Profile" }] : []),
   ];
 
   const analyzeBill = async () => {
@@ -207,7 +206,7 @@ function AppContent() {
             {user ? (
               <div style={{ position: "relative" }} ref={accountMenuRef}>
                 <button onClick={() => setShowAccountMenu(!showAccountMenu)} style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg, #10b981, #059669)", border: "2px solid rgba(16,185,129,0.4)", color: "#fff", fontWeight: 800, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 12px rgba(16,185,129,0.35)" }}>
-                  {user.phoneNumber?.slice(-2) || "U"}
+                  {initials || "👤"}
                 </button>
                 {showAccountMenu && (
                   <div style={{ position: "absolute", top: 42, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: 6, minWidth: 190, boxShadow: "0 16px 40px rgba(0,0,0,0.6)", zIndex: 100 }}>
