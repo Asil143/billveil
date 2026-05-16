@@ -30,12 +30,13 @@ export default function PhoneLogin({ onClose, onSuccess }) {
     setLoading(true);
     setError("");
     try {
+      await recaptchaRef.current.render();
       const result = await signInWithPhoneNumber(auth, countryCode + digits, recaptchaRef.current);
       confirmRef.current = result;
       setStep("otp");
     } catch (err) {
       console.error(err);
-      setError("Could not send code. Check your number and try again.");
+      setError(err.message || "Could not send code. Please try again.");
       try { recaptchaRef.current?.clear(); } catch {}
       recaptchaRef.current = new RecaptchaVerifier(auth, "recaptcha-container", { size: "invisible" });
     } finally {
