@@ -4,8 +4,8 @@ import {
   isSignInWithEmailLink, signInWithEmailLink,
   linkWithCredential, EmailAuthProvider,
 } from "firebase/auth";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import { auth, db, projectId } from "./firebase";
+import { doc, getDoc, setDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
+import { auth, db } from "./firebase";
 import PhoneLogin from "./PhoneLogin";
 
 const USE_LIMIT = 3;
@@ -132,38 +132,21 @@ export function AuthProvider({ children }) {
           await withTimeout(signInWithEmailLink(auth, email, pendingEmailLink), 15000);
         }
 
-        // Write verification via Firestore REST API (plain HTTPS — no WebSocket, works on mobile)
+        // Write verification to Firestore (SDK uses HTTP long-polling — reliable on mobile)
         try {
-          const idToken = await auth.currentUser.getIdToken();
-          const docId = emailKey(email);
-          const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 12000);
-
-          const resp = await fetch(
-            `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/email_verifications/${docId}`,
-            {
-              method: "PATCH",
-              signal: controller.signal,
-              headers: { "Authorization": `Bearer ${idToken}`, "Content-Type": "application/json" },
-              body: JSON.stringify({
-                fields: {
-                  verified: { booleanValue: true },
-                  email: { stringValue: email },
-                  ownerUid: { stringValue: ownerUid },
-                  verifiedAt: { timestampValue: new Date().toISOString() },
-                },
-              }),
-            }
+          await withTimeout(
+            setDoc(doc(db, "email_verifications", emailKey(email)), {
+              verified: true,
+              email,
+              ownerUid,
+              verifiedAt: serverTimestamp(),
+            }),
+            15000
           );
-          clearTimeout(timer);
-          if (!resp.ok) {
-            const err = await resp.json().catch(() => ({}));
-            throw new Error(err.error?.message || `HTTP ${resp.status}`);
-          }
           setLinkSyncOk(true);
         } catch (fsErr) {
-          const fsCode = fsErr.message || fsErr.code || "unknown";
-          console.warn("Firestore REST sync failed:", fsCode);
+          const fsCode = fsErr.code || fsErr.message || "unknown";
+          console.warn("Firestore sync failed:", fsCode);
           setLinkSyncOk(false);
           setLinkSyncError(fsCode);
         }
