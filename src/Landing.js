@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useAuth } from "./AuthContext";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -45,8 +46,17 @@ const TESTIMONIALS = [
 ];
 
 export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
+  const { user, showLoginModal, logout } = useAuth();
   const [heroBill, setHeroBill] = useState("");
   const [openFaq, setOpenFaq] = useState(null);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const accountMenuRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => { if (accountMenuRef.current && !accountMenuRef.current.contains(e.target)) setShowAccountMenu(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const handleAnalyze = () => {
     if (heroBill.trim()) {
@@ -86,9 +96,32 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
 
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <button onClick={onAbout} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
-          <button onClick={() => onStart("analyzer")} style={{ padding: "8px 18px", background: "linear-gradient(135deg, #10b981, #059669)", border: "none", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 16px rgba(16,185,129,0.35)" }}>
-            Get Started →
-          </button>
+
+          {user ? (
+            <div style={{ position: "relative" }} ref={accountMenuRef}>
+              <button onClick={() => setShowAccountMenu(!showAccountMenu)} style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg, #10b981, #059669)", border: "2px solid rgba(16,185,129,0.4)", color: "#fff", fontWeight: 800, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 12px rgba(16,185,129,0.35)" }}>
+                {user.phoneNumber?.slice(-2) || "U"}
+              </button>
+              {showAccountMenu && (
+                <div style={{ position: "absolute", top: 42, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: 6, minWidth: 190, boxShadow: "0 16px 40px rgba(0,0,0,0.6)", zIndex: 100 }}>
+                  <div style={{ padding: "8px 12px", fontSize: 12, color: "#475569", borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: 4 }}>
+                    📱 ···{user.phoneNumber?.slice(-4)}
+                  </div>
+                  <button onClick={() => { onStart("profile"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>👤 My Profile</button>
+                  <button onClick={() => { logout(); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#f87171", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>Sign Out</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <button onClick={showLoginModal} style={{ padding: "7px 14px", background: "none", border: "1px solid rgba(255,255,255,0.12)", color: "#94a3b8", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.15s" }}>
+                Log In
+              </button>
+              <button onClick={showLoginModal} style={{ padding: "7px 16px", background: "linear-gradient(135deg, #10b981, #059669)", border: "none", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 16px rgba(16,185,129,0.35)" }}>
+                Sign Up →
+              </button>
+            </>
+          )}
         </div>
       </nav>
 
@@ -448,6 +481,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
                 <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Privacy</button>
                 <button className="footer-link" onClick={onTerms} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Terms</button>
                 <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Accessibility</button>
+                <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Do Not Sell My Personal Information</button>
               </div>
             </div>
             <div style={{ fontSize: 11, color: "#1e293b", lineHeight: 1.8 }}>

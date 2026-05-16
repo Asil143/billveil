@@ -80,6 +80,14 @@ function AppContent() {
   const [tip, setTip] = useState(false);
   const [focused, setFocused] = useState(false);
   const autoAnalyzeRef = useRef(false);
+  const accountMenuRef = useRef(null);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => { if (accountMenuRef.current && !accountMenuRef.current.contains(e.target)) setShowAccountMenu(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const goToApp = (t, initialBill) => {
     setTab(t || "analyzer");
@@ -193,27 +201,35 @@ function AppContent() {
             <div style={{ width: 28, height: 28, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: "0 0 12px rgba(16,185,129,0.4)" }}>🛡️</div>
             <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em", color: "#f1f5f9", fontFamily: FONT }}>BillVeil</span>
           </button>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <button onClick={() => setView("about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
+
             {user ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{ fontSize: 12, color: "#10b981", fontWeight: 600, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", padding: "3px 10px", borderRadius: 20 }}>
-                  📱 ···{user.phoneNumber?.slice(-4)}
-                </div>
-                <button onClick={logout} style={{ background: "none", border: "1px solid rgba(255,255,255,0.1)", color: "#64748b", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: FONT, borderRadius: 6, padding: "4px 10px" }}>Sign out</button>
-              </div>
-            ) : usesLeft > 0 ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", padding: "4px 12px", borderRadius: 20 }}>
-                <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", animation: "pulse 2s ease-in-out infinite" }} />
-                {usesLeft} free {usesLeft === 1 ? "analysis" : "analyses"} left
+              <div style={{ position: "relative" }} ref={accountMenuRef}>
+                <button onClick={() => setShowAccountMenu(!showAccountMenu)} style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg, #10b981, #059669)", border: "2px solid rgba(16,185,129,0.4)", color: "#fff", fontWeight: 800, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 12px rgba(16,185,129,0.35)" }}>
+                  {user.phoneNumber?.slice(-2) || "U"}
+                </button>
+                {showAccountMenu && (
+                  <div style={{ position: "absolute", top: 42, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: 6, minWidth: 190, boxShadow: "0 16px 40px rgba(0,0,0,0.6)", zIndex: 100 }}>
+                    <div style={{ padding: "8px 12px", fontSize: 12, color: "#475569", borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: 4 }}>
+                      📱 ···{user.phoneNumber?.slice(-4)}
+                    </div>
+                    <button onClick={() => { setTab("profile"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>👤 My Profile</button>
+                    <button onClick={() => { logout(); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#f87171", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>Sign Out</button>
+                  </div>
+                )}
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
-                <button onClick={showLoginModal} style={{ background: "linear-gradient(135deg, #10b981, #059669)", border: "none", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: FONT, borderRadius: 8, padding: "6px 14px", boxShadow: "0 4px 12px rgba(16,185,129,0.35)" }}>
-                  Sign in free →
-                </button>
-                <div style={{ fontSize: 10, color: "#334155", fontWeight: 500 }}>Unlimited analyses included</div>
-              </div>
+              <>
+                {usesLeft > 0 && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", padding: "4px 12px", borderRadius: 20 }}>
+                    <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", animation: "pulse 2s ease-in-out infinite" }} />
+                    {usesLeft} free {usesLeft === 1 ? "analysis" : "analyses"} left
+                  </div>
+                )}
+                <button onClick={showLoginModal} style={{ padding: "7px 14px", background: "none", border: "1px solid rgba(255,255,255,0.12)", color: "#94a3b8", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Log In</button>
+                <button onClick={showLoginModal} style={{ padding: "7px 14px", background: "linear-gradient(135deg, #10b981, #059669)", border: "none", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 12px rgba(16,185,129,0.35)" }}>Sign Up →</button>
+              </>
             )}
           </div>
         </div>
