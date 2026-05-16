@@ -109,7 +109,7 @@ export default function About({ onBack, onStart }) {
       <footer style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.05)", padding: "28px 20px", textAlign: "center" }}>
         <div style={{ fontSize: 12, color: "#1e293b", lineHeight: 2.2 }}>
           <div>Built for the 330 million Americans who deserve better</div>
-          <div>© 2025 BillVeil · Free forever</div>
+          <div>© 2026 BillVeil</div>
         </div>
       </footer>
     </div>

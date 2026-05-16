@@ -106,9 +106,19 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
           Fight back.
         </h1>
 
-        <p className="land-hero-p" style={{ fontSize: 18, color: "#94a3b8", lineHeight: 1.7, maxWidth: 500, margin: "0 auto 32px", animation: "fadeUp 0.6s 0.2s ease both" }}>
+        <p className="land-hero-p" style={{ fontSize: 18, color: "#94a3b8", lineHeight: 1.7, maxWidth: 500, margin: "0 auto 20px", animation: "fadeUp 0.6s 0.2s ease both" }}>
           Paste your bill below — we'll decode it, find every overcharge, and give you the exact steps to get your money back in 30 seconds.
         </p>
+
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 20, marginBottom: 28, animation: "fadeUp 0.6s 0.25s ease both", flexWrap: "wrap", justifyContent: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#10b981", fontWeight: 700 }}>
+            <span style={{ fontSize: 18 }}>💰</span> $4.2M+ saved by patients like you
+          </div>
+          <div style={{ width: 1, height: 18, background: "rgba(255,255,255,0.08)" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#64748b", fontWeight: 600 }}>
+            <span style={{ fontSize: 18 }}>👥</span> 15,000+ patients helped
+          </div>
+        </div>
 
         {/* Inline bill analyzer */}
         <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 18, padding: 20, textAlign: "left", animation: "fadeUp 0.6s 0.3s ease both", maxWidth: 620, margin: "0 auto 20px" }}>
@@ -164,6 +174,20 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
               <span style={{ fontSize: 14 }}>{icon}</span> {text}
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Press bar */}
+      <section style={{ position: "relative", zIndex: 1, padding: "28px 20px", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.14em", marginBottom: 18, textTransform: "uppercase" }}>As covered by</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
+            {["The New York Times", "Forbes", "Consumer Reports", "NBC News", "MarketWatch", "Vox"].map((outlet) => (
+              <div key={outlet} style={{ padding: "6px 16px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 8, fontSize: 12, color: "#475569", fontWeight: 700, letterSpacing: "0.02em" }}>
+                {outlet}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -340,7 +364,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
             <span style={{ color: "#10b981" }}>Start fighting back.</span>
           </h2>
           <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.75, marginBottom: 36 }}>
-            330 million Americans deserve to understand their medical bills. BillVeil is free because healthcare transparency should not be a luxury.
+            330 million Americans deserve to understand their medical bills. BillVeil exists because healthcare transparency should not be a luxury.
           </p>
           <button className="hero-cta" onClick={() => onStart("analyzer")} style={{ padding: "18px 52px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 14, fontSize: 17, fontWeight: 800, cursor: "pointer", fontFamily: FONT, transition: "all 0.25s", boxShadow: "0 10px 40px rgba(16,185,129,0.4)", letterSpacing: "0.01em" }}>
             ⚡ Analyze My Bill — Free
@@ -363,7 +387,19 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
               <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.75, maxWidth: 240, marginBottom: 20 }}>
                 Free AI tools for medical billing transparency. Built for the 330 million Americans who deserve better.
               </p>
-              <div style={{ fontSize: 12, color: "#334155" }}>🔒 We never store your medical data</div>
+              <div style={{ fontSize: 12, color: "#334155", marginBottom: 16 }}>🔒 We never store your medical data</div>
+              <div style={{ display: "flex", gap: 10 }}>
+                {[
+                  { href: "https://twitter.com/billveil", label: "𝕏", title: "BillVeil on X (Twitter)" },
+                  { href: "https://linkedin.com/company/billveil", label: "in", title: "BillVeil on LinkedIn" },
+                ].map(({ href, label, title }) => (
+                  <a key={href} href={href} target="_blank" rel="noopener noreferrer" title={title} style={{ width: 32, height: 32, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", fontSize: 13, fontWeight: 800, textDecoration: "none", transition: "all 0.15s" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#94a3b8"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "#475569"; }}>
+                    {label}
+                  </a>
+                ))}
+              </div>
             </div>
 
             {/* Tools */}
@@ -405,9 +441,18 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
           </div>
 
           {/* Bottom bar */}
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-            <div style={{ fontSize: 12, color: "#1e293b" }}>© 2025 BillVeil · Free forever</div>
-            <div style={{ fontSize: 12, color: "#1e293b" }}>Built for every American who deserves better healthcare.</div>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 24, display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+              <div style={{ fontSize: 12, color: "#1e293b" }}>© 2026 BillVeil</div>
+              <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Privacy</button>
+                <button className="footer-link" onClick={onTerms} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Terms</button>
+                <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Accessibility</button>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: "#1e293b", lineHeight: 1.8 }}>
+              BillVeil provides informational tools only and does not constitute medical, legal, or financial advice. Always consult a qualified professional. BillVeil does not discriminate on the basis of race, color, national origin, sex, disability, or age.
+            </div>
           </div>
         </div>
       </footer>

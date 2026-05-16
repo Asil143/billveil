@@ -208,9 +208,12 @@ function AppContent() {
                 {usesLeft} free {usesLeft === 1 ? "analysis" : "analyses"} left
               </div>
             ) : (
-              <button onClick={showLoginModal} style={{ background: "linear-gradient(135deg, #10b981, #059669)", border: "none", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: FONT, borderRadius: 8, padding: "6px 14px", boxShadow: "0 4px 12px rgba(16,185,129,0.35)" }}>
-                Sign in free →
-              </button>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
+                <button onClick={showLoginModal} style={{ background: "linear-gradient(135deg, #10b981, #059669)", border: "none", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: FONT, borderRadius: 8, padding: "6px 14px", boxShadow: "0 4px 12px rgba(16,185,129,0.35)" }}>
+                  Sign in free →
+                </button>
+                <div style={{ fontSize: 10, color: "#334155", fontWeight: 500 }}>Unlimited analyses included</div>
+              </div>
             )}
           </div>
         </div>
@@ -303,7 +306,7 @@ function AppContent() {
                 <div style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
                   <div style={{ fontSize: 30, marginBottom: 10 }}>☕</div>
                   <div style={{ fontSize: 18, fontWeight: 800, color: "#fbbf24", marginBottom: 8 }}>Did BillVeil help you?</div>
-                  <div style={{ fontSize: 14, color: "#64748b", marginBottom: 20, lineHeight: 1.7 }}>BillVeil is free forever. If we saved you money, a small tip keeps us running for the next person who needs us.</div>
+                  <div style={{ fontSize: 14, color: "#64748b", marginBottom: 20, lineHeight: 1.7 }}>If we saved you money, a small tip helps keep BillVeil running for the next person who needs us.</div>
                   <a href="https://buy.stripe.com/7sY3cxalf2f769Pf71bfO00" target="_blank" rel="noopener noreferrer" onClick={() => setTip(true)} style={{ display: "inline-block", padding: "12px 32px", background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 20px rgba(245,158,11,0.3)", textDecoration: "none" }}>Leave a Tip ❤️</a>
                 </div>
               ) : (
