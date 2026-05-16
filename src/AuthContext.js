@@ -4,7 +4,7 @@ import {
   isSignInWithEmailLink, signInWithEmailLink,
   linkWithCredential, EmailAuthProvider,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import PhoneLogin from "./PhoneLogin";
 
@@ -163,15 +163,11 @@ export function AuthProvider({ children }) {
           const profile = localStorage.getItem(`bv_profile_${u.uid}`);
           const profileEmail = profile ? JSON.parse(profile)?.email : null;
           if (profileEmail) {
-            // Check 1: email linked directly to Firebase account (same-device verification)
+            // Check if email is linked directly to this Firebase account (same-device)
             const isLinked = auth.currentUser?.providerData?.some(
               p => p.providerId === "password" && p.email?.toLowerCase() === profileEmail.toLowerCase()
             );
-            if (isLinked) { setEmailVerified(true); return; }
-
-            // Check 2: Firestore record (cross-device verification)
-            const snap = await getDoc(doc(db, "email_verifications", emailKey(profileEmail)));
-            if (snap.exists() && snap.data().verified) setEmailVerified(true);
+            if (isLinked) setEmailVerified(true);
           }
         } catch {}
       } else {
@@ -180,6 +176,20 @@ export function AuthProvider({ children }) {
       }
     });
   }, [pendingEmailLink]);
+
+  // Real-time Firestore listener — detects cross-device verification automatically
+  useEffect(() => {
+    if (!user?.uid || emailVerified) return;
+    const profileEmail = profileData?.email?.trim()?.toLowerCase();
+    if (!profileEmail) return;
+
+    const unsub = onSnapshot(
+      doc(db, "email_verifications", emailKey(profileEmail)),
+      (snap) => { if (snap.exists() && snap.data().verified) setEmailVerified(true); },
+      () => {} // silently ignore permission errors (rules not set up yet)
+    );
+    return unsub;
+  }, [user?.uid, emailVerified, profileData?.email]);
 
   // Load profile data when user changes
   useEffect(() => {
