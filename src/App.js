@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Landing from "./Landing";
 import About from "./About";
+import Privacy from "./Privacy";
+import Terms from "./Terms";
 import DisputeLetter from "./DisputeLetter";
 import DrugComparator from "./DrugComparator";
 import DenialFighter from "./DenialFighter";
@@ -77,11 +79,40 @@ function AppContent() {
   const [error, setError] = useState(null);
   const [tip, setTip] = useState(false);
   const [focused, setFocused] = useState(false);
+  const autoAnalyzeRef = useRef(false);
 
-  const goToApp = (t) => { setTab(t || "analyzer"); setView("app"); };
+  const goToApp = (t, initialBill) => {
+    setTab(t || "analyzer");
+    setResult(null);
+    setError(null);
+    if (initialBill) {
+      setBill(initialBill);
+      autoAnalyzeRef.current = true;
+    }
+    setView("app");
+  };
 
-  if (view === "landing") return <Landing onStart={goToApp} onAbout={() => setView("about")} />;
+  // Auto-trigger analysis when coming from landing hero input
+  useEffect(() => {
+    if (autoAnalyzeRef.current && bill.trim() && view === "app" && tab === "analyzer") {
+      autoAnalyzeRef.current = false;
+      if (consumeCredit()) {
+        setLoading(true);
+        setResult(null);
+        setError(null);
+        axios.post("/api/analyze", { bill })
+          .then(r => setResult(r.data.result))
+          .catch(() => setError("Something went wrong. Please try again."))
+          .finally(() => setLoading(false));
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view]);
+
+  if (view === "landing") return <Landing onStart={goToApp} onAbout={() => setView("about")} onPrivacy={() => setView("privacy")} onTerms={() => setView("terms")} />;
   if (view === "about") return <About onBack={() => setView("landing")} onStart={goToApp} />;
+  if (view === "privacy") return <Privacy onBack={() => setView("landing")} />;
+  if (view === "terms") return <Terms onBack={() => setView("landing")} />;
 
   const TABS = [
     { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
@@ -134,20 +165,7 @@ function AppContent() {
         ? "rgba(251,191,36,0.08)" : "rgba(52,211,153,0.08)";
 
       return (
-        <div
-          key={section.key}
-          className="result-card"
-          style={{
-            background: isVerdict ? verdictBg : "rgba(255,255,255,0.03)",
-            border: `1px solid ${isVerdict ? verdictColor + "40" : "rgba(255,255,255,0.08)"}`,
-            borderLeft: `3px solid ${isVerdict ? verdictColor : section.color}`,
-            borderRadius: 12,
-            padding: "20px 24px",
-            marginBottom: 10,
-            animationDelay: `${i * 0.08}s`,
-            animationFillMode: "both",
-          }}
-        >
+        <div key={section.key} className="result-card" style={{ background: isVerdict ? verdictBg : "rgba(255,255,255,0.03)", border: `1px solid ${isVerdict ? verdictColor + "40" : "rgba(255,255,255,0.08)"}`, borderLeft: `3px solid ${isVerdict ? verdictColor : section.color}`, borderRadius: 12, padding: "20px 24px", marginBottom: 10, animationDelay: `${i * 0.08}s`, animationFillMode: "both" }}>
           <div style={{ fontSize: 10, fontWeight: 700, color: isVerdict ? verdictColor : section.color, letterSpacing: "0.12em", marginBottom: 12, textTransform: "uppercase" }}>
             {section.emoji} {section.label}
           </div>
@@ -157,9 +175,7 @@ function AppContent() {
               {content}
             </div>
           ) : (
-            <div style={{ fontSize: 15, color: "#cbd5e1", lineHeight: 1.8, whiteSpace: "pre-line" }}>
-              {content}
-            </div>
+            <div style={{ fontSize: 15, color: "#cbd5e1", lineHeight: 1.8, whiteSpace: "pre-line" }}>{content}</div>
           )}
         </div>
       );
@@ -173,10 +189,10 @@ function AppContent() {
       {/* Header */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: "rgba(5,8,16,0.9)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 20px 6px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button onClick={() => setView("landing")} style={{ display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <div style={{ width: 28, height: 28, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: "0 0 12px rgba(16,185,129,0.4)" }}>🛡️</div>
-            <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em", color: "#f1f5f9" }}>BillVeil</span>
-          </div>
+            <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em", color: "#f1f5f9", fontFamily: FONT }}>BillVeil</span>
+          </button>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <button onClick={() => setView("about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
             {user ? (
