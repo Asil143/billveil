@@ -8,7 +8,7 @@ module.exports = async function (req, res) {
   if (!email || !ownerUid) return res.status(400).json({ error: "Missing email or ownerUid" });
 
   const docId = emailKey(email);
-  const url = `https://firestore.googleapis.com/v1/projects/billveil/databases/(default)/documents/email_verifications/${docId}`;
+  const url = `https://firestore.googleapis.com/v1/projects/billveil/databases/default/documents/email_verifications/${docId}`;
 
   try {
     const resp = await fetch(url, {
