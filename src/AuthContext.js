@@ -16,10 +16,13 @@ const emailKey = (email) =>
 
 const AuthContext = createContext(null);
 
-function EmailLinkScreen({ status }) {
+function EmailLinkScreen({ status, errorCode }) {
   const isSuccess = status === "success";
   const isError = status === "error";
   const isPending = status === "pending";
+
+  const authErrors = ["auth/invalid-action-code", "auth/expired-action-code", "auth/user-disabled"];
+  const isAuthError = authErrors.includes(errorCode);
 
   return (
     <div style={{
@@ -39,8 +42,14 @@ function EmailLinkScreen({ status }) {
       <div style={{ fontSize: 15, color: "#64748b", textAlign: "center", lineHeight: 1.7, maxWidth: 320 }}>
         {isPending && "Please wait a moment."}
         {isSuccess && "You can close this tab and go back to BillVeil on your other device. It will update automatically."}
-        {isError && "The link may have expired or already been used. Please go back to BillVeil and request a new verification email."}
+        {isError && isAuthError && "This link has expired or was already used. Go back to BillVeil, open your Profile, and tap Verify → to send a fresh link."}
+        {isError && !isAuthError && "Something went wrong. Please try again."}
       </div>
+      {isError && errorCode && (
+        <div style={{ marginTop: 16, fontSize: 11, color: "#334155", fontFamily: "monospace" }}>
+          {errorCode}
+        </div>
+      )}
       {isSuccess && (
         <div style={{
           marginTop: 32, padding: "14px 28px",
@@ -61,7 +70,8 @@ export function AuthProvider({ children }) {
   const [profileData, setProfileData] = useState(null);
   const [emailVerified, setEmailVerified] = useState(false);
   const [emailJustVerified, setEmailJustVerified] = useState(false);
-  const [linkStatus, setLinkStatus] = useState(null);
+  const [linkStatus, setLinkStatus] = useState(null);   // null | "pending" | "success" | "error"
+  const [linkErrorCode, setLinkErrorCode] = useState(null);
 
   const pendingEmailLink = useRef(
     isSignInWithEmailLink(auth, window.location.href) ? window.location.href : null
@@ -79,16 +89,21 @@ export function AuthProvider({ children }) {
     const email = localStorage.getItem("bv_pending_email") || urlParams.get("bvemail");
 
     if (!ownerUid || !email) {
+      setLinkErrorCode("missing-params");
       setLinkStatus("error");
       return;
     }
 
-    // Wait for Firebase auth to initialise, then process exactly once
-    const unsub = onAuthStateChanged(auth, async (u) => {
-      unsub(); // fire once only — prevents re-processing on subsequent auth changes
+    const withTimeout = (promise, ms) =>
+      Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms))]);
 
-      const withTimeout = (promise, ms) =>
-        Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms))]);
+    // Use processed flag + let to safely unsubscribe even if Firebase fires synchronously
+    let processed = false;
+    let unsub;
+    unsub = onAuthStateChanged(auth, async (u) => {
+      if (processed) return;
+      processed = true;
+      if (unsub) unsub();
 
       try {
         if (u?.phoneNumber) {
@@ -121,6 +136,7 @@ export function AuthProvider({ children }) {
         setLinkStatus("success");
       } catch (err) {
         console.error("Email link error:", err.code, err.message);
+        setLinkErrorCode(err.code || err.message || "unknown");
         setLinkStatus("error");
       }
     });
@@ -197,7 +213,7 @@ export function AuthProvider({ children }) {
       emailVerified, emailJustVerified, clearEmailJustVerified,
     }}>
       {linkStatus ? (
-        <EmailLinkScreen status={linkStatus} />
+        <EmailLinkScreen status={linkStatus} errorCode={linkErrorCode} />
       ) : (
         children
       )}
