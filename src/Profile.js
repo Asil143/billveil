@@ -61,13 +61,15 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const uid = user?.uid;
+
   useEffect(() => {
-    if (!user) return;
-    const stored = localStorage.getItem(`bv_profile_${user.uid}`);
+    if (!uid) return;
+    const stored = localStorage.getItem(`bv_profile_${uid}`);
     if (stored) {
-      try { setForm((f) => ({ ...f, ...JSON.parse(stored) })); } catch {}
+      try { setForm(JSON.parse(stored)); } catch {}
     }
-  }, [user]);
+  }, [uid]);
 
   const set = (field) => (e) => {
     setForm((f) => ({ ...f, [field]: e.target.value }));
@@ -75,13 +77,12 @@ export default function Profile() {
   };
 
   const save = () => {
+    if (!uid) return;
     setSaving(true);
-    localStorage.setItem(`bv_profile_${user.uid}`, JSON.stringify(form));
-    setTimeout(() => {
-      setSaving(false);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    }, 400);
+    localStorage.setItem(`bv_profile_${uid}`, JSON.stringify(form));
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   };
 
   const inp = (field, extra = {}) => (
