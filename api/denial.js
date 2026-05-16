@@ -24,6 +24,8 @@ module.exports = async function (req, res) {
 Denial reason: "${denial}"
 ${amount ? `Claim amount: $${amount}` : ""}
 
+IMPORTANT: Do NOT use markdown (no ##, no **, no * bullets). Plain text only with the EXACT section headers below:
+
 Respond in this EXACT format:
 
 WHY THEY DENIED IT:

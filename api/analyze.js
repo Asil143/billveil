@@ -21,6 +21,8 @@ module.exports = async function (req, res) {
           role: "user",
           content: `A patient needs help understanding this medical bill or charge: "${bill}"
 
+IMPORTANT: Do NOT use markdown (no ##, no **, no bullet points with *). Use plain text only with the EXACT section headers below, nothing else before them:
+
 Respond in this EXACT format with these EXACT section headers:
 
 WHAT IS THIS:

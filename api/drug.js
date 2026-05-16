@@ -22,6 +22,8 @@ module.exports = async function (req, res) {
           content: `Help this patient find the lowest price for their medication: "${drug}"
 ${price ? `They are currently paying: $${price}` : ""}
 
+IMPORTANT: Do NOT use markdown (no ##, no **, no * bullets). Plain text only with the EXACT section headers below:
+
 Respond in this EXACT format:
 
 WHAT IS THIS DRUG:
