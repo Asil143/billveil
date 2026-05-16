@@ -13,25 +13,40 @@ export function AuthProvider({ children }) {
   const [uses, setUses] = useState(() => parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10));
   const [showModal, setShowModal] = useState(false);
   const [profileData, setProfileData] = useState(null);
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailJustVerified, setEmailJustVerified] = useState(false);
+
+  // Capture the email link URL on first render before history is replaced
   const [pendingEmailLink] = useState(() =>
     isSignInWithEmailLink(auth, window.location.href) ? window.location.href : null
   );
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (u) => setUser(u || null));
+    return onAuthStateChanged(auth, (u) => {
+      setUser(u || null);
+      if (u?.emailVerified) setEmailVerified(true);
+    });
   }, []);
 
-  // When user is ready and there's a pending email link, link the credential
+  // When user is ready and there's a pending email link, link it to the phone account
   useEffect(() => {
     if (!pendingEmailLink || !user) return;
     const email = localStorage.getItem("bv_pending_email");
     if (!email) return;
+
     window.history.replaceState({}, document.title, window.location.pathname);
+
     const credential = EmailAuthProvider.credentialWithLink(email, pendingEmailLink);
     linkWithCredential(user, credential)
-      .then(() => localStorage.removeItem("bv_pending_email"))
+      .then(() => auth.currentUser.reload())
+      .then(() => {
+        localStorage.removeItem("bv_pending_email");
+        setEmailVerified(true);
+        setEmailJustVerified(true);
+      })
       .catch((err) => console.error("Email link error:", err.code, err.message));
-  }, [user, pendingEmailLink]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   useEffect(() => {
     if (user?.uid) {
@@ -64,6 +79,7 @@ export function AuthProvider({ children }) {
 
   const showLoginModal = () => setShowModal(true);
   const logout = () => signOut(auth);
+  const clearEmailJustVerified = () => setEmailJustVerified(false);
   const usesLeft = user ? null : Math.max(0, USE_LIMIT - uses);
 
   const initials = (() => {
@@ -73,7 +89,11 @@ export function AuthProvider({ children }) {
   })();
 
   return (
-    <AuthContext.Provider value={{ user, consumeCredit, usesLeft, logout, showLoginModal, profileData, updateProfile, initials }}>
+    <AuthContext.Provider value={{
+      user, consumeCredit, usesLeft, logout, showLoginModal,
+      profileData, updateProfile, initials,
+      emailVerified, emailJustVerified, clearEmailJustVerified,
+    }}>
       {children}
       {showModal && (
         <PhoneLogin

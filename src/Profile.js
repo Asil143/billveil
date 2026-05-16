@@ -102,7 +102,7 @@ const formatSuggestion = (item) => {
 };
 
 export default function Profile() {
-  const { user, profileData, updateProfile } = useAuth();
+  const { user, profileData, updateProfile, emailVerified } = useAuth();
   const [draft, setDraft] = useState(EMPTY);
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -112,7 +112,7 @@ export default function Profile() {
 
   const form = { ...EMPTY, ...(profileData || {}) };
   const hasAnyData = Object.entries(form).some(([k, v]) => k !== "hasHSA" ? String(v).trim() !== "" : v);
-  const emailVerified = !!form.email && user?.email === form.email && user?.emailVerified;
+  const isEmailVerified = emailVerified && !!form.email;
 
   const set = (field) => (e) => setDraft((d) => ({ ...d, [field]: e.target.value }));
 
@@ -317,10 +317,10 @@ export default function Profile() {
               {form.email ? (
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 2 }}>
                   <span style={{ fontSize: 14, color: "#f1f5f9" }}>{form.email}</span>
-                  {emailVerified ? (
+                  {isEmailVerified ? (
                     <VerifiedBadge />
                   ) : verifyStatus === "sent" ? (
-                    <span style={{ fontSize: 11, color: "#10b981", fontWeight: 600 }}>✓ Check your inbox</span>
+                    <span style={{ fontSize: 11, color: "#10b981", fontWeight: 600 }}>✓ Link sent — check inbox &amp; spam</span>
                   ) : verifyStatus === "error" ? (
                     <button onClick={sendVerification} style={{ fontSize: 11, fontWeight: 700, color: "#f87171", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 8, padding: "3px 10px", cursor: "pointer", fontFamily: FONT }}>
                       Failed — retry →

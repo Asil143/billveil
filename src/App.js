@@ -70,7 +70,7 @@ export default function App() {
 }
 
 function AppContent() {
-  const { user, usesLeft, consumeCredit, logout, showLoginModal, initials } = useAuth();
+  const { user, usesLeft, consumeCredit, logout, showLoginModal, initials, emailJustVerified, clearEmailJustVerified } = useAuth();
   const [view, setView] = useState("landing");
   const [tab, setTab] = useState("analyzer");
   const [bill, setBill] = useState("");
@@ -88,6 +88,13 @@ function AppContent() {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  // When email link is clicked and verified, navigate to profile and show banner
+  useEffect(() => {
+    if (!emailJustVerified) return;
+    setView("app");
+    setTab("profile");
+  }, [emailJustVerified]);
 
   const goToApp = (t, initialBill) => {
     setTab(t || "analyzer");
@@ -192,6 +199,18 @@ function AppContent() {
   return (
     <div style={{ minHeight: "100vh", background: "#050810", fontFamily: FONT, color: "#f1f5f9" }}>
       <style>{CSS}</style>
+
+      {/* Email verified banner */}
+      {emailJustVerified && (
+        <div style={{ position: "fixed", top: 16, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "#0d1f17", border: "1px solid rgba(16,185,129,0.4)", borderRadius: 14, padding: "14px 20px", display: "flex", alignItems: "center", gap: 12, boxShadow: "0 8px 32px rgba(0,0,0,0.5)", minWidth: 280, maxWidth: 420, fontFamily: FONT }}>
+          <div style={{ width: 32, height: 32, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>✓</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#10b981", marginBottom: 2 }}>Email verified!</div>
+            <div style={{ fontSize: 12, color: "#64748b" }}>Your email address has been confirmed.</div>
+          </div>
+          <button onClick={clearEmailJustVerified} style={{ background: "none", border: "none", color: "#475569", fontSize: 18, cursor: "pointer", padding: "0 4px", lineHeight: 1 }}>×</button>
+        </div>
+      )}
 
       {/* Header */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: "rgba(5,8,16,0.9)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
