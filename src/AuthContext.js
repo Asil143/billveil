@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   onAuthStateChanged, signOut,
   isSignInWithEmailLink, signInWithEmailLink,
@@ -16,7 +16,6 @@ const emailKey = (email) =>
 
 const AuthContext = createContext(null);
 
-// Full-screen overlay shown when this device processes the email link
 function EmailLinkScreen({ status }) {
   const isSuccess = status === "success";
   const isError = status === "error";
@@ -62,26 +61,79 @@ export function AuthProvider({ children }) {
   const [profileData, setProfileData] = useState(null);
   const [emailVerified, setEmailVerified] = useState(false);
   const [emailJustVerified, setEmailJustVerified] = useState(false);
-  // "pending" | "success" | "error" | null
   const [linkStatus, setLinkStatus] = useState(null);
 
-  // Capture the email link URL synchronously before history is replaced
-  const [pendingEmailLink] = useState(() =>
+  const pendingEmailLink = useRef(
     isSignInWithEmailLink(auth, window.location.href) ? window.location.href : null
-  );
+  ).current;
 
-  // Show overlay immediately if this is an email link landing
+  // Process email link once on mount using a one-shot auth listener
   useEffect(() => {
-    if (pendingEmailLink) setLinkStatus("pending");
-  }, [pendingEmailLink]);
+    if (!pendingEmailLink) return;
 
-  // On auth state change: reload user + check Firestore for email verification
+    setLinkStatus("pending");
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    const urlParams = new URL(pendingEmailLink).searchParams;
+    const ownerUid = urlParams.get("uid");
+    const email = localStorage.getItem("bv_pending_email") || urlParams.get("bvemail");
+
+    if (!ownerUid || !email) {
+      setLinkStatus("error");
+      return;
+    }
+
+    // Wait for Firebase auth to initialise, then process exactly once
+    const unsub = onAuthStateChanged(auth, async (u) => {
+      unsub(); // fire once only — prevents re-processing on subsequent auth changes
+
+      const withTimeout = (promise, ms) =>
+        Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms))]);
+
+      try {
+        if (u?.phoneNumber) {
+          // Same device as the logged-in phone user — link the credential
+          const cred = EmailAuthProvider.credentialWithLink(email, pendingEmailLink);
+          await withTimeout(linkWithCredential(u, cred), 15000);
+          await u.reload();
+        } else {
+          // Different device — sign in temporarily to get write access
+          await withTimeout(signInWithEmailLink(auth, email, pendingEmailLink), 15000);
+        }
+
+        // Write verification to Firestore while authenticated
+        await withTimeout(
+          setDoc(doc(db, "email_verifications", emailKey(email)), {
+            verified: true,
+            email,
+            ownerUid,
+            verifiedAt: serverTimestamp(),
+          }),
+          10000
+        );
+
+        // Sign out the temporary session (not needed on same-device phone user)
+        if (!auth.currentUser?.phoneNumber) {
+          await signOut(auth);
+        }
+
+        localStorage.removeItem("bv_pending_email");
+        setLinkStatus("success");
+      } catch (err) {
+        console.error("Email link error:", err.code, err.message);
+        setLinkStatus("error");
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Main auth state listener — manages user session and email verification status
   useEffect(() => {
     return onAuthStateChanged(auth, async (u) => {
+      if (pendingEmailLink) return; // email-link page handles its own auth flow
       if (u) {
         try { await u.reload(); } catch {}
         setUser(auth.currentUser);
-
         try {
           const profile = localStorage.getItem(`bv_profile_${u.uid}`);
           const profileEmail = profile ? JSON.parse(profile)?.email : null;
@@ -95,62 +147,7 @@ export function AuthProvider({ children }) {
         setEmailVerified(false);
       }
     });
-  }, []);
-
-  // Handle email link click — works on ANY device, logged in or not
-  useEffect(() => {
-    if (!pendingEmailLink || user === undefined) return;
-
-    const urlParams = new URL(pendingEmailLink).searchParams;
-    const ownerUid = urlParams.get("uid");
-    const email = localStorage.getItem("bv_pending_email") || urlParams.get("bvemail");
-
-    if (!ownerUid || !email) {
-      setLinkStatus("error");
-      return;
-    }
-
-    window.history.replaceState({}, document.title, window.location.pathname);
-
-    const process = async () => {
-      try {
-        if (auth.currentUser?.phoneNumber) {
-          // Same device: link the email credential to the phone account
-          const cred = EmailAuthProvider.credentialWithLink(email, pendingEmailLink);
-          await linkWithCredential(auth.currentUser, cred);
-          await auth.currentUser.reload();
-        } else {
-          // Different device: sign in with email link to get an authenticated session
-          await signInWithEmailLink(auth, email, pendingEmailLink);
-          // NOTE: write to Firestore BEFORE signing out — we need auth for the write
-        }
-
-        // Write verified status while authenticated
-        await setDoc(doc(db, "email_verifications", emailKey(email)), {
-          verified: true,
-          email,
-          ownerUid,
-          verifiedAt: serverTimestamp(),
-        });
-
-        // Sign out the temporary email-link session if it wasn't the phone user
-        if (!auth.currentUser?.phoneNumber) {
-          await signOut(auth);
-        }
-
-        localStorage.removeItem("bv_pending_email");
-        setEmailVerified(true);
-        setEmailJustVerified(true);
-        setLinkStatus("success");
-      } catch (err) {
-        console.error("Email link error:", err.code, err.message);
-        setLinkStatus("error");
-      }
-    };
-
-    process();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [pendingEmailLink]);
 
   // Load profile data when user changes
   useEffect(() => {
