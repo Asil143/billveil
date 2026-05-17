@@ -12,6 +12,11 @@ const CATEGORIES = [
       { tab: "denial", emoji: "⚔️", label: "Denial Fighter", desc: "Insurance denied your claim? We write the appeal and walk you through escalation." },
       { tab: "negotiate", emoji: "📞", label: "Negotiation Script", desc: "Word-for-word phone script to call billing and get a lower bill." },
       { tab: "debtrights", emoji: "⚖️", label: "Debt Rights Checker", desc: "Know your state-specific legal rights against medical debt collectors." },
+      { tab: "surprisebill", emoji: "🚨", label: "Surprise Billing Checker", desc: "Check if your bill violates the No Surprises Act (2022) and how to dispute it." },
+      { tab: "itemization", emoji: "📑", label: "Itemization Request", desc: "Generate a letter demanding a fully itemized bill — often reveals duplicate charges." },
+      { tab: "charitycare", emoji: "🤝", label: "Charity Care Finder", desc: "Every nonprofit hospital must offer charity care. Find it and apply — could erase your bill." },
+      { tab: "paymentplan", emoji: "💳", label: "Payment Plan Negotiator", desc: "Get a 0% interest payment plan letter and strategy to reduce the balance first." },
+      { tab: "creditcard", emoji: "⚠️", label: "Medical Credit Card Warning", desc: "Understand the deferred interest traps in CareCredit and similar cards before you sign." },
     ],
   },
   {
@@ -22,6 +27,9 @@ const CATEGORIES = [
       { tab: "eob", emoji: "📋", label: "EOB Explainer", desc: "Paste your Explanation of Benefits — we decode what you actually owe." },
       { tab: "priorauth", emoji: "📝", label: "Prior Auth Helper", desc: "Complete prior authorization letter, ready to print and submit." },
       { tab: "secondopinion", emoji: "🩺", label: "Second Opinion Finder", desc: "Which specialist to see, what questions to ask, red flags to watch for." },
+      { tab: "insplan", emoji: "🏥", label: "Insurance Plan Decoder", desc: "Paste your Summary of Benefits — we explain deductibles, coverage, and hidden gotchas." },
+      { tab: "providercheck", emoji: "🔍", label: "Provider Network Checker", desc: "Is your doctor in-network? Know the real cost difference and hidden risks before your visit." },
+      { tab: "hsafsa", emoji: "💰", label: "HSA / FSA Optimizer", desc: "Find every expense that qualifies for tax-free spending — including ones most people miss." },
     ],
   },
   {
@@ -31,26 +39,23 @@ const CATEGORIES = [
     tools: [
       { tab: "drug", emoji: "💊", label: "Drug Price Comparator", desc: "Find the fair price and cheapest pharmacy for any medication." },
       { tab: "genericdrug", emoji: "💊", label: "Generic Drug Finder", desc: "Generic equivalent, discount programs, and a script to ask your doctor." },
+      { tab: "costestimate", emoji: "🔮", label: "Pre-Treatment Cost Estimator", desc: "Estimate your real out-of-pocket before any procedure — find cheaper options first." },
     ],
   },
 ];
 
 const COMING_SOON = [
   { emoji: "📸", label: "Bill Scan", desc: "Photo or PDF upload — auto-extracts bill data so you never have to type.", color: "#fbbf24" },
-  { emoji: "🤝", label: "Charity Care Finder", desc: "Every nonprofit hospital must offer charity care. Find the program and apply.", color: "#34d399" },
-  { emoji: "🚫", label: "No Surprises Act Checker", desc: "Check if your bill violates the No Surprises Act (2022) and auto-dispute it.", color: "#f87171" },
   { emoji: "🏥", label: "Hospital Price Lookup", desc: "Federal law requires hospitals to publish prices. Find what yours actually charges.", color: "#60a5fa" },
   { emoji: "👥", label: "Community Price Board", desc: "Crowdsourced real prices from patients. What people actually paid near you.", color: "#a78bfa" },
-  { emoji: "🔮", label: "Pre-Treatment Estimator", desc: "Before any procedure — estimate real out-of-pocket and find the cheapest facility.", color: "#fbbf24" },
   { emoji: "🤖", label: "BillVeil Concierge", desc: "One AI chat that handles everything. Just describe your situation and talk.", color: "#10b981" },
   { emoji: "📊", label: "Case Tracker", desc: "Track every dispute with legal deadlines and automatic follow-up alerts.", color: "#f87171" },
   { emoji: "🏆", label: "Savings Dashboard", desc: "Your total savings, disputes won, and shareable savings card.", color: "#34d399" },
   { emoji: "🎯", label: "Bill Score", desc: "A single number showing your medical billing health and overpayment risk.", color: "#60a5fa" },
-  { emoji: "📑", label: "Insurance Plan Decoder", desc: "Paste your Summary of Benefits — AI explains what your plan actually covers.", color: "#a78bfa" },
-  { emoji: "💳", label: "HSA/FSA Optimizer", desc: "Find every expense that qualifies for HSA/FSA spending you might be missing.", color: "#fbbf24" },
-  { emoji: "🗺️", label: "Provider Network Checker", desc: "Is your doctor in-network? What in vs out-of-network actually costs you.", color: "#60a5fa" },
-  { emoji: "🏦", label: "Medical Credit Card Warning", desc: "CareCredit and Synchrony have deferred interest traps. Know before you sign.", color: "#f87171" },
-  { emoji: "📬", label: "Itemization Request", desc: "Generate a letter demanding a fully itemized bill — reveals hidden charges.", color: "#34d399" },
+  { emoji: "📧", label: "Automatic Bill Monitor", desc: "Connects to your email — flags suspicious charges before you pay.", color: "#a78bfa" },
+  { emoji: "📬", label: "Instant Dispute Filing", desc: "Submit dispute letters directly to the billing department — no printing.", color: "#fbbf24" },
+  { emoji: "📈", label: "Insurance Plan Optimizer", desc: "Analyzes your medical history to recommend the best plan during open enrollment.", color: "#10b981" },
+  { emoji: "🗂️", label: "Personal Medical Finance Hub", desc: "Central dashboard for all bills, EOBs, disputes, and AI-powered pattern analysis.", color: "#60a5fa" },
 ];
 
 export default function ServicesHub() {
