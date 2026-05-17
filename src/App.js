@@ -13,6 +13,7 @@ import NegotiationScript from "./NegotiationScript";
 import EOBExplainer from "./EOBExplainer";
 import PriorAuthHelper from "./PriorAuthHelper";
 import DebtRightsChecker from "./DebtRightsChecker";
+import SecondOpinionFinder from "./SecondOpinionFinder";
 import { AuthProvider, useAuth } from "./AuthContext";
 import Profile from "./Profile";
 
@@ -67,7 +68,7 @@ const CSS = `
   }
 `;
 
-const VALID_TABS = ["analyzer", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "profile"];
+const VALID_TABS = ["analyzer", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "profile"];
 
 export default function App() {
   return (
@@ -128,7 +129,7 @@ function AppShell() {
   const location = useLocation();
   const { user, usesLeft, consumeCredit, logout, showLoginModal, initials, emailJustVerified, clearEmailJustVerified } = useAuth();
 
-  const TAB_TITLES = { analyzer: "Bill Analyzer", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", eob: "EOB Explainer", priorauth: "Prior Auth Helper", debtrights: "Debt Rights Checker", profile: "My Profile" };
+  const TAB_TITLES = { analyzer: "Bill Analyzer", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", eob: "EOB Explainer", priorauth: "Prior Auth Helper", debtrights: "Debt Rights Checker", secondopinion: "Second Opinion Finder", profile: "My Profile" };
   useTitle(`${TAB_TITLES[tab] || "App"} — BillVeil`);
 
   const [bill, setBill] = useState(location.state?.initialBill || "");
@@ -244,6 +245,7 @@ function AppShell() {
     { id: "eob", emoji: "📋", label: "EOB Explainer" },
     { id: "priorauth", emoji: "📝", label: "Prior Auth" },
     { id: "debtrights", emoji: "⚖️", label: "Debt Rights" },
+    { id: "secondopinion", emoji: "🩺", label: "2nd Opinion" },
   ];
 
   return (
@@ -314,6 +316,7 @@ function AppShell() {
         {tab === "eob" && <EOBExplainer />}
         {tab === "priorauth" && <PriorAuthHelper />}
         {tab === "debtrights" && <DebtRightsChecker />}
+        {tab === "secondopinion" && <SecondOpinionFinder />}
         {tab === "profile" && <Profile />}
 
         {tab === "analyzer" && <>
