@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import Landing from "./Landing";
 import About from "./About";
@@ -61,87 +62,84 @@ const CSS = `
   }
 `;
 
+const VALID_TABS = ["analyzer", "dispute", "drug", "denial", "profile"];
+
 export default function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/:tab" element={<AppShell />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
 }
 
-const APP_TABS = ["analyzer", "dispute", "drug", "denial", "profile"];
-const hashToState = () => {
-  const h = window.location.hash.slice(1);
-  if (APP_TABS.includes(h)) return { view: "app", tab: h };
-  if (h === "about") return { view: "about", tab: "analyzer" };
-  if (h === "privacy") return { view: "privacy", tab: "analyzer" };
-  if (h === "terms") return { view: "terms", tab: "analyzer" };
-  return { view: "landing", tab: "analyzer" };
-};
+function LandingPage() {
+  const navigate = useNavigate();
+  return (
+    <Landing
+      onStart={(t, bill) => navigate(`/${t || "analyzer"}`, { state: { initialBill: bill } })}
+      onAbout={() => navigate("/about")}
+      onPrivacy={() => navigate("/privacy")}
+      onTerms={() => navigate("/terms")}
+    />
+  );
+}
 
-function AppContent() {
+function AboutPage() {
+  const navigate = useNavigate();
+  return <About onBack={() => navigate(-1)} onStart={(t) => navigate(`/${t || "analyzer"}`)} />;
+}
+
+function PrivacyPage() {
+  const navigate = useNavigate();
+  return <Privacy onBack={() => navigate(-1)} />;
+}
+
+function TermsPage() {
+  const navigate = useNavigate();
+  return <Terms onBack={() => navigate(-1)} />;
+}
+
+function AppShell() {
+  const { tab } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { user, usesLeft, consumeCredit, logout, showLoginModal, initials, emailJustVerified, clearEmailJustVerified } = useAuth();
-  const [view, setView] = useState(() => hashToState().view);
-  const [tab, setTab] = useState(() => hashToState().tab);
-  const [bill, setBill] = useState("");
+
+  const [bill, setBill] = useState(location.state?.initialBill || "");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [tip, setTip] = useState(false);
   const [focused, setFocused] = useState(false);
-  const autoAnalyzeRef = useRef(false);
+  const autoAnalyzeRef = useRef(!!location.state?.initialBill);
   const accountMenuRef = useRef(null);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
 
-  const navigate = (newView, newTab) => {
-    let hash = "";
-    if (newView === "app") hash = `#${newTab || "analyzer"}`;
-    else if (newView !== "landing") hash = `#${newView}`;
-    window.history.pushState({}, "", hash || window.location.pathname);
-    setView(newView);
-    if (newTab !== undefined) setTab(newTab);
-  };
-
   useEffect(() => {
-    const handler = (e) => { if (accountMenuRef.current && !accountMenuRef.current.contains(e.target)) setShowAccountMenu(false); };
+    const handler = (e) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(e.target))
+        setShowAccountMenu(false);
+    };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   useEffect(() => {
-    const handler = () => {
-      const { view: v, tab: t } = hashToState();
-      setView(v);
-      setTab(t);
-    };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
-  }, []);
-
-  // When email link is clicked and verified, navigate to profile and show banner
-  useEffect(() => {
     if (!emailJustVerified) return;
-    window.history.replaceState({}, "", "#profile");
-    setView("app");
-    setTab("profile");
-  }, [emailJustVerified]);
+    navigate("/profile", { replace: true });
+  }, [emailJustVerified, navigate]);
 
-  const goToApp = (t, initialBill) => {
-    const newTab = t || "analyzer";
-    setTab(newTab);
-    setResult(null);
-    setError(null);
-    if (initialBill) {
-      setBill(initialBill);
-      autoAnalyzeRef.current = true;
-    }
-    window.history.pushState({}, "", `#${newTab}`);
-    setView("app");
-  };
-
-  // Auto-trigger analysis when coming from landing hero input
   useEffect(() => {
-    if (autoAnalyzeRef.current && bill.trim() && view === "app" && tab === "analyzer") {
+    if (autoAnalyzeRef.current && bill.trim() && tab === "analyzer") {
       autoAnalyzeRef.current = false;
       if (consumeCredit()) {
         setLoading(true);
@@ -154,19 +152,9 @@ function AppContent() {
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view]);
+  }, []);
 
-  if (view === "landing") return <Landing onStart={goToApp} onAbout={() => navigate("about")} onPrivacy={() => navigate("privacy")} onTerms={() => navigate("terms")} />;
-  if (view === "about") return <About onBack={() => navigate("landing")} onStart={goToApp} />;
-  if (view === "privacy") return <Privacy onBack={() => navigate("landing")} />;
-  if (view === "terms") return <Terms onBack={() => navigate("landing")} />;
-
-  const TABS = [
-    { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
-    { id: "dispute", emoji: "✉️", label: "Dispute Letter" },
-    { id: "drug", emoji: "💊", label: "Drug Prices" },
-    { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
-  ];
+  if (!VALID_TABS.includes(tab)) return <Navigate to="/analyzer" replace />;
 
   const analyzeBill = async () => {
     if (!bill.trim()) return;
@@ -228,11 +216,17 @@ function AppContent() {
     });
   };
 
+  const TABS = [
+    { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
+    { id: "dispute", emoji: "✉️", label: "Dispute Letter" },
+    { id: "drug", emoji: "💊", label: "Drug Prices" },
+    { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
+  ];
+
   return (
     <div style={{ minHeight: "100vh", background: "#050810", fontFamily: FONT, color: "#f1f5f9" }}>
       <style>{CSS}</style>
 
-      {/* Email verified banner */}
       {emailJustVerified && (
         <div style={{ position: "fixed", top: 16, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "#0d1f17", border: "1px solid rgba(16,185,129,0.4)", borderRadius: 14, padding: "14px 20px", display: "flex", alignItems: "center", gap: 12, boxShadow: "0 8px 32px rgba(0,0,0,0.5)", minWidth: 280, maxWidth: 420, fontFamily: FONT }}>
           <div style={{ width: 32, height: 32, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>✓</div>
@@ -244,15 +238,14 @@ function AppContent() {
         </div>
       )}
 
-      {/* Header */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: "rgba(5,8,16,0.9)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 20px 6px" }}>
-          <button onClick={() => navigate("landing")} style={{ display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+          <button onClick={() => navigate("/")} style={{ display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <div style={{ width: 28, height: 28, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: "0 0 12px rgba(16,185,129,0.4)" }}>🛡️</div>
             <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em", color: "#f1f5f9", fontFamily: FONT }}>BillVeil</span>
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <button onClick={() => navigate("about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
+            <button onClick={() => navigate("/about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
 
             {user ? (
               <div style={{ position: "relative" }} ref={accountMenuRef}>
@@ -261,7 +254,7 @@ function AppContent() {
                 </button>
                 {showAccountMenu && (
                   <div style={{ position: "absolute", top: 42, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: 6, minWidth: 190, boxShadow: "0 16px 40px rgba(0,0,0,0.6)", zIndex: 100 }}>
-                    <button onClick={() => { navigate("app", "profile"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>👤 My Profile</button>
+                    <button onClick={() => { navigate("/profile"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>👤 My Profile</button>
                     <button onClick={() => { logout(); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#f87171", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>Sign Out</button>
                   </div>
                 )}
@@ -282,7 +275,7 @@ function AppContent() {
         </div>
         <div style={{ display: "flex", gap: 4, padding: "0 12px 10px", overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
           {TABS.map((t) => (
-            <button key={t.id} onClick={() => navigate("app", t.id)} style={{ padding: "7px 14px", background: tab === t.id ? "rgba(16,185,129,0.12)" : "transparent", border: `1px solid ${tab === t.id ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.07)"}`, borderRadius: 8, color: tab === t.id ? "#10b981" : "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap", flexShrink: 0 }}>
+            <button key={t.id} onClick={() => navigate(`/${t.id}`)} style={{ padding: "7px 14px", background: tab === t.id ? "rgba(16,185,129,0.12)" : "transparent", border: `1px solid ${tab === t.id ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.07)"}`, borderRadius: 8, color: tab === t.id ? "#10b981" : "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap", flexShrink: 0 }}>
               {t.emoji} {t.label}
             </button>
           ))}
