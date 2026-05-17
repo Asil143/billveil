@@ -252,7 +252,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
 
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#10b981", padding: "6px 18px", borderRadius: 24, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 28, animation: "fadeUp 0.6s ease both" }}>
           <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", animation: "pulse 2s ease-in-out infinite" }} />
-          AI-POWERED · NO SIGNUP REQUIRED
+          44 FREE TOOLS · NO SIGNUP REQUIRED
         </div>
 
         <h1 className="hero-h1" style={{ fontSize: "clamp(34px, 7.5vw, 62px)", fontWeight: 900, lineHeight: 1.06, letterSpacing: "-0.04em", marginBottom: 20, animation: "fadeUp 0.6s 0.1s ease both" }}>
@@ -362,14 +362,21 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
         </div>
       </section>
 
-      {/* Press bar */}
-      <section style={{ position: "relative", zIndex: 1, padding: "28px 20px", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+      {/* Data sources bar */}
+      <section style={{ position: "relative", zIndex: 1, padding: "24px 20px", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.14em", marginBottom: 18, textTransform: "uppercase" }}>As covered by</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.14em", marginBottom: 16, textTransform: "uppercase" }}>Powered by official data sources</div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
-            {["The New York Times", "Forbes", "Consumer Reports", "NBC News", "MarketWatch", "Vox"].map((outlet) => (
-              <div key={outlet} style={{ padding: "6px 16px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 8, fontSize: 12, color: "#475569", fontWeight: 700, letterSpacing: "0.02em" }}>
-                {outlet}
+            {[
+              { label: "CMS Medicare Rates", desc: "Official allowable rates" },
+              { label: "No Surprises Act 2022", desc: "Federal billing protection" },
+              { label: "USPSTF Guidelines", desc: "Preventive care standards" },
+              { label: "ACA / ERISA Law", desc: "Insurance appeal rights" },
+              { label: "HIPAA Regulations", desc: "Patient data rights" },
+              { label: "State Charity Care Laws", desc: "Hospital forgiveness rules" },
+            ].map(({ label, desc }) => (
+              <div key={label} title={desc} style={{ padding: "6px 14px", background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.12)", borderRadius: 8, fontSize: 11, color: "#475569", fontWeight: 700, letterSpacing: "0.01em" }}>
+                {label}
               </div>
             ))}
           </div>
@@ -429,7 +436,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
           <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 16 }}>SERVICES</div>
           <h2 style={{ fontSize: "clamp(26px, 5vw, 40px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 12 }}>Every tool you need. Free.</h2>
           <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.7, maxWidth: 460, margin: "0 auto" }}>
-            21 AI tools to understand, fight, and reduce your medical bills — organized by what you need to do right now.
+            44 specialized tools to understand, fight, and reduce your medical bills — organized by what you need to do right now.
           </p>
         </div>
 
@@ -562,6 +569,44 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
                 {openFaq === i && (
                   <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.85, marginTop: 12 }}>{a}</div>
                 )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Privacy & Security Trust Section */}
+      <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "80px 20px", background: "rgba(16,185,129,0.015)" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 16 }}>PRIVACY & SECURITY</div>
+            <h2 style={{ fontSize: "clamp(24px, 4.5vw, 36px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 12 }}>Your health data belongs to you.</h2>
+            <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>We built BillVeil with privacy as the foundation — not an afterthought. Here's exactly how we handle your information.</p>
+          </div>
+          <div className="land-3col" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 28 }}>
+            {[
+              { icon: "🚫", title: "Nothing stored", body: "We do not log, save, or store anything you type into BillVeil. Every session is stateless — when you close the tab, the data is gone." },
+              { icon: "🔒", title: "256-bit TLS encryption", body: "All data travels between your browser and our servers over 256-bit TLS — the same standard used by banks and healthcare systems." },
+              { icon: "👤", title: "No health record created", body: "We never build a health profile. We don't know your name, diagnoses, or provider. A phone number for login is all we ever ask for." },
+            ].map(({ icon, title, body }) => (
+              <div key={title} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: "24px 20px" }}>
+                <div style={{ fontSize: 28, marginBottom: 12 }}>{icon}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>{title}</div>
+                <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.75 }}>{body}</div>
+              </div>
+            ))}
+          </div>
+          <div className="land-2col" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 14 }}>
+            {[
+              { icon: "🤖", title: "AI processes, never learns from you", body: "The AI model analyzes your bill in the moment. It does not retain your inputs, improve from your data, or share results with any third party." },
+              { icon: "📋", title: "HIPAA-aware practices", body: "While BillVeil is an informational tool rather than a covered entity, we follow HIPAA-aligned data minimization principles by design." },
+            ].map(({ icon, title, body }) => (
+              <div key={title} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: "24px 20px", display: "flex", gap: 16, alignItems: "flex-start" }}>
+                <div style={{ fontSize: 24, flexShrink: 0 }}>{icon}</div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#f1f5f9", marginBottom: 6 }}>{title}</div>
+                  <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.75 }}>{body}</div>
+                </div>
               </div>
             ))}
           </div>

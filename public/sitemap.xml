@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://billveil.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://billveil.com/services</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <!-- Fight Your Bill -->
+  <url><loc>https://billveil.com/billscan</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/dispute</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/denial</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/negotiate</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/debtrights</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/surprisebill</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/itemization</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/charitycare</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/paymentplan</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://billveil.com/creditcard</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://billveil.com/patientrights</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/hipaa</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/mentalparity</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Understand Your Coverage -->
+  <url><loc>https://billveil.com/eob</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/priorauth</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/secondopinion</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://billveil.com/insplan</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/providercheck</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://billveil.com/hsafsa</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/preventive</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Find Savings -->
+  <url><loc>https://billveil.com/drug</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/genericdrug</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/costestimate</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/hospitalprice</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/priceboard</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://billveil.com/cobra</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/cptlookup</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/erurgent</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/hospitalquality</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Track Your Progress -->
+  <url><loc>https://billveil.com/casetracker</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://billveil.com/savings</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://billveil.com/hub</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://billveil.com/glossary</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Financial & Tax Tools -->
+  <url><loc>https://billveil.com/medtax</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/fsatracker</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Populations & Life Events -->
+  <url><loc>https://billveil.com/medicare</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/veterans</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/chronicdisease</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- AI Tools -->
+  <url><loc>https://billveil.com/concierge</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/planoptimizer</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/insurance</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Static pages -->
+  <url><loc>https://billveil.com/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://billveil.com/privacy</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://billveil.com/terms</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+</urlset>
