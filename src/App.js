@@ -34,6 +34,20 @@ import HospitalPriceLookup from "./HospitalPriceLookup";
 import CommunityPriceBoard from "./CommunityPriceBoard";
 import PersonalFinanceHub from "./PersonalFinanceHub";
 import InsuranceFinder from "./InsuranceFinder";
+import COBRACalculator from "./COBRACalculator";
+import CPTCodeLookup from "./CPTCodeLookup";
+import PreventiveCareChecker from "./PreventiveCareChecker";
+import ERvsUrgentCare from "./ERvsUrgentCare";
+import PatientRightsGuide from "./PatientRightsGuide";
+import HIPAARightsGuide from "./HIPAARightsGuide";
+import MentalHealthParityChecker from "./MentalHealthParityChecker";
+import MedicalTaxCalculator from "./MedicalTaxCalculator";
+import FSATracker from "./FSATracker";
+import MedicareNavigator from "./MedicareNavigator";
+import VeteransBenefitsGuide from "./VeteransBenefitsGuide";
+import ChronicDiseasePlanner from "./ChronicDiseasePlanner";
+import MedicalGlossary from "./MedicalGlossary";
+import HospitalQualityChecker from "./HospitalQualityChecker";
 import { AuthProvider, useAuth } from "./AuthContext";
 import Profile from "./Profile";
 import ErrorBoundary from "./ErrorBoundary";
@@ -89,7 +103,7 @@ const CSS = `
   }
 `;
 
-const VALID_TABS = ["analyzer", "services", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "genericdrug", "insplan", "surprisebill", "itemization", "charitycare", "paymentplan", "creditcard", "hsafsa", "providercheck", "costestimate", "billscan", "casetracker", "savings", "concierge", "planoptimizer", "hospitalprice", "priceboard", "hub", "insurance", "profile"];
+const VALID_TABS = ["analyzer", "services", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "genericdrug", "insplan", "surprisebill", "itemization", "charitycare", "paymentplan", "creditcard", "hsafsa", "providercheck", "costestimate", "billscan", "casetracker", "savings", "concierge", "planoptimizer", "hospitalprice", "priceboard", "hub", "insurance", "profile", "cobra", "cptlookup", "preventive", "erurgent", "patientrights", "hipaa", "mentalparity", "medtax", "fsatracker", "medicare", "veterans", "chronicdisease", "glossary", "hospitalquality"];
 
 export default function App() {
   return (
@@ -152,7 +166,7 @@ function AppShell() {
   const location = useLocation();
   const { user, usesLeft, consumeCredit, logout, showLoginModal, initials, emailJustVerified, clearEmailJustVerified } = useAuth();
 
-  const TAB_TITLES = { analyzer: "Bill Analyzer", services: "Services", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", eob: "EOB Explainer", priorauth: "Prior Auth Helper", debtrights: "Debt Rights Checker", secondopinion: "Second Opinion Finder", genericdrug: "Generic Drug Finder", insplan: "Insurance Plan Decoder", surprisebill: "Surprise Billing Checker", itemization: "Itemization Request", charitycare: "Charity Care Finder", paymentplan: "Payment Plan Negotiator", creditcard: "Medical Credit Card Warning", hsafsa: "HSA/FSA Optimizer", providercheck: "Provider Network Checker", costestimate: "Pre-Treatment Cost Estimator", billscan: "Bill Scan", casetracker: "Case Tracker", savings: "Savings Dashboard", concierge: "BillVeil Concierge", planoptimizer: "Insurance Plan Optimizer", hospitalprice: "Hospital Price Lookup", priceboard: "Community Price Board", hub: "My Hub", insurance: "Insurance Finder", profile: "My Profile" };
+  const TAB_TITLES = { analyzer: "Bill Analyzer", services: "Services", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", eob: "EOB Explainer", priorauth: "Prior Auth Helper", debtrights: "Debt Rights Checker", secondopinion: "Second Opinion Finder", genericdrug: "Generic Drug Finder", insplan: "Insurance Plan Decoder", surprisebill: "Surprise Billing Checker", itemization: "Itemization Request", charitycare: "Charity Care Finder", paymentplan: "Payment Plan Negotiator", creditcard: "Medical Credit Card Warning", hsafsa: "HSA/FSA Optimizer", providercheck: "Provider Network Checker", costestimate: "Pre-Treatment Cost Estimator", billscan: "Bill Scan", casetracker: "Case Tracker", savings: "Savings Dashboard", concierge: "BillVeil Concierge", planoptimizer: "Insurance Plan Optimizer", hospitalprice: "Hospital Price Lookup", priceboard: "Community Price Board", hub: "My Hub", insurance: "Insurance Finder", profile: "My Profile", cobra: "COBRA Calculator", cptlookup: "CPT Code Lookup", preventive: "Preventive Care Checker", erurgent: "ER vs. Urgent Care Guide", patientrights: "Patient Rights Guide", hipaa: "HIPAA Rights Guide", mentalparity: "Mental Health Parity Checker", medtax: "Medical Tax Calculator", fsatracker: "FSA Tracker", medicare: "Medicare Navigator", veterans: "Veterans Benefits Guide", chronicdisease: "Chronic Disease Planner", glossary: "Medical Billing Glossary", hospitalquality: "Hospital Quality Checker" };
   useTitle(`${TAB_TITLES[tab] || "App"} — BillVeil`);
 
   const [bill, setBill] = useState(location.state?.initialBill || "");
@@ -356,6 +370,20 @@ function AppShell() {
         {tab === "secondopinion" && <SecondOpinionFinder />}
         {tab === "genericdrug" && <GenericDrugFinder />}
         {tab === "profile" && <Profile />}
+        {tab === "cobra" && <COBRACalculator />}
+        {tab === "cptlookup" && <CPTCodeLookup />}
+        {tab === "preventive" && <PreventiveCareChecker />}
+        {tab === "erurgent" && <ERvsUrgentCare />}
+        {tab === "patientrights" && <PatientRightsGuide />}
+        {tab === "hipaa" && <HIPAARightsGuide />}
+        {tab === "mentalparity" && <MentalHealthParityChecker />}
+        {tab === "medtax" && <MedicalTaxCalculator />}
+        {tab === "fsatracker" && <FSATracker />}
+        {tab === "medicare" && <MedicareNavigator />}
+        {tab === "veterans" && <VeteransBenefitsGuide />}
+        {tab === "chronicdisease" && <ChronicDiseasePlanner />}
+        {tab === "glossary" && <MedicalGlossary />}
+        {tab === "hospitalquality" && <HospitalQualityChecker />}
 
         {tab === "analyzer" && <>
 

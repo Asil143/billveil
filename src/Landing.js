@@ -61,6 +61,9 @@ const ALL_SERVICES = [
       { tab: "charitycare", emoji: "🤝", label: "Charity Care Finder" },
       { tab: "paymentplan", emoji: "💳", label: "Payment Plan Negotiator" },
       { tab: "creditcard", emoji: "⚠️", label: "Medical Credit Card Warning" },
+      { tab: "patientrights", emoji: "⚖️", label: "Patient Rights Guide" },
+      { tab: "hipaa", emoji: "🔒", label: "HIPAA Rights Guide" },
+      { tab: "mentalparity", emoji: "🧠", label: "Mental Health Parity" },
     ],
   },
   {
@@ -74,6 +77,7 @@ const ALL_SERVICES = [
       { tab: "insplan", emoji: "🏥", label: "Insurance Plan Decoder" },
       { tab: "providercheck", emoji: "🔍", label: "Provider Network Checker" },
       { tab: "hsafsa", emoji: "💰", label: "HSA / FSA Optimizer" },
+      { tab: "preventive", emoji: "🩺", label: "Preventive Care Checker" },
     ],
   },
   {
@@ -86,6 +90,10 @@ const ALL_SERVICES = [
       { tab: "costestimate", emoji: "🔮", label: "Pre-Treatment Cost Estimator" },
       { tab: "hospitalprice", emoji: "🏥", label: "Hospital Price Lookup" },
       { tab: "priceboard", emoji: "👥", label: "Community Price Board" },
+      { tab: "cobra", emoji: "🧮", label: "COBRA Calculator" },
+      { tab: "cptlookup", emoji: "🔢", label: "CPT Code Lookup" },
+      { tab: "erurgent", emoji: "🏥", label: "ER vs. Urgent Care" },
+      { tab: "hospitalquality", emoji: "🏆", label: "Hospital Quality Checker" },
     ],
   },
   {
@@ -96,6 +104,26 @@ const ALL_SERVICES = [
       { tab: "casetracker", emoji: "📊", label: "Case Tracker" },
       { tab: "savings", emoji: "🏆", label: "Savings Dashboard" },
       { tab: "hub", emoji: "🗂️", label: "My Hub" },
+      { tab: "glossary", emoji: "📚", label: "Medical Glossary" },
+    ],
+  },
+  {
+    label: "Financial & Tax Tools",
+    color: "#fb923c",
+    icon: "🧾",
+    tools: [
+      { tab: "medtax", emoji: "🧾", label: "Medical Tax Calculator" },
+      { tab: "fsatracker", emoji: "⏰", label: "FSA Tracker" },
+    ],
+  },
+  {
+    label: "Populations & Life Events",
+    color: "#38bdf8",
+    icon: "🎖️",
+    tools: [
+      { tab: "medicare", emoji: "🏛️", label: "Medicare Navigator" },
+      { tab: "veterans", emoji: "🎖️", label: "Veterans Benefits" },
+      { tab: "chronicdisease", emoji: "🩺", label: "Chronic Disease Planner" },
     ],
   },
   {

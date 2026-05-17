@@ -846,6 +846,172 @@ KEY DATES TO KNOW:
 Be specific to ${state} and their actual income/family situation. Include real URLs where helpful (healthcare.gov, medicare.gov, medicaid.gov). This person needs actionable guidance, not vague advice.`;
       break;
     }
+    case "cptlookup": {
+      const { query } = body;
+      if (!query) return res.status(400).json({ error: "Missing code or procedure" });
+      maxTokens = 900;
+      temperature = 0.2;
+      systemMsg = "You are a medical billing expert with comprehensive knowledge of CPT codes, Medicare reimbursement rates, and hospital pricing practices. You provide accurate, plain-language explanations.";
+      prompt = `Look up this CPT code or medical procedure: "${query}"
+
+WHAT IT IS:
+[Plain English description of the procedure. What the doctor actually does. Where it's typically performed. Duration.]
+
+MEDICARE RATE:
+[The 2024 Medicare allowable rate — specific dollar amount. If it varies by setting, give both. Format: "$X outpatient / $Y inpatient" if different.]
+
+FAIR PRICE RANGE:
+[What a patient should expect to pay in the real world. Specific range — e.g., "$180 – $420". Key factors causing variation.]
+
+AVERAGE CHARGED:
+[What hospitals typically bill (chargemaster rate). State the typical markup multiple vs. Medicare rate.]
+
+RED FLAGS:
+[Common billing errors or overcharges specific to this code. What to watch for on your itemized bill.]
+
+WHAT TO DO:
+[If you receive this charge, specific steps to verify it's correct and dispute if overcharged.]`;
+      break;
+    }
+    case "erurgent": {
+      const { symptoms } = body;
+      if (!symptoms) return res.status(400).json({ error: "Missing symptoms" });
+      maxTokens = 900;
+      temperature = 0.3;
+      systemMsg = "You are a medical triage expert and healthcare cost advisor. You help patients make informed care decisions. You always prioritize safety — when in doubt, recommend the ER. You are direct and specific.";
+      prompt = `A patient is deciding between ER, urgent care, or other options for: "${symptoms}"
+
+RECOMMENDATION:
+[One clear recommendation: EMERGENCY ROOM (go now), URGENT CARE (today), PRIMARY CARE (schedule this week), TELEHEALTH (can be handled virtually), or HOME CARE (can safely wait). State the primary reason in 2–3 sentences.]
+
+SAFETY NOTE:
+[Specific warning signs that would require immediate escalation to the ER. Be precise — list exact symptoms to watch for.]
+
+COST COMPARISON:
+[Typical out-of-pocket costs: ER ($1,200–$3,000+ without insurance; $250–$500 copay with insurance), Urgent Care ($150–$350 / $30–$75 copay), Primary Care ($150–$300 / $20–$50 copay), Telehealth ($40–$99 / $0–$30). Note cost of choosing wrong level.]
+
+RIGHTS & TIPS:
+[Key patient rights and cost-saving tips for the recommended setting. Include EMTALA rights for ER, how to find in-network urgent care, or telehealth options through insurer.]`;
+      break;
+    }
+    case "mentalparity": {
+      const { situation, state: mpState } = body;
+      if (!situation) return res.status(400).json({ error: "Missing situation" });
+      maxTokens = 1100;
+      temperature = 0.3;
+      systemMsg = "You are a mental health insurance rights expert specializing in the Mental Health Parity and Addiction Equity Act (MHPAEA, 2008) and ACA mental health requirements. You help patients enforce their rights to equal coverage.";
+      prompt = `A patient has a mental health insurance coverage issue: "${situation}"
+${mpState ? `State: ${mpState}` : ""}
+
+YOUR COVERAGE RIGHTS:
+[What MHPAEA specifically requires. Insurers must cover mental health the same as physical health — same prior auth, same visit limits, same cost-sharing. State what's specifically required for this situation.]
+
+WHAT TO LOOK FOR:
+[Specific parity violations for this situation. The key question: does the same restriction apply to comparable physical health conditions?]
+
+HOW TO FIGHT BACK:
+[Step-by-step complaint process: state insurance commissioner (fully-insured plans), DOL Employee Benefits Security Administration (employer/ERISA plans at dol.gov/agencies/ebsa), HHS (federally facilitated marketplace plans). Include typical outcomes.]
+
+THE LAW ON YOUR SIDE:
+[Specific protections: MHPAEA Section 512, ACA Section 2726${mpState ? `, and any ${mpState}-specific parity laws that go beyond federal requirements` : ""}. Success rates for parity complaints — cite data if known.]`;
+      break;
+    }
+    case "chronicdisease": {
+      const { condition, insurance: cdInsurance, income: cdIncome } = body;
+      if (!condition) return res.status(400).json({ error: "Missing condition" });
+      maxTokens = 1400;
+      temperature = 0.4;
+      systemMsg = "You are a healthcare financial planner specializing in chronic disease cost management. You help patients minimize long-term healthcare costs through smart insurance, medication assistance, and financial programs.";
+      prompt = `Create a comprehensive cost plan for a patient managing: "${condition}"
+${cdInsurance ? `Insurance: ${cdInsurance}` : ""}
+${cdIncome ? `Annual income: $${cdIncome}` : ""}
+
+ANNUAL COST ESTIMATE:
+[Realistic annual cost breakdown: medications (range), doctor visits (frequency and cost), lab work/monitoring, specialty care, medical supplies. Give specific dollar ranges — e.g., "Estimated total: $3,000–$8,000/year for moderate management."]
+
+MEDICATION SAVINGS:
+[For key medications used to treat this condition: name specific manufacturer patient assistance programs, generic availability, GoodRx savings, Mark Cuban's Cost Plus Drugs (costplusdrugs.com), 340B program eligibility. Give specific savings amounts.]
+
+INSURANCE STRATEGY:
+[For this specific condition, which plan type (HDHP+HSA, PPO, Gold ACA) makes most financial sense and why. What to prioritize during open enrollment: formulary tier for key meds, specialist access, prior auth requirements. Show math if helpful.]
+
+FINANCIAL ASSISTANCE:
+[Disease-specific foundations and programs — name them specifically (e.g., American Diabetes Association, Patient Advocate Foundation, NeedyMeds, specific disease foundations). Include eligibility and how to apply.]
+
+COST REDUCTION ACTIONS:
+[5–7 specific, immediate actions this patient can take to reduce annual costs for this condition. Be concrete.]`;
+      break;
+    }
+    case "medicare": {
+      const { question: medQ } = body;
+      if (!medQ) return res.status(400).json({ error: "Missing question" });
+      maxTokens = 1200;
+      temperature = 0.3;
+      systemMsg = "You are a Medicare expert with deep knowledge of Parts A, B, C, D, Medigap, Medicare Advantage, and enrollment rules. You give clear, accurate, actionable answers. You know exact premium amounts, deductibles, and enrollment windows for 2024.";
+      prompt = `Answer this Medicare question clearly and specifically: "${medQ}"
+
+RECOMMENDATION:
+[Direct, specific answer to their question — what they should do.]
+
+WHAT IT COVERS:
+[Relevant coverage details for their question. Specific benefits, limitations, what's included and what's not.]
+
+WHAT YOU'LL PAY:
+[Specific cost information: deductibles, copays, premiums, coinsurance. Use 2024 figures.]
+
+ENROLLMENT STEPS:
+[Concrete steps to take action if applicable — forms, websites, phone numbers, deadlines.]
+
+IMPORTANT WARNINGS:
+[Key warnings, late enrollment penalties, or deadlines they must not miss.]`;
+      break;
+    }
+    case "veterans": {
+      const { question: vetQ } = body;
+      if (!vetQ) return res.status(400).json({ error: "Missing question" });
+      maxTokens = 1200;
+      temperature = 0.3;
+      systemMsg = "You are a Veterans Affairs (VA) benefits expert with deep knowledge of VA health care, disability compensation, education benefits, CHAMPVA, pension, the PACT Act (2022), and VA appeals. You help veterans understand and maximize their benefits.";
+      prompt = `Answer this veterans benefits question clearly and specifically: "${vetQ}"
+
+ELIGIBILITY:
+[Who qualifies and key eligibility criteria relevant to this question. Be specific about discharge requirements, service periods, and conditions.]
+
+BENEFITS YOU QUALIFY FOR:
+[Specific benefits available for this situation, with dollar amounts where applicable. Reference 2024 rates for disability compensation, pension, etc.]
+
+HOW TO APPLY:
+[Step-by-step application instructions with specific forms (e.g., VA Form 21-526EZ) and va.gov URLs. Include free VSO assistance option.]
+
+MAXIMIZING YOUR BENEFITS:
+[Tips to get the most from VA benefits: appeals process, rating increases, additional connected conditions, PACT Act expansions, free VSO help.]`;
+      break;
+    }
+    case "hospitalquality": {
+      const { hospital: hqHospital, procedure: hqProcedure } = body;
+      if (!hqHospital) return res.status(400).json({ error: "Missing hospital name" });
+      maxTokens = 1200;
+      temperature = 0.3;
+      systemMsg = "You are a healthcare quality expert with knowledge of CMS star ratings, Leapfrog safety grades, hospital-acquired infection data, and surgical outcomes research. You help patients evaluate hospitals before receiving care.";
+      prompt = `Help a patient research the quality of this hospital before receiving care: "${hqHospital}"
+${hqProcedure ? `Planned procedure: ${hqProcedure}` : ""}
+
+QUALITY SUMMARY:
+[Overview of how to find this hospital's quality ratings. Direct them to care.medicare.gov (CMS stars) and leapfroggroup.org (safety grade). If this is a well-known hospital, note any relevant reputation facts.]
+
+WHAT THE RATINGS MEAN:
+[Explain key quality measures: CMS star ratings (1–5 stars, 46 measures), Leapfrog grade (A–F safety), HCAHPS patient experience, infection rates (C. diff, MRSA, CAUTI). What each tells you.]
+
+WHERE TO RESEARCH:
+[Step-by-step: care.medicare.gov, leapfroggroup.org, qualitycheck.org, health.usnews.com. What to search for and what data to look at.]
+
+RED FLAGS TO WATCH:
+[For ${hqProcedure || "any procedure"}: specific quality measures that matter most, infection/mortality/readmission data to review, surgeon volume thresholds to ask about.]
+
+QUESTIONS TO ASK:
+[8–10 specific questions for the hospital and surgeon before committing: volume ("How many of these per year?"), complication rates, surgeon credentials, infection rates, what happens if complications occur.]`;
+      break;
+    }
     default:
       return res.status(400).json({ error: `Unknown tool: ${tool}` });
   }

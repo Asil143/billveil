@@ -17,6 +17,9 @@ const CATEGORIES = [
       { tab: "charitycare", emoji: "🤝", label: "Charity Care Finder", desc: "Every nonprofit hospital must offer charity care. Find it and apply — could erase your bill." },
       { tab: "paymentplan", emoji: "💳", label: "Payment Plan Negotiator", desc: "Get a 0% interest payment plan letter and strategy to reduce the balance first." },
       { tab: "creditcard", emoji: "⚠️", label: "Medical Credit Card Warning", desc: "Understand the deferred interest traps in CareCredit and similar cards before you sign." },
+      { tab: "patientrights", emoji: "⚖️", label: "Patient Rights Guide", desc: "Know your legal rights — EMTALA, billing disputes, insurance appeals, medical records. 20+ rights explained." },
+      { tab: "hipaa", emoji: "🔒", label: "HIPAA Rights Guide", desc: "Access your records, correct errors, control your data, and report violations. Includes a records request letter generator." },
+      { tab: "mentalparity", emoji: "🧠", label: "Mental Health Parity Checker", desc: "Federal law requires equal coverage for mental health. Find parity violations and file a complaint." },
     ],
   },
   {
@@ -30,6 +33,7 @@ const CATEGORIES = [
       { tab: "insplan", emoji: "🏥", label: "Insurance Plan Decoder", desc: "Paste your Summary of Benefits — we explain deductibles, coverage, and hidden gotchas." },
       { tab: "providercheck", emoji: "🔍", label: "Provider Network Checker", desc: "Is your doctor in-network? Know the real cost difference and hidden risks before your visit." },
       { tab: "hsafsa", emoji: "💰", label: "HSA / FSA Optimizer", desc: "Find every expense that qualifies for tax-free spending — including ones most people miss." },
+      { tab: "preventive", emoji: "🩺", label: "Preventive Care Checker", desc: "Enter your age and sex — see every 100% free ACA-mandated screening you're entitled to." },
     ],
   },
   {
@@ -42,6 +46,10 @@ const CATEGORIES = [
       { tab: "costestimate", emoji: "🔮", label: "Pre-Treatment Cost Estimator", desc: "Estimate your real out-of-pocket before any procedure — find cheaper options first." },
       { tab: "hospitalprice", emoji: "🏥", label: "Hospital Price Lookup", desc: "Federal law requires hospitals to publish prices. We show you where to find them and what you should actually pay." },
       { tab: "priceboard", emoji: "👥", label: "Community Price Board", desc: "Crowdsourced real prices from patients. See what people actually paid near you — submitted anonymously." },
+      { tab: "cobra", emoji: "🧮", label: "COBRA vs. Marketplace", desc: "Lost your job? Compare COBRA cost vs. subsidized ACA coverage — and check if you qualify for free Medicaid." },
+      { tab: "cptlookup", emoji: "🔢", label: "CPT Code Lookup", desc: "Paste any CPT code — get a plain-English explanation, Medicare rate, fair price range, and red flags to watch for." },
+      { tab: "erurgent", emoji: "🏥", label: "ER vs. Urgent Care Guide", desc: "The wrong choice costs thousands. Describe symptoms — get a recommendation and cost comparison for each option." },
+      { tab: "hospitalquality", emoji: "🏆", label: "Hospital Quality Checker", desc: "Check CMS star ratings, Leapfrog safety grades, infection rates, and surgical outcomes before you commit." },
     ],
   },
   {
@@ -52,6 +60,26 @@ const CATEGORIES = [
       { tab: "casetracker", emoji: "📊", label: "Case Tracker", desc: "Track every dispute, appeal, and negotiation with deadlines and real-time status updates." },
       { tab: "savings", emoji: "🏆", label: "Savings Dashboard", desc: "Your total savings, BillVeil Score, wins, and shareable results card — all in one place." },
       { tab: "hub", emoji: "🗂️", label: "My Hub", desc: "Your personalized command center — score, savings, active cases, and quick access to every tool." },
+      { tab: "glossary", emoji: "📚", label: "Medical Billing Glossary", desc: "33 key terms explained in plain English — CPT codes, deductibles, EOBs, upcoding, parity, and more." },
+    ],
+  },
+  {
+    label: "Financial & Tax Tools",
+    color: "#fb923c",
+    icon: "🧾",
+    tools: [
+      { tab: "medtax", emoji: "🧾", label: "Medical Tax Deduction", desc: "Calculate how much of your medical expenses are tax-deductible. Includes a complete list of qualifying costs." },
+      { tab: "fsatracker", emoji: "⏰", label: "FSA Use-It-or-Lose-It Tracker", desc: "Don't forfeit pre-tax dollars. Track your deadline, calculate your daily spend rate, and find eligible expenses fast." },
+    ],
+  },
+  {
+    label: "Populations & Life Events",
+    color: "#38bdf8",
+    icon: "🎖️",
+    tools: [
+      { tab: "medicare", emoji: "🏛️", label: "Medicare Navigator", desc: "Understand Parts A, B, C, D — enrollment windows, costs, Medigap vs. Advantage, and penalty avoidance." },
+      { tab: "veterans", emoji: "🎖️", label: "Veterans Benefits Guide", desc: "VA health care, disability compensation, CHAMPVA, pension, and PACT Act benefits — and how to maximize them." },
+      { tab: "chronicdisease", emoji: "🩺", label: "Chronic Disease Cost Planner", desc: "Diabetes, heart disease, cancer, MS, and more — get an annual cost estimate, med savings, and financial assistance." },
     ],
   },
   {
