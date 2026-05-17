@@ -40,6 +40,8 @@ const CATEGORIES = [
       { tab: "drug", emoji: "💊", label: "Drug Price Comparator", desc: "Find the fair price and cheapest pharmacy for any medication." },
       { tab: "genericdrug", emoji: "💊", label: "Generic Drug Finder", desc: "Generic equivalent, discount programs, and a script to ask your doctor." },
       { tab: "costestimate", emoji: "🔮", label: "Pre-Treatment Cost Estimator", desc: "Estimate your real out-of-pocket before any procedure — find cheaper options first." },
+      { tab: "hospitalprice", emoji: "🏥", label: "Hospital Price Lookup", desc: "Federal law requires hospitals to publish prices. We show you where to find them and what you should actually pay." },
+      { tab: "priceboard", emoji: "👥", label: "Community Price Board", desc: "Crowdsourced real prices from patients. See what people actually paid near you — submitted anonymously." },
     ],
   },
   {
@@ -49,18 +51,23 @@ const CATEGORIES = [
     tools: [
       { tab: "casetracker", emoji: "📊", label: "Case Tracker", desc: "Track every dispute, appeal, and negotiation with deadlines and real-time status updates." },
       { tab: "savings", emoji: "🏆", label: "Savings Dashboard", desc: "Your total savings, BillVeil Score, wins, and shareable results card — all in one place." },
+      { tab: "hub", emoji: "🗂️", label: "My Hub", desc: "Your personalized command center — score, savings, active cases, and quick access to every tool." },
+    ],
+  },
+  {
+    label: "AI Tools",
+    color: "#10b981",
+    icon: "🤖",
+    tools: [
+      { tab: "concierge", emoji: "🤖", label: "BillVeil Concierge", desc: "One AI chat that handles everything. Just describe your situation and I'll help you fight back." },
+      { tab: "planoptimizer", emoji: "📈", label: "Insurance Plan Optimizer", desc: "Describe your health situation — AI recommends the right plan, deductible strategy, and open enrollment checklist." },
     ],
   },
 ];
 
 const COMING_SOON = [
-  { emoji: "🏥", label: "Hospital Price Lookup", desc: "Federal law requires hospitals to publish prices. Find what yours actually charges.", color: "#60a5fa" },
-  { emoji: "👥", label: "Community Price Board", desc: "Crowdsourced real prices from patients. What people actually paid near you.", color: "#a78bfa" },
-  { emoji: "🤖", label: "BillVeil Concierge", desc: "One AI chat that handles everything. Just describe your situation and talk.", color: "#10b981" },
   { emoji: "📧", label: "Automatic Bill Monitor", desc: "Connects to your email — flags suspicious charges before you pay.", color: "#a78bfa" },
   { emoji: "📬", label: "Instant Dispute Filing", desc: "Submit dispute letters directly to the billing department — no printing.", color: "#fbbf24" },
-  { emoji: "📈", label: "Insurance Plan Optimizer", desc: "Analyzes your medical history to recommend the best plan during open enrollment.", color: "#10b981" },
-  { emoji: "🗂️", label: "Personal Medical Finance Hub", desc: "Central dashboard for all bills, EOBs, disputes, and AI-powered pattern analysis.", color: "#60a5fa" },
 ];
 
 export default function ServicesHub() {

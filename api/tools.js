@@ -5,6 +5,39 @@ module.exports = async function (req, res) {
   const { tool } = body;
   if (!tool) return res.status(400).json({ error: "Missing tool parameter" });
 
+  // Concierge: full conversation history, handled separately
+  if (tool === "concierge") {
+    const { messages: chatMessages } = body;
+    if (!chatMessages?.length) return res.status(400).json({ error: "Missing messages" });
+    const systemPrompt = `You are BillVeil's AI medical billing concierge. You help patients understand, dispute, and reduce their medical bills. You are knowledgeable, empathetic, and direct.
+
+You have expertise in: bill analysis, dispute letters, denial appeals, negotiation scripts, EOB explanations, prior authorization, debt rights, second opinions, drug pricing, insurance plan decoding, surprise billing law (No Surprises Act), charity care, payment plans, HSA/FSA rules, provider network issues, cost estimation, and hospital price transparency.
+
+Guidelines:
+- Give concrete, actionable advice specific to their situation
+- When relevant, mention which BillVeil tool would help them most (e.g. "Use our Dispute Letter tool for this")
+- Cite specific laws (No Surprises Act, ERISA, HIPAA, FDCPA, ACA) when relevant
+- Use real dollar amounts and percentages when giving context
+- Keep responses focused and practical — not vague or overly cautious
+- If they describe a specific charge, assess whether it sounds fair based on typical Medicare rates and fair market pricing
+- Never suggest paying a bill without first checking if it's correct`;
+    try {
+      const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: [{ role: "system", content: systemPrompt }, ...chatMessages.slice(-12)],
+          temperature: 0.5,
+          max_tokens: 800,
+        }),
+      });
+      if (!resp.ok) { const err = await resp.json().catch(() => ({})); return res.status(500).json({ error: err.error?.message || "AI request failed" }); }
+      const data = await resp.json();
+      return res.json({ result: data.choices[0].message.content });
+    } catch (err) { return res.status(500).json({ error: err.message }); }
+  }
+
   let prompt, systemMsg, maxTokens, temperature;
   temperature = 0.3;
 
@@ -685,6 +718,82 @@ The letter should:
 - Mention that failure to comply will be reported to the state insurance commissioner
 
 Format it as a complete, professional letter.`;
+      break;
+    }
+    case "planoptimizer": {
+      const { situation, expectedCare, familySize, budget } = body;
+      if (!situation) return res.status(400).json({ error: "Missing health situation" });
+      maxTokens = 1400;
+      temperature = 0.35;
+      const familyStr = familySize?.trim() ? `Family size: ${familySize}` : "";
+      const careStr = expectedCare?.trim() ? `Expected care this year: ${expectedCare}` : "";
+      const budgetStr = budget?.trim() ? `Budget preference: ${budget}` : "";
+      prompt = `You are a health insurance expert. Help this person choose the right health insurance plan during open enrollment.
+
+Health situation: ${situation}
+${familyStr}
+${careStr}
+${budgetStr}
+
+Write your response in this exact format:
+
+PLAN RECOMMENDATION:
+[Your specific recommendation — HMO, PPO, EPO, or HDHP — and why it fits their situation in 2-3 sentences]
+
+PLAN TYPE EXPLAINED:
+[Plain-English breakdown of which plan type fits them best and exactly what that means for their day-to-day healthcare — referrals, network flexibility, costs]
+
+DEDUCTIBLE STRATEGY:
+[Should they choose a high or low deductible? Show the math based on their expected care — when a high-deductible plan saves money vs when it costs more]
+
+KEY FEATURES TO PRIORITIZE:
+[5-6 specific things to look for when comparing plans — based on their specific health needs and situation]
+
+OPEN ENROLLMENT CHECKLIST:
+[Step-by-step checklist for open enrollment — what to gather, what to compare, what to watch out for, deadline reminders]
+
+RED FLAGS TO AVOID:
+[3-4 plan features or fine-print traps that would be bad for their specific situation]
+
+QUESTIONS TO ASK HR OR YOUR BROKER:
+[5 specific questions to ask before choosing — especially about network, prior auth requirements, and specialty coverage]
+
+Be specific to their situation. Show real math where possible.`;
+      break;
+    }
+    case "hospitalprice": {
+      const { hospital, state, procedure } = body;
+      if (!hospital) return res.status(400).json({ error: "Missing hospital name" });
+      maxTokens = 1300;
+      const procedureStr = procedure?.trim() ? `Procedure: ${procedure}` : "";
+      const stateStr = state?.trim() ? `State: ${state}` : "";
+      prompt = `You are a healthcare price transparency expert. Help this patient find and understand hospital pricing data.
+
+Hospital: ${hospital}
+${stateStr}
+${procedureStr}
+
+Write your response in this exact format:
+
+HOW TO FIND THEIR PRICES:
+[Step-by-step instructions to find this hospital's machine-readable price file — the Hospital Price Transparency Rule (effective Jan 1, 2021) requires every hospital to post a machine-readable file with all their prices. Where to look: hospital website footer, search "[hospital name] price transparency" or "[hospital name] chargemaster", or use cms.gov/healthplan/price-transparency]
+
+WHAT YOU SHOULD EXPECT TO PAY:
+[Fair price benchmarks for the requested procedure — Medicare allowable rate, fair market rate, and typical negotiated insurance rate. Give specific dollar ranges.]
+
+HOW TO READ THE DATA:
+[What the columns in hospital price files mean — gross charge, discounted cash price, payer-specific negotiated rates, de-identified minimum/maximum — in plain English]
+
+YOUR RIGHTS IF PRICES AREN'T POSTED:
+[Hospitals face $300/day fines for non-compliance. How to report violations to CMS. What to do if you can't find their file.]
+
+NEGOTIATING WITH THIS DATA:
+[How to use price transparency data as leverage — cash pay discount requests, negotiating to the Medicare rate, what to say when calling billing]
+
+PRICE COMPARISON RESOURCES:
+[Specific websites and tools to compare prices across hospitals — Healthcare Bluebook, Fair Health Consumer, your state's all-payer database if available]
+
+Be specific and practical. The goal is to help this patient find the actual price before their procedure.`;
       break;
     }
     default:

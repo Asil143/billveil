@@ -84,6 +84,8 @@ const ALL_SERVICES = [
       { tab: "drug", emoji: "💊", label: "Drug Price Comparator" },
       { tab: "genericdrug", emoji: "💊", label: "Generic Drug Finder" },
       { tab: "costestimate", emoji: "🔮", label: "Pre-Treatment Cost Estimator" },
+      { tab: "hospitalprice", emoji: "🏥", label: "Hospital Price Lookup" },
+      { tab: "priceboard", emoji: "👥", label: "Community Price Board" },
     ],
   },
   {
@@ -93,6 +95,16 @@ const ALL_SERVICES = [
     tools: [
       { tab: "casetracker", emoji: "📊", label: "Case Tracker" },
       { tab: "savings", emoji: "🏆", label: "Savings Dashboard" },
+      { tab: "hub", emoji: "🗂️", label: "My Hub" },
+    ],
+  },
+  {
+    label: "AI Tools",
+    color: "#10b981",
+    icon: "🤖",
+    tools: [
+      { tab: "concierge", emoji: "🤖", label: "BillVeil Concierge" },
+      { tab: "planoptimizer", emoji: "📈", label: "Insurance Plan Optimizer" },
     ],
   },
 ];
