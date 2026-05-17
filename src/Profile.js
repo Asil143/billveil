@@ -77,7 +77,7 @@ const onFo = (e) => (e.target.style.borderColor = "rgba(16,185,129,0.5)");
 const onBl = (e) => (e.target.style.borderColor = "rgba(255,255,255,0.08)");
 
 const Label = ({ children, optional }) => (
-  <div style={{ fontSize: 11, fontWeight: 700, color: "#475569", marginBottom: 6, letterSpacing: "0.06em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
+  <div style={{ fontSize: 11, fontWeight: 700, color: "#475569", marginBottom: 3, letterSpacing: "0.06em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
     {children}
     {optional && <span style={{ fontSize: 10, fontWeight: 500, color: "#334155", textTransform: "none", letterSpacing: 0 }}>optional</span>}
   </div>
@@ -86,7 +86,7 @@ const Label = ({ children, optional }) => (
 const InfoRow = ({ label, value, optional, right }) => (
   <div>
     <Label optional={optional}>{label}</Label>
-    <div style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 22, flexWrap: "wrap" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
       <span style={{ fontSize: 14, color: value ? "#f1f5f9" : "#334155" }}>{value || "—"}</span>
       {right}
     </div>
@@ -105,10 +105,10 @@ const VerifiedBadge = () => (
   </span>
 );
 
-const Divider = () => <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "22px 0" }} />;
+const Divider = () => <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "14px 0" }} />;
 
 const SectionTitle = ({ children }) => (
-  <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 18 }}>
+  <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 12 }}>
     {children}
   </div>
 );
@@ -285,7 +285,7 @@ export default function Profile() {
         </div>
       )}
 
-      <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 18, padding: 28 }}>
+      <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 18, padding: 20 }}>
 
         {/* 1 — PERSONAL INFO */}
         <SectionTitle>PERSONAL INFORMATION</SectionTitle>
@@ -303,12 +303,12 @@ export default function Profile() {
           </>
         ) : (
           <>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 10 }}>
               <InfoRow label="First Name" value={form.firstName} />
               <InfoRow label="Middle Name" value={form.middleName} optional />
               <InfoRow label="Last Name" value={form.lastName} />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <InfoRow label="Date of Birth" value={form.dob} />
               <InfoRow label="Gender" value={form.gender} />
             </div>
@@ -347,10 +347,10 @@ export default function Profile() {
           </>
         ) : (
           <>
-            <div style={{ marginBottom: 16 }}>
+            <div style={{ marginBottom: 10 }}>
               <InfoRow label="Insurance Provider" value={form.insuranceProvider === "Other" ? form.insuranceOther || "Other" : form.insuranceProvider} />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
               <InfoRow label="Plan Name" value={form.planName} optional />
               <InfoRow label="Member ID" value={form.memberId} optional />
             </div>
@@ -362,7 +362,7 @@ export default function Profile() {
 
         {/* 3 — CONTACT & VERIFICATION */}
         <SectionTitle>CONTACT &amp; VERIFICATION</SectionTitle>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: editing ? 12 : 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: editing ? 12 : 10 }}>
 
           {/* Phone — always verified */}
           <div>
@@ -471,10 +471,10 @@ export default function Profile() {
           </>
         ) : (
           <>
-            <div style={{ marginBottom: 16 }}>
+            <div style={{ marginBottom: 10 }}>
               <InfoRow label="Street Address" value={form.street} />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 100px", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 100px", gap: 10 }}>
               <InfoRow label="City" value={form.city} />
               <InfoRow label="State" value={form.state} />
               <InfoRow label="ZIP" value={form.zip} />
@@ -505,7 +505,7 @@ export default function Profile() {
             </div>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             <InfoRow label="Primary Care Doctor" value={form.primaryDoctor} optional />
             <div>
               <Label optional>HSA / FSA</Label>
