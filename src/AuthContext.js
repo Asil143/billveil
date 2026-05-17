@@ -6,6 +6,7 @@ import {
   linkWithCredential, EmailAuthProvider,
 } from "firebase/auth";
 import { doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { trackEvent } from "./analytics";
 import { auth, db } from "./firebase";
 import PhoneLogin from "./PhoneLogin";
 
@@ -174,6 +175,7 @@ export function AuthProvider({ children }) {
       if (u) {
         try { await u.reload(); } catch {}
         setUser(auth.currentUser);
+        trackEvent(u.uid, "login", { method: "phone" });
         try {
           const profile = localStorage.getItem(`bv_profile_${u.uid}`);
           const profileEmail = profile ? JSON.parse(profile)?.email : null;
@@ -251,6 +253,7 @@ export function AuthProvider({ children }) {
     setProfileData(data);
     try {
       await setDoc(doc(db, "users", user.uid), { profile: data }, { merge: true });
+      trackEvent(user.uid, "profile_saved", { hasInsurance: !!data.insuranceProvider, hasAddress: !!data.street });
     } catch (err) {
       console.error("Profile save failed:", err);
     }

@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
+import { trackEvent } from "./analytics";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -100,6 +101,7 @@ export default function FloatingChat() {
     const msg = (text || input).trim();
     if (!msg || loading) return;
     if (!consumeCredit()) { showLoginModal(); return; }
+    trackEvent(user?.uid || null, "chat_sent", { tool: "floating_chat" });
     setInput("");
     const newMessages = [...messages, { role: "user", content: msg }];
     setMessages(newMessages);

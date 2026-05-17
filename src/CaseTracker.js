@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 import { useAuth } from "./AuthContext";
+import { trackEvent } from "./analytics";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -86,6 +87,7 @@ export default function CaseTracker() {
       });
       setForm(EMPTY_FORM);
       setShowForm(false);
+      trackEvent(user.uid, "case_created", { hasAmount: !!form.amountBilled, provider: form.provider || null });
     } finally {
       setSaving(false);
     }

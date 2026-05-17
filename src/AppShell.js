@@ -52,6 +52,7 @@ import HospitalQualityChecker from "./HospitalQualityChecker";
 import { useAuth } from "./AuthContext";
 import Profile from "./Profile";
 import AdminDashboard from "./AdminDashboard";
+import { trackEvent } from "./analytics";
 import ErrorBoundary from "./ErrorBoundary";
 import NotFound from "./NotFound";
 import RelatedTools from "./RelatedTools";
@@ -155,6 +156,11 @@ export default function AppShell() {
     router.replace("/profile");
   }, [emailJustVerified, router]);
 
+  // Track every tool page visit
+  useEffect(() => {
+    if (tab && tab !== "admin") trackEvent(user?.uid || null, "tool_viewed", { tool: tab });
+  }, [tab, user?.uid]);
+
   useEffect(() => {
     if (tab !== "analyzer") return;
     const incoming = sessionStorage.getItem("bv_heroBill_pending");
@@ -185,6 +191,7 @@ export default function AppShell() {
     try {
       const response = await axios.post("/api/analyze", { bill });
       setResult(response.data.result);
+      trackEvent(user?.uid || null, "bill_analyzed", { billLength: bill.length });
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

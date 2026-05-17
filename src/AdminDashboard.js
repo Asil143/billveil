@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from "react";
-import { collection, getDocs, query, orderBy, doc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, doc, setDoc, deleteDoc, updateDoc, limit } from "firebase/firestore";
 import { db } from "./firebase";
 import { useAuth } from "./AuthContext";
 
@@ -49,6 +49,8 @@ export default function AdminDashboard() {
   const [userCases, setUserCases] = useState({});
   const [loadingCases, setLoadingCases] = useState({});
   const [tab, setTab] = useState("users");
+  const [events, setEvents] = useState([]);
+  const [eventsLoading, setEventsLoading] = useState(false);
 
   // Edit/delete state
   const [editingUser, setEditingUser] = useState(null);   // uid being edited
@@ -149,6 +151,19 @@ export default function AdminDashboard() {
     } catch (err) { alert("Delete failed: " + err.message); }
   };
 
+  // Load analytics events when that tab is opened
+  useEffect(() => {
+    if (tab !== "analytics" || !isAdmin || events.length > 0) return;
+    setEventsLoading(true);
+    (async () => {
+      try {
+        const snap = await getDocs(query(collection(db, "analytics"), orderBy("ts", "desc"), limit(500)));
+        setEvents(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      } catch {}
+      finally { setEventsLoading(false); }
+    })();
+  }, [tab, isAdmin, events.length]);
+
   // ── Guards ─────────────────────────────────────────────────────────────────
   if (!user) return (
     <div style={{ textAlign: "center", padding: "60px 20px" }}>
@@ -237,7 +252,7 @@ export default function AdminDashboard() {
 
       {/* Tabs */}
       <div style={{ display: "flex", gap: 6, marginBottom: 18 }}>
-        {["users", "cases"].map(t => (
+        {["users", "cases", "analytics"].map(t => (
           <button key={t} onClick={() => setTab(t)} style={{ padding: "7px 18px", background: tab === t ? "rgba(16,185,129,0.12)" : "rgba(255,255,255,0.04)", border: `1px solid ${tab === t ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`, borderRadius: 8, color: tab === t ? "#10b981" : "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", textTransform: "capitalize" }}>
             {t}
           </button>
@@ -431,6 +446,111 @@ export default function AdminDashboard() {
           )}
         </>
       )}
+
+      {tab === "analytics" && (() => {
+        const ACTION_LABELS = {
+          tool_viewed: { label: "Tool Viewed", color: "#60a5fa", icon: "👁" },
+          bill_analyzed: { label: "Bill Analyzed", color: "#10b981", icon: "🔍" },
+          tool_completed: { label: "Tool Completed", color: "#34d399", icon: "✅" },
+          login: { label: "Login", color: "#a78bfa", icon: "🔑" },
+          profile_saved: { label: "Profile Saved", color: "#f59e0b", icon: "👤" },
+          case_created: { label: "Case Created", color: "#f87171", icon: "📋" },
+          chat_sent: { label: "Chat Sent", color: "#38bdf8", icon: "💬" },
+        };
+
+        // Tool usage breakdown
+        const toolCounts = {};
+        const actionCounts = {};
+        const dailyCounts = {};
+        const uniqueUsers = new Set();
+
+        events.forEach(e => {
+          if (e.uid) uniqueUsers.add(e.uid);
+          actionCounts[e.action] = (actionCounts[e.action] || 0) + 1;
+          if (e.tool) toolCounts[e.tool] = (toolCounts[e.tool] || 0) + 1;
+          if (e.ts) {
+            const day = (e.ts.toDate ? e.ts.toDate() : new Date(e.ts)).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+            dailyCounts[day] = (dailyCounts[day] || 0) + 1;
+          }
+        });
+
+        const topTools = Object.entries(toolCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+        const maxToolCount = topTools[0]?.[1] || 1;
+        const today = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        const todayCount = dailyCounts[today] || 0;
+
+        return (
+          <div>
+            {eventsLoading && <div style={{ color: "#475569", textAlign: "center", padding: 32 }}>Loading analytics…</div>}
+
+            {!eventsLoading && (
+              <>
+                {/* Summary stats */}
+                <div style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>
+                  <Stat label="Total Events" value={events.length} color="#10b981" />
+                  <Stat label="Unique Users" value={uniqueUsers.size} color="#60a5fa" />
+                  <Stat label="Today" value={todayCount} color="#a78bfa" />
+                  <Stat label="Bill Analyses" value={actionCounts["bill_analyzed"] || 0} color="#f59e0b" />
+                </div>
+
+                {/* Actions breakdown */}
+                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "18px 20px", marginBottom: 20 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#334155", letterSpacing: "0.1em", marginBottom: 14, textTransform: "uppercase" }}>Events by Action</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 10 }}>
+                    {Object.entries(ACTION_LABELS).map(([action, { label, color, icon }]) => (
+                      <div key={action} style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${color}20`, borderRadius: 10, padding: "12px 14px" }}>
+                        <div style={{ fontSize: 18, marginBottom: 4 }}>{icon}</div>
+                        <div style={{ fontSize: 22, fontWeight: 900, color }}>{actionCounts[action] || 0}</div>
+                        <div style={{ fontSize: 11, color: "#475569", fontWeight: 600 }}>{label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Top tools bar chart */}
+                {topTools.length > 0 && (
+                  <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "18px 20px", marginBottom: 20 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#334155", letterSpacing: "0.1em", marginBottom: 14, textTransform: "uppercase" }}>Most Used Tools</div>
+                    {topTools.map(([tool, count]) => (
+                      <div key={tool} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                        <div style={{ fontSize: 12, color: "#64748b", width: 130, flexShrink: 0 }}>{tool}</div>
+                        <div style={{ flex: 1, background: "rgba(255,255,255,0.04)", borderRadius: 4, height: 8, overflow: "hidden" }}>
+                          <div style={{ width: `${(count / maxToolCount) * 100}%`, height: "100%", background: "linear-gradient(90deg, #10b981, #059669)", borderRadius: 4 }} />
+                        </div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: "#10b981", width: 32, textAlign: "right", flexShrink: 0 }}>{count}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Activity feed */}
+                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "18px 20px" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#334155", letterSpacing: "0.1em", marginBottom: 14, textTransform: "uppercase" }}>Recent Activity (last 100)</div>
+                  <div style={{ maxHeight: 480, overflowY: "auto" }}>
+                    {events.slice(0, 100).map(e => {
+                      const cfg = ACTION_LABELS[e.action] || { label: e.action, color: "#475569", icon: "•" };
+                      const userName = users.find(u => u.id === e.uid);
+                      const displayName = userName ? ([userName.profile?.firstName, userName.profile?.lastName].filter(Boolean).join(" ") || userName.phone) : (e.uid ? e.uid.slice(0, 8) + "…" : "Guest");
+                      return (
+                        <div key={e.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                          <span style={{ fontSize: 14, flexShrink: 0 }}>{cfg.icon}</span>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <span style={{ fontSize: 12, fontWeight: 600, color: cfg.color }}>{cfg.label}</span>
+                            {e.tool && <span style={{ fontSize: 11, color: "#475569", marginLeft: 6 }}>→ {e.tool}</span>}
+                            <span style={{ fontSize: 11, color: "#334155", marginLeft: 8 }}>by {displayName}</span>
+                          </div>
+                          <div style={{ fontSize: 11, color: "#334155", flexShrink: 0 }}>{fmtTime(e.ts)}</div>
+                        </div>
+                      );
+                    })}
+                    {events.length === 0 && <div style={{ color: "#334155", fontSize: 13 }}>No events yet — events appear as users interact with the app.</div>}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        );
+      })()}
 
       {tab === "cases" && (
         <div>
