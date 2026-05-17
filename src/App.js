@@ -377,23 +377,44 @@ function AppShell() {
               </div>
             </div>
             {parseResult(result)}
-            {!tipDismissed && (
-              <div style={{ marginTop: 24 }}>
-                {!tip ? (
-                  <div style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 16, padding: 28, textAlign: "center", position: "relative" }}>
-                    <button onClick={() => { sessionStorage.setItem("bv_tip_dismissed", "1"); setTip(true); }} style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: "#475569", fontSize: 18, cursor: "pointer", lineHeight: 1 }}>×</button>
-                    <div style={{ fontSize: 30, marginBottom: 10 }}>☕</div>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: "#fbbf24", marginBottom: 8 }}>Did BillVeil help you?</div>
-                    <div style={{ fontSize: 14, color: "#64748b", marginBottom: 20, lineHeight: 1.7 }}>If we saved you money, a small tip helps keep BillVeil running for the next person who needs us.</div>
-                    <a href="https://buy.stripe.com/7sY3cxalf2f769Pf71bfO00" target="_blank" rel="noopener noreferrer" onClick={() => { sessionStorage.setItem("bv_tip_dismissed", "1"); setTip(true); }} style={{ display: "inline-block", padding: "12px 32px", background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 20px rgba(245,158,11,0.3)", textDecoration: "none" }}>Leave a Tip ❤️</a>
-                  </div>
-                ) : (
-                  <div style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
-                    <div style={{ fontSize: 36, marginBottom: 10 }}>🙏</div>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: "#10b981", marginBottom: 6 }}>Thank you so much!</div>
-                    <div style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>Your support keeps BillVeil running for every American who needs it.</div>
-                  </div>
-                )}
+            {!tipDismissed && !tip && (
+              <div style={{ marginTop: 24, background: "rgba(245,158,11,0.05)", border: "1px solid rgba(245,158,11,0.15)", borderRadius: 16, padding: "24px 20px", position: "relative" }}>
+                <button onClick={() => { sessionStorage.setItem("bv_tip_dismissed", "1"); setTip(true); }} style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: "#475569", fontSize: 18, cursor: "pointer", lineHeight: 1 }}>×</button>
+                <div style={{ textAlign: "center", marginBottom: 18 }}>
+                  <div style={{ fontSize: 24, marginBottom: 8 }}>☕</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#fbbf24", marginBottom: 4 }}>Did BillVeil help you?</div>
+                  <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6 }}>Any tip goes directly to the developer — no platform fees.</div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  {[
+                    { label: "Cash App", handle: "$AsilKamepalli", href: "https://cash.app/$AsilKamepalli", color: "#00d632", bg: "rgba(0,214,50,0.08)", border: "rgba(0,214,50,0.25)" },
+                    { label: "PayPal", handle: "AsilKamepalli", href: "https://paypal.me/AsilKamepalli", color: "#009cde", bg: "rgba(0,156,222,0.08)", border: "rgba(0,156,222,0.25)" },
+                    { label: "Venmo", handle: "@Asil-Kamepalli", href: "https://venmo.com/u/Asil-Kamepalli", color: "#008cff", bg: "rgba(0,140,255,0.08)", border: "rgba(0,140,255,0.25)" },
+                    { label: "Chime", handle: "$Asil-Kamepalli", href: null, color: "#73cf2e", bg: "rgba(115,207,46,0.08)", border: "rgba(115,207,46,0.25)" },
+                    { label: "Zelle", handle: "331-226-7117", href: null, color: "#6d1ed4", bg: "rgba(109,30,212,0.08)", border: "rgba(109,30,212,0.25)" },
+                  ].map(({ label, handle, href, color, bg, border }) => (
+                    href ? (
+                      <a key={label} href={href} target="_blank" rel="noopener noreferrer" onClick={() => { sessionStorage.setItem("bv_tip_dismissed", "1"); setTip(true); }}
+                        style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 8px", background: bg, border: `1px solid ${border}`, borderRadius: 12, textDecoration: "none", cursor: "pointer" }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color, marginBottom: 2 }}>{label}</span>
+                        <span style={{ fontSize: 11, color: "#64748b" }}>{handle}</span>
+                      </a>
+                    ) : (
+                      <button key={label} onClick={() => { navigator.clipboard.writeText(handle); sessionStorage.setItem("bv_tip_dismissed", "1"); setTip(true); }}
+                        style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 8px", background: bg, border: `1px solid ${border}`, borderRadius: 12, cursor: "pointer", fontFamily: FONT }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color, marginBottom: 2 }}>{label}</span>
+                        <span style={{ fontSize: 11, color: "#64748b" }}>{handle} — tap to copy</span>
+                      </button>
+                    )
+                  ))}
+                </div>
+              </div>
+            )}
+            {tip && (
+              <div style={{ marginTop: 24, background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
+                <div style={{ fontSize: 36, marginBottom: 10 }}>🙏</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "#10b981", marginBottom: 6 }}>Thank you so much!</div>
+                <div style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>Your support keeps BillVeil running for every American who needs it.</div>
               </div>
             )}
           </div>
