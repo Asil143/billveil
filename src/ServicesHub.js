@@ -61,6 +61,7 @@ const CATEGORIES = [
     tools: [
       { tab: "concierge", emoji: "🤖", label: "BillVeil Concierge", desc: "One AI chat that handles everything. Just describe your situation and I'll help you fight back." },
       { tab: "planoptimizer", emoji: "📈", label: "Insurance Plan Optimizer", desc: "Describe your health situation — AI recommends the right plan, deductible strategy, and open enrollment checklist." },
+      { tab: "insurance", emoji: "🛡️", label: "Insurance Finder", desc: "4-step wizard: find what you qualify for, estimate your ACA subsidy, and get a personalized enrollment plan." },
     ],
   },
 ];

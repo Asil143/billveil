@@ -796,6 +796,56 @@ PRICE COMPARISON RESOURCES:
 Be specific and practical. The goal is to help this patient find the actual price before their procedure.`;
       break;
     }
+    case "insurancefinder": {
+      const { situation, familySize, age, numChildren, spouseAge, income, state, healthNeeds, medications, fplPct, eligiblePrograms, subsidyEstimate } = body;
+      if (!situation || !state) return res.status(400).json({ error: "Missing required fields" });
+      maxTokens = 1600;
+      temperature = 0.35;
+      const situationLabels = { employer_yes: "employed with employer insurance offered", employer_no: "employed but no employer insurance", self_employed: "self-employed", unemployed: "unemployed/between jobs", retired_under65: "retired under 65", age65plus: "65 or older (Medicare-eligible)", student: "student" };
+      const incomeDisplay = income ? `$${parseInt(income).toLocaleString()}/year` : "not provided";
+      prompt = `You are a health insurance expert and ACA enrollment specialist. Give this person a complete, personalized insurance action plan.
+
+THEIR PROFILE:
+- Employment situation: ${situationLabels[situation] || situation}
+- Age: ${age || "not provided"}${spouseAge ? `, Spouse age: ${spouseAge}` : ""}
+- Family size: ${familySize} people${numChildren > 0 ? ` (including ${numChildren} child${numChildren > 1 ? "ren" : ""})` : ""}
+- Annual income: ${incomeDisplay}
+- State: ${state}
+- FPL %: ${fplPct ? `${fplPct}% of Federal Poverty Level` : "not calculated"}
+- Pre-determined eligible programs: ${eligiblePrograms || "see below"}
+- Estimated ACA subsidy: ${subsidyEstimate}
+${healthNeeds ? `- Health needs: ${healthNeeds}` : ""}
+${medications ? `- Regular medications: ${medications}` : ""}
+
+Write a complete, personalized insurance action plan in this EXACT format:
+
+COVERAGE RECOMMENDATION:
+[Your #1 recommendation in 2-3 sentences. Be direct and specific — tell them exactly what to do first. If they have multiple options, say which is best for their situation and why.]
+
+WHY THIS FITS YOU:
+[Personalized explanation of why this coverage type makes sense for their specific situation — reference their income, family, health needs, and state. Mention if their state has expanded Medicaid or has its own exchange.]
+
+WHAT YOU'LL ACTUALLY PAY:
+[Realistic monthly cost estimate for their recommended plan. Show the math: benchmark premium, their subsidy (if any), and what they'll actually pay per month. Be honest that these are estimates — actual costs depend on specific plans in their county.]
+
+WHERE TO ENROLL:
+[Exact step-by-step enrollment instructions — which website to go to, what information to have ready, and when to enroll. Include open enrollment dates (Nov 1 – Jan 15 for ACA). Mention special enrollment if they have a life event.]
+
+WHAT PLAN TYPE TO LOOK FOR:
+[Given their health needs, medications, and income — should they choose HMO, PPO, or HDHP? Which metal tier (Bronze/Silver/Gold/Platinum) makes most sense? Show why with real math if helpful.]
+
+WHAT TO LOOK FOR IN A PLAN:
+[5-7 specific things to check when comparing plans — tailored to their health situation. Include drug formulary checks, specialist access, deductible strategy, in-network providers, etc.]
+
+SPECIAL PROGRAMS AVAILABLE:
+[Any extra help they should apply for: Cost-Sharing Reductions (if Silver plan, under 250% FPL), Extra Help for Medicare (if Medicare-eligible), CHIP for children, Navigator/enrollment assistance, Medicaid if borderline eligible, state-specific programs]
+
+KEY DATES TO KNOW:
+[Critical enrollment deadlines: ACA open enrollment (Nov 1 – Jan 15), their state exchange dates if different, Medicare enrollment window (3 months before 65th birthday), special enrollment triggers. Be specific.]
+
+Be specific to ${state} and their actual income/family situation. Include real URLs where helpful (healthcare.gov, medicare.gov, medicaid.gov). This person needs actionable guidance, not vague advice.`;
+      break;
+    }
     default:
       return res.status(400).json({ error: `Unknown tool: ${tool}` });
   }

@@ -105,6 +105,7 @@ const ALL_SERVICES = [
     tools: [
       { tab: "concierge", emoji: "🤖", label: "BillVeil Concierge" },
       { tab: "planoptimizer", emoji: "📈", label: "Insurance Plan Optimizer" },
+      { tab: "insurance", emoji: "🛡️", label: "Insurance Finder" },
     ],
   },
 ];
