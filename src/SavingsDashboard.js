@@ -36,6 +36,7 @@ export default function SavingsDashboard() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    if (user === undefined) return;
     if (!user) { setLoading(false); return; }
     const q = query(collection(db, "users", user.uid, "cases"), orderBy("createdAt", "desc"));
     const unsub = onSnapshot(q, snap => {

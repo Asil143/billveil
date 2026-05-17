@@ -23,12 +23,11 @@ const QUICK_TOOLS = [
 
 function scoreFromCases(cases) {
   const won = cases.filter(c => c.status === "won").length;
-  const filed = cases.filter(c => ["in_progress", "appealed", "won", "lost"].includes(c.status)).length;
   const totalBilled = cases.reduce((s, c) => s + (c.amountBilled || 0), 0);
-  const totalSaved = cases.filter(c => c.status === "won").reduce((s, c) => s + (c.amountSaved || 0), 0);
+  const totalSaved = cases.reduce((s, c) => s + (c.amountSaved || 0), 0);
   const savingsRatio = totalBilled > 0 ? totalSaved / totalBilled : 0;
-  const score = Math.min(850, Math.round(300 + Math.min(won * 80, 320) + Math.min(filed * 15, 120) + Math.min(savingsRatio * 110, 110)));
-  return { score, won, filed, totalBilled, totalSaved };
+  const score = Math.min(850, Math.round(300 + Math.min(won * 80, 320) + Math.min(cases.length * 15, 120) + Math.min(savingsRatio * 110, 110)));
+  return { score, won, totalBilled, totalSaved };
 }
 
 function scoreTier(score) {
@@ -46,6 +45,7 @@ export default function PersonalFinanceHub() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (user === undefined) return;
     if (!user) { setLoading(false); return; }
     const q = query(collection(db, "users", user.uid, "cases"), orderBy("createdAt", "desc"));
     const unsub = onSnapshot(q, snap => {
@@ -54,6 +54,10 @@ export default function PersonalFinanceHub() {
     });
     return unsub;
   }, [user]);
+
+  if (user === undefined || loading) {
+    return <div style={{ textAlign: "center", padding: 60, color: "#334155", fontFamily: FONT }}>Loading...</div>;
+  }
 
   if (!user) {
     return (
@@ -73,7 +77,7 @@ export default function PersonalFinanceHub() {
   const { score, won, totalBilled, totalSaved } = scoreFromCases(cases);
   const tier = scoreTier(score);
   const inProgress = cases.filter(c => ["in_progress", "appealed"].includes(c.status)).length;
-  const displayName = profileData?.name?.split(" ")[0] || initials || "there";
+  const displayName = profileData?.firstName?.trim() || initials || "there";
 
   return (
     <div>

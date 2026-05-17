@@ -35,6 +35,7 @@ import CommunityPriceBoard from "./CommunityPriceBoard";
 import PersonalFinanceHub from "./PersonalFinanceHub";
 import { AuthProvider, useAuth } from "./AuthContext";
 import Profile from "./Profile";
+import ErrorBoundary from "./ErrorBoundary";
 
 const EXAMPLES = [
   "CPT 99214 — $385",
@@ -94,14 +95,16 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Analytics />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/:tab" element={<AppShell />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/:tab" element={<AppShell />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </ErrorBoundary>
       </BrowserRouter>
     </AuthProvider>
   );
@@ -159,7 +162,7 @@ function AppShell() {
   const [tip, setTip] = useState(false);
   const [copied, setCopied] = useState(false);
   const [focused, setFocused] = useState(false);
-  const autoAnalyzeRef = useRef(false);
+  const autoAnalyzeRef = useRef(null);
   const accountMenuRef = useRef(null);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
 
@@ -180,8 +183,8 @@ function AppShell() {
   useEffect(() => {
     if (tab !== "analyzer") return;
     const incoming = location.state?.initialBill;
-    if (!incoming || autoAnalyzeRef.current) return;
-    autoAnalyzeRef.current = true;
+    if (!incoming || incoming === autoAnalyzeRef.current) return;
+    autoAnalyzeRef.current = incoming;
     setBill(incoming);
     if (consumeCredit()) {
       setLoading(true);

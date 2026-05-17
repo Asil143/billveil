@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, limit } from "firebase/firestore";
 import { db } from "./firebase";
 import { useAuth } from "./AuthContext";
@@ -85,12 +85,22 @@ export default function CommunityPriceBoard() {
     return matchSearch && matchState;
   });
 
-  const getMedian = (proc) => {
-    const prices = reports.filter(r => r.procedure === proc.toLowerCase()).map(r => r.amount).sort((a, b) => a - b);
-    if (!prices.length) return null;
-    const mid = Math.floor(prices.length / 2);
-    return prices.length % 2 ? prices[mid] : (prices[mid - 1] + prices[mid]) / 2;
-  };
+  const medians = useMemo(() => {
+    const buckets = {};
+    reports.forEach(r => {
+      const key = r.procedure?.toLowerCase();
+      if (!key || !r.amount) return;
+      if (!buckets[key]) buckets[key] = [];
+      buckets[key].push(r.amount);
+    });
+    const result = {};
+    Object.keys(buckets).forEach(key => {
+      const sorted = buckets[key].slice().sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      result[key] = sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    });
+    return result;
+  }, [reports]);
 
   return (
     <div>
@@ -184,7 +194,7 @@ export default function CommunityPriceBoard() {
         {filtered.map(r => {
           const insColor = INSURANCE_COLORS[r.insuranceType] || "#64748b";
           const insLabel = INSURANCE_TYPES.find(t => t.value === r.insuranceType)?.label || r.insuranceType;
-          const median = getMedian(r.procedureDisplay || r.procedure);
+          const median = medians[(r.procedure || r.procedureDisplay)?.toLowerCase()];
           const isAboveMedian = median && r.amount > median * 1.2;
           const isBelowMedian = median && r.amount < median * 0.8;
           return (

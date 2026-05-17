@@ -58,8 +58,10 @@ export default function CaseTracker() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [savedInputs, setSavedInputs] = useState({});
 
   useEffect(() => {
+    if (user === undefined) return;
     if (!user) { setLoading(false); return; }
     const q = query(collection(db, "users", user.uid, "cases"), orderBy("createdAt", "desc"));
     const unsub = onSnapshot(q, (snap) => {
@@ -222,12 +224,12 @@ export default function CaseTracker() {
                       <div style={{ display: "flex", gap: 8 }}>
                         <input
                           type="number"
-                          defaultValue={c.amountSaved || ""}
+                          value={savedInputs[c.id] ?? (c.amountSaved || "")}
+                          onChange={e => setSavedInputs(prev => ({ ...prev, [c.id]: e.target.value }))}
                           placeholder="How much did you save?"
                           style={{ ...IS, flex: 1 }}
-                          id={`saved-${c.id}`}
                         />
-                        <button onClick={() => updateSaved(c.id, document.getElementById(`saved-${c.id}`).value)} style={{ padding: "10px 16px", background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.25)", borderRadius: 10, color: "#34d399", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, flexShrink: 0 }}>Save</button>
+                        <button onClick={() => updateSaved(c.id, savedInputs[c.id] ?? c.amountSaved)} style={{ padding: "10px 16px", background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.25)", borderRadius: 10, color: "#34d399", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, flexShrink: 0 }}>Save</button>
                       </div>
                     </div>
                   )}

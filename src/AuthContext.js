@@ -205,7 +205,12 @@ export function AuthProvider({ children }) {
 
     const unsub = onSnapshot(
       doc(db, "email_verifications", emailKey(profileEmail)),
-      (snap) => { if (snap.exists() && snap.data().verified) setEmailVerified(true); },
+      (snap) => {
+        if (snap.exists() && snap.data().verified) {
+          setEmailVerified(true);
+          setEmailJustVerified(true);
+        }
+      },
       () => {} // silently ignore permission errors (rules not set up yet)
     );
     return unsub;
