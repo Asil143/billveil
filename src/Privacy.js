@@ -60,11 +60,11 @@ export default function Privacy() {
         </Section>
 
         <Section title="4. How we protect your information">
-          <p>All data transmitted between your browser and our servers uses HTTPS encryption. Phone numbers stored in Firebase are protected by Google's enterprise security infrastructure. Profile data stored in localStorage never leaves your device.</p>
+          <p>All data transmitted between your browser and our servers uses HTTPS encryption. Phone numbers and profile data are stored in Firebase (Firestore), protected by Google's enterprise security infrastructure. Bill analysis text is never stored — it is processed in memory and discarded after each response.</p>
         </Section>
 
         <Section title="5. Your rights">
-          <p style={{ marginBottom: 10 }}>You can delete your account at any time by contacting us. You can clear your profile data by clearing your browser's localStorage. Since we do not store medical bill content, there is nothing to request deletion of.</p>
+          <p style={{ marginBottom: 10 }}>You can delete your account and all associated data (profile, cases) at any time by contacting us at hello@billveil.com. Since we do not store medical bill analysis content, there is no query history to delete.</p>
         </Section>
 
         <Section title="6. Children's privacy">
