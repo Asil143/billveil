@@ -181,7 +181,7 @@ export default function ServicesHub() {
             <div style={{ fontSize: 11, fontWeight: 700, color: cat.color, letterSpacing: "0.12em", textTransform: "uppercase" }}>{cat.label}</div>
             <div style={{ flex: 1, height: 1, background: `linear-gradient(to right, ${cat.color}30, transparent)` }} />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
             {cat.tools.map((tool) => (
               <button
                 key={tool.tab}

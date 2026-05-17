@@ -296,9 +296,15 @@ export default function AppShell() {
       </div>
 
       <EmailCapture trigger={!!result} />
+
+      {tab === "services" && (
+        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "28px 24px 48px" }}>
+          <ServicesHub />
+        </div>
+      )}
+
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "28px 16px 48px" }}>
 
-        {tab === "services" && <ServicesHub />}
         {tab === "insplan" && <InsurancePlanDecoder />}
         {tab === "surprisebill" && <SurpriseBillingChecker />}
         {tab === "itemization" && <ItemizationRequest />}
