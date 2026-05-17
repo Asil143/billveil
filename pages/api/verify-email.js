@@ -1,7 +1,7 @@
 const emailKey = (e) =>
   e.toLowerCase().replace(/\./g, "_dot_").replace(/@/g, "_at_");
 
-module.exports = async function (req, res) {
+export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   const { email, ownerUid } = req.body || {};
