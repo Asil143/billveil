@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams, useLocation } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import axios from "axios";
 import Landing from "./Landing";
 import About from "./About";
@@ -68,6 +69,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <Analytics />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -81,8 +83,13 @@ export default function App() {
   );
 }
 
+function useTitle(title) {
+  useEffect(() => { document.title = title; }, [title]);
+}
+
 function LandingPage() {
   const navigate = useNavigate();
+  useTitle("BillVeil — See Through Every Medical Bill");
   return (
     <Landing
       onStart={(t, bill) => navigate(`/${t || "analyzer"}`, { state: { initialBill: bill } })}
@@ -95,16 +102,19 @@ function LandingPage() {
 
 function AboutPage() {
   const navigate = useNavigate();
+  useTitle("About — BillVeil");
   return <About onBack={() => navigate(-1)} onStart={(t) => navigate(`/${t || "analyzer"}`)} />;
 }
 
 function PrivacyPage() {
   const navigate = useNavigate();
+  useTitle("Privacy Policy — BillVeil");
   return <Privacy onBack={() => navigate(-1)} />;
 }
 
 function TermsPage() {
   const navigate = useNavigate();
+  useTitle("Terms of Service — BillVeil");
   return <Terms onBack={() => navigate(-1)} />;
 }
 
@@ -114,11 +124,16 @@ function AppShell() {
   const location = useLocation();
   const { user, usesLeft, consumeCredit, logout, showLoginModal, initials, emailJustVerified, clearEmailJustVerified } = useAuth();
 
+  const TAB_TITLES = { analyzer: "Bill Analyzer", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", profile: "My Profile" };
+  useTitle(`${TAB_TITLES[tab] || "App"} — BillVeil`);
+
   const [bill, setBill] = useState(location.state?.initialBill || "");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [tipDismissed] = useState(() => !!sessionStorage.getItem("bv_tip_dismissed"));
   const [tip, setTip] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [focused, setFocused] = useState(false);
   const autoAnalyzeRef = useRef(!!location.state?.initialBill);
   const accountMenuRef = useRef(null);
@@ -354,25 +369,33 @@ function AppShell() {
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.12em" }}>ANALYSIS RESULTS</div>
-              <button className="reset-btn" onClick={() => { setResult(null); setBill(""); setTip(false); }} style={{ fontSize: 12, color: "#64748b", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", padding: "5px 12px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}>← Analyze another</button>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={() => { navigator.clipboard.writeText(result); setCopied(true); setTimeout(() => setCopied(false), 2000); }} style={{ fontSize: 12, color: copied ? "#10b981" : "#64748b", background: "rgba(255,255,255,0.04)", border: `1px solid ${copied ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`, padding: "5px 12px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}>
+                  {copied ? "✓ Copied" : "Copy"}
+                </button>
+                <button className="reset-btn" onClick={() => { setResult(null); setBill(""); setTip(false); }} style={{ fontSize: 12, color: "#64748b", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", padding: "5px 12px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}>← Analyze another</button>
+              </div>
             </div>
             {parseResult(result)}
-            <div style={{ marginTop: 24 }}>
-              {!tip ? (
-                <div style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
-                  <div style={{ fontSize: 30, marginBottom: 10 }}>☕</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: "#fbbf24", marginBottom: 8 }}>Did BillVeil help you?</div>
-                  <div style={{ fontSize: 14, color: "#64748b", marginBottom: 20, lineHeight: 1.7 }}>If we saved you money, a small tip helps keep BillVeil running for the next person who needs us.</div>
-                  <a href="https://buy.stripe.com/7sY3cxalf2f769Pf71bfO00" target="_blank" rel="noopener noreferrer" onClick={() => setTip(true)} style={{ display: "inline-block", padding: "12px 32px", background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 20px rgba(245,158,11,0.3)", textDecoration: "none" }}>Leave a Tip ❤️</a>
-                </div>
-              ) : (
-                <div style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
-                  <div style={{ fontSize: 36, marginBottom: 10 }}>🙏</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: "#10b981", marginBottom: 6 }}>Thank you so much!</div>
-                  <div style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>Your support keeps BillVeil free for every American who needs it.</div>
-                </div>
-              )}
-            </div>
+            {!tipDismissed && (
+              <div style={{ marginTop: 24 }}>
+                {!tip ? (
+                  <div style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 16, padding: 28, textAlign: "center", position: "relative" }}>
+                    <button onClick={() => { sessionStorage.setItem("bv_tip_dismissed", "1"); setTip(true); }} style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: "#475569", fontSize: 18, cursor: "pointer", lineHeight: 1 }}>×</button>
+                    <div style={{ fontSize: 30, marginBottom: 10 }}>☕</div>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: "#fbbf24", marginBottom: 8 }}>Did BillVeil help you?</div>
+                    <div style={{ fontSize: 14, color: "#64748b", marginBottom: 20, lineHeight: 1.7 }}>If we saved you money, a small tip helps keep BillVeil running for the next person who needs us.</div>
+                    <a href="https://buy.stripe.com/7sY3cxalf2f769Pf71bfO00" target="_blank" rel="noopener noreferrer" onClick={() => { sessionStorage.setItem("bv_tip_dismissed", "1"); setTip(true); }} style={{ display: "inline-block", padding: "12px 32px", background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 20px rgba(245,158,11,0.3)", textDecoration: "none" }}>Leave a Tip ❤️</a>
+                  </div>
+                ) : (
+                  <div style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 16, padding: 28, textAlign: "center" }}>
+                    <div style={{ fontSize: 36, marginBottom: 10 }}>🙏</div>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: "#10b981", marginBottom: 6 }}>Thank you so much!</div>
+                    <div style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>Your support keeps BillVeil running for every American who needs it.</div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
