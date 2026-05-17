@@ -9,6 +9,7 @@ import Terms from "./Terms";
 import DisputeLetter from "./DisputeLetter";
 import DrugComparator from "./DrugComparator";
 import DenialFighter from "./DenialFighter";
+import NegotiationScript from "./NegotiationScript";
 import { AuthProvider, useAuth } from "./AuthContext";
 import Profile from "./Profile";
 
@@ -63,7 +64,7 @@ const CSS = `
   }
 `;
 
-const VALID_TABS = ["analyzer", "dispute", "drug", "denial", "profile"];
+const VALID_TABS = ["analyzer", "dispute", "drug", "denial", "negotiate", "profile"];
 
 export default function App() {
   return (
@@ -124,7 +125,7 @@ function AppShell() {
   const location = useLocation();
   const { user, usesLeft, consumeCredit, logout, showLoginModal, initials, emailJustVerified, clearEmailJustVerified } = useAuth();
 
-  const TAB_TITLES = { analyzer: "Bill Analyzer", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", profile: "My Profile" };
+  const TAB_TITLES = { analyzer: "Bill Analyzer", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", profile: "My Profile" };
   useTitle(`${TAB_TITLES[tab] || "App"} — BillVeil`);
 
   const [bill, setBill] = useState(location.state?.initialBill || "");
@@ -236,6 +237,7 @@ function AppShell() {
     { id: "dispute", emoji: "✉️", label: "Dispute Letter" },
     { id: "drug", emoji: "💊", label: "Drug Prices" },
     { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
+    { id: "negotiate", emoji: "📞", label: "Negotiate" },
   ];
 
   return (
@@ -302,6 +304,7 @@ function AppShell() {
         {tab === "dispute" && <DisputeLetter />}
         {tab === "drug" && <DrugComparator />}
         {tab === "denial" && <DenialFighter />}
+        {tab === "negotiate" && <NegotiationScript />}
         {tab === "profile" && <Profile />}
 
         {tab === "analyzer" && <>
