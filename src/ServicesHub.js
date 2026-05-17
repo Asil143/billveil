@@ -45,7 +45,6 @@ const CATEGORIES = [
 ];
 
 const COMING_SOON = [
-  { emoji: "📸", label: "Bill Scan", desc: "Photo or PDF upload — auto-extracts bill data so you never have to type.", color: "#fbbf24" },
   { emoji: "🏥", label: "Hospital Price Lookup", desc: "Federal law requires hospitals to publish prices. Find what yours actually charges.", color: "#60a5fa" },
   { emoji: "👥", label: "Community Price Board", desc: "Crowdsourced real prices from patients. What people actually paid near you.", color: "#a78bfa" },
   { emoji: "🤖", label: "BillVeil Concierge", desc: "One AI chat that handles everything. Just describe your situation and talk.", color: "#10b981" },
@@ -71,6 +70,24 @@ export default function ServicesHub() {
           Every tool you need to understand, fight, and reduce your medical bills — in one place.
         </p>
       </div>
+
+      {/* Featured: Bill Scan */}
+      <button
+        onClick={() => navigate("/billscan")}
+        style={{ width: "100%", background: "linear-gradient(135deg, rgba(16,185,129,0.12), rgba(5,150,105,0.06))", border: "1px solid rgba(16,185,129,0.35)", borderRadius: 16, padding: "20px 24px", cursor: "pointer", textAlign: "left", fontFamily: FONT, marginBottom: 32, display: "flex", alignItems: "center", gap: 20, transition: "all 0.2s" }}
+        onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(16,185,129,0.6)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(16,185,129,0.35)"; e.currentTarget.style.transform = "translateY(0)"; }}
+      >
+        <div style={{ fontSize: 40, flexShrink: 0 }}>📸</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: "#f1f5f9" }}>Bill Scan</div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#10b981", background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)", padding: "2px 8px", borderRadius: 8, letterSpacing: "0.08em" }}>NEW</div>
+          </div>
+          <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6 }}>Take a photo or upload an image of any medical bill — AI reads every charge, CPT code, and amount automatically. No typing required.</div>
+        </div>
+        <div style={{ fontSize: 20, color: "#10b981", flexShrink: 0 }}>→</div>
+      </button>
 
       {/* Active tools by category */}
       {CATEGORIES.map((cat) => (
