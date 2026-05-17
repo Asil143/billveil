@@ -15,6 +15,7 @@ import PriorAuthHelper from "./PriorAuthHelper";
 import DebtRightsChecker from "./DebtRightsChecker";
 import SecondOpinionFinder from "./SecondOpinionFinder";
 import GenericDrugFinder from "./GenericDrugFinder";
+import ServicesHub from "./ServicesHub";
 import { AuthProvider, useAuth } from "./AuthContext";
 import Profile from "./Profile";
 
@@ -69,7 +70,7 @@ const CSS = `
   }
 `;
 
-const VALID_TABS = ["analyzer", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "genericdrug", "profile"];
+const VALID_TABS = ["analyzer", "services", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "genericdrug", "profile"];
 
 export default function App() {
   return (
@@ -130,7 +131,7 @@ function AppShell() {
   const location = useLocation();
   const { user, usesLeft, consumeCredit, logout, showLoginModal, initials, emailJustVerified, clearEmailJustVerified } = useAuth();
 
-  const TAB_TITLES = { analyzer: "Bill Analyzer", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", eob: "EOB Explainer", priorauth: "Prior Auth Helper", debtrights: "Debt Rights Checker", secondopinion: "Second Opinion Finder", genericdrug: "Generic Drug Finder", profile: "My Profile" };
+  const TAB_TITLES = { analyzer: "Bill Analyzer", services: "Services", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", eob: "EOB Explainer", priorauth: "Prior Auth Helper", debtrights: "Debt Rights Checker", secondopinion: "Second Opinion Finder", genericdrug: "Generic Drug Finder", profile: "My Profile" };
   useTitle(`${TAB_TITLES[tab] || "App"} — BillVeil`);
 
   const [bill, setBill] = useState(location.state?.initialBill || "");
@@ -239,15 +240,7 @@ function AppShell() {
 
   const TABS = [
     { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
-    { id: "dispute", emoji: "✉️", label: "Dispute Letter" },
-    { id: "drug", emoji: "💊", label: "Drug Prices" },
-    { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
-    { id: "negotiate", emoji: "📞", label: "Negotiate" },
-    { id: "eob", emoji: "📋", label: "EOB Explainer" },
-    { id: "priorauth", emoji: "📝", label: "Prior Auth" },
-    { id: "debtrights", emoji: "⚖️", label: "Debt Rights" },
-    { id: "secondopinion", emoji: "🩺", label: "2nd Opinion" },
-    { id: "genericdrug", emoji: "💊", label: "Generic Drug" },
+    { id: "services", emoji: "🛠️", label: "Services" },
   ];
 
   return (
@@ -311,6 +304,7 @@ function AppShell() {
 
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "28px 16px 48px" }}>
 
+        {tab === "services" && <ServicesHub />}
         {tab === "dispute" && <DisputeLetter />}
         {tab === "drug" && <DrugComparator />}
         {tab === "denial" && <DenialFighter />}
