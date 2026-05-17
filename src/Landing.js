@@ -12,7 +12,7 @@ const CSS = `
   .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 20px 60px rgba(16,185,129,0.5) !important; }
   .hero-cta:active { transform: translateY(-1px); }
   .ghost-cta:hover { background: rgba(255,255,255,0.08) !important; }
-  .tool-card:hover { border-color: rgba(16,185,129,0.4) !important; background: rgba(16,185,129,0.04) !important; transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.3) !important; }
+  .tool-card:hover { border-color: rgba(16,185,129,0.4) !important; transform: translateY(-2px); }
   .feature-card:hover { border-color: rgba(16,185,129,0.3) !important; }
   .faq-item:hover { border-color: rgba(16,185,129,0.2) !important; }
   .result-card:hover { border-color: rgba(255,255,255,0.15) !important; transform: translateY(-2px); }
@@ -45,15 +45,72 @@ const TESTIMONIALS = [
   { name: "James T.", location: "Chicago, IL", quote: "The hospital billed me $385 for a 10-minute visit. BillVeil told me the fair price was $120 and gave me a script to negotiate. I paid $130 in the end.", saved: "Saved $255", stars: 5 },
 ];
 
+const ALL_SERVICES = [
+  {
+    label: "Fight Your Bill",
+    color: "#f87171",
+    icon: "⚔️",
+    tools: [
+      { tab: "billscan", emoji: "📸", label: "Bill Scan" },
+      { tab: "dispute", emoji: "✉️", label: "Dispute Letter" },
+      { tab: "denial", emoji: "⚔️", label: "Denial Fighter" },
+      { tab: "negotiate", emoji: "📞", label: "Negotiation Script" },
+      { tab: "debtrights", emoji: "⚖️", label: "Debt Rights Checker" },
+      { tab: "surprisebill", emoji: "🚨", label: "Surprise Billing Checker" },
+      { tab: "itemization", emoji: "📑", label: "Itemization Request" },
+      { tab: "charitycare", emoji: "🤝", label: "Charity Care Finder" },
+      { tab: "paymentplan", emoji: "💳", label: "Payment Plan Negotiator" },
+      { tab: "creditcard", emoji: "⚠️", label: "Medical Credit Card Warning" },
+    ],
+  },
+  {
+    label: "Understand Your Coverage",
+    color: "#60a5fa",
+    icon: "📋",
+    tools: [
+      { tab: "eob", emoji: "📋", label: "EOB Explainer" },
+      { tab: "priorauth", emoji: "📝", label: "Prior Auth Helper" },
+      { tab: "secondopinion", emoji: "🩺", label: "Second Opinion Finder" },
+      { tab: "insplan", emoji: "🏥", label: "Insurance Plan Decoder" },
+      { tab: "providercheck", emoji: "🔍", label: "Provider Network Checker" },
+      { tab: "hsafsa", emoji: "💰", label: "HSA / FSA Optimizer" },
+    ],
+  },
+  {
+    label: "Find Savings",
+    color: "#34d399",
+    icon: "💰",
+    tools: [
+      { tab: "drug", emoji: "💊", label: "Drug Price Comparator" },
+      { tab: "genericdrug", emoji: "💊", label: "Generic Drug Finder" },
+      { tab: "costestimate", emoji: "🔮", label: "Pre-Treatment Cost Estimator" },
+    ],
+  },
+  {
+    label: "Track Your Progress",
+    color: "#a78bfa",
+    icon: "📊",
+    tools: [
+      { tab: "casetracker", emoji: "📊", label: "Case Tracker" },
+      { tab: "savings", emoji: "🏆", label: "Savings Dashboard" },
+    ],
+  },
+];
+
 export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
   const { user, showLoginModal, logout, initials } = useAuth();
   const [heroBill, setHeroBill] = useState("");
   const [openFaq, setOpenFaq] = useState(null);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [showServicesMenu, setShowServicesMenu] = useState(false);
   const accountMenuRef = useRef(null);
+  const servicesMenuRef = useRef(null);
 
   useEffect(() => {
-    const handler = (e) => { if (accountMenuRef.current && !accountMenuRef.current.contains(e.target)) setShowAccountMenu(false); };
+    const handler = (e) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(e.target)) setShowAccountMenu(false);
+      if (servicesMenuRef.current && !servicesMenuRef.current.contains(e.target)) setShowServicesMenu(false);
+    };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
@@ -80,24 +137,45 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
           <span style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.02em", color: "#f1f5f9" }}>BillVeil</span>
         </div>
 
-        {/* Tool links — desktop only */}
-        <div className="nav-tools" style={{ display: "flex", alignItems: "center", gap: 1, flex: 1, justifyContent: "center", flexWrap: "wrap" }}>
-          {[
-            { tab: "analyzer", label: "⚡ Bill Analyzer" },
-            { tab: "dispute", label: "✉️ Dispute Letter" },
-            { tab: "drug", label: "💊 Drug Prices" },
-            { tab: "denial", label: "⚔️ Denial Fighter" },
-            { tab: "negotiate", label: "📞 Negotiate" },
-            { tab: "eob", label: "📋 EOB" },
-            { tab: "priorauth", label: "📝 Prior Auth" },
-            { tab: "debtrights", label: "⚖️ Debt Rights" },
-            { tab: "secondopinion", label: "🩺 2nd Opinion" },
-            { tab: "genericdrug", label: "💊 Generic Drug" },
-          ].map(({ tab, label }) => (
-            <button key={tab} className="nav-tool" onClick={() => onStart(tab)} style={{ padding: "5px 9px", background: "transparent", border: "none", color: "#64748b", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, borderRadius: 7, transition: "all 0.15s" }}>
-              {label}
+        {/* Services dropdown — desktop only */}
+        <div className="nav-tools" style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, justifyContent: "center" }}>
+          <button className="nav-tool" onClick={() => onStart("analyzer")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, borderRadius: 7, transition: "all 0.15s" }}>
+            ⚡ Bill Analyzer
+          </button>
+          <div ref={servicesMenuRef} style={{ position: "relative" }}>
+            <button
+              onClick={() => setShowServicesMenu(v => !v)}
+              style={{ padding: "6px 14px", background: showServicesMenu ? "rgba(16,185,129,0.1)" : "transparent", border: showServicesMenu ? "1px solid rgba(16,185,129,0.25)" : "1px solid transparent", color: showServicesMenu ? "#10b981" : "#64748b", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, borderRadius: 8, transition: "all 0.15s", display: "flex", alignItems: "center", gap: 6 }}
+            >
+              🛠️ Services
+              <span style={{ fontSize: 10, transform: showServicesMenu ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s", display: "inline-block" }}>▾</span>
             </button>
-          ))}
+            {showServicesMenu && (
+              <div style={{ position: "absolute", top: "calc(100% + 12px)", left: "50%", transform: "translateX(-50%)", background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: 20, boxShadow: "0 24px 64px rgba(0,0,0,0.7)", zIndex: 200, display: "grid", gridTemplateColumns: "repeat(4, 200px)", gap: 20, width: "max-content" }}>
+                {ALL_SERVICES.map(cat => (
+                  <div key={cat.label}>
+                    <div style={{ fontSize: 9, fontWeight: 800, color: cat.color, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10, display: "flex", alignItems: "center", gap: 5 }}>
+                      <span>{cat.icon}</span> {cat.label}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      {cat.tools.map(tool => (
+                        <button
+                          key={tool.tab}
+                          onClick={() => { onStart(tool.tab); setShowServicesMenu(false); }}
+                          style={{ padding: "7px 10px", background: "none", border: "none", color: "#64748b", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, textAlign: "left", borderRadius: 8, transition: "all 0.12s", display: "flex", alignItems: "center", gap: 7 }}
+                          onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "#f1f5f9"; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#64748b"; }}
+                        >
+                          <span style={{ fontSize: 14, flexShrink: 0 }}>{tool.emoji}</span>
+                          {tool.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
@@ -274,36 +352,59 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
         </div>
       </section>
 
-      {/* Tools */}
-      <section style={{ position: "relative", zIndex: 1, padding: "90px 20px", maxWidth: 820, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 16 }}>YOUR TOOLKIT</div>
-          <h2 style={{ fontSize: "clamp(26px, 5vw, 40px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9" }}>10 tools. One mission.</h2>
+      {/* Services */}
+      <section id="services" style={{ position: "relative", zIndex: 1, padding: "90px 20px", maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 56 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 16 }}>SERVICES</div>
+          <h2 style={{ fontSize: "clamp(26px, 5vw, 40px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 12 }}>Every tool you need. Free.</h2>
+          <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.7, maxWidth: 460, margin: "0 auto" }}>
+            21 AI tools to understand, fight, and reduce your medical bills — organized by what you need to do right now.
+          </p>
         </div>
-        <div className="land-2col" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
-          {[
-            { tab: "analyzer", emoji: "⚡", label: "Bill Analyzer", tag: "Most Popular", tagColor: "#10b981", desc: "Paste any CPT code or charge. Get a plain-English explanation, fair price comparison, overcharge verdict, and exact action steps.", cta: "Analyze a Bill →" },
-            { tab: "dispute", emoji: "✉️", label: "Dispute Letter", tag: "Save Money", tagColor: "#3b82f6", desc: "Describe what you were charged. We write a professional, ready-to-send dispute letter that hospitals and insurers take seriously.", cta: "Write a Letter →" },
-            { tab: "drug", emoji: "💊", label: "Drug Price Comparator", tag: "Cut Costs", tagColor: "#8b5cf6", desc: "Enter any medication. We show the fair price, Cost Plus Drugs rate, cheapest alternatives, and how much you could save monthly.", cta: "Compare Prices →" },
-            { tab: "denial", emoji: "⚔️", label: "Denial Fighter", tag: "Fight Back", tagColor: "#ef4444", desc: "Insurance denied your claim? We analyze the denial, write your appeal letter, and walk you through every escalation step.", cta: "Fight a Denial →" },
-            { tab: "negotiate", emoji: "📞", label: "Negotiation Script", tag: "New", tagColor: "#10b981", desc: "AI writes your word-for-word phone script to call the billing department and negotiate a lower bill — including what to say if they push back.", cta: "Get My Script →" },
-            { tab: "eob", emoji: "📋", label: "EOB Explainer", tag: "New", tagColor: "#60a5fa", desc: "Paste your Explanation of Benefits. We decode what insurance paid, what you actually owe, red flags, and whether to appeal.", cta: "Decode My EOB →" },
-            { tab: "priorauth", emoji: "📝", label: "Prior Auth Helper", tag: "New", tagColor: "#a78bfa", desc: "Generates a complete prior authorization letter for your insurance company — with medical necessity arguments, ready to print and submit.", cta: "Get My Letter →" },
-            { tab: "debtrights", emoji: "⚖️", label: "Debt Rights Checker", tag: "New", tagColor: "#fbbf24", desc: "Select your state. AI explains your exact legal rights against medical debt collectors — including what to say to stop the calls.", cta: "Know My Rights →" },
-            { tab: "secondopinion", emoji: "🩺", label: "Second Opinion Finder", tag: "New", tagColor: "#34d399", desc: "Enter your diagnosis. Get which specialist to see, 8–10 tailored questions to ask, and red flags in your original diagnosis.", cta: "Get My Guide →" },
-            { tab: "genericdrug", emoji: "💊", label: "Generic Drug Finder", tag: "New", tagColor: "#f87171", desc: "Enter any brand-name drug. We find the generic equivalent, cheapest pharmacies, discount programs, and a script to ask your doctor.", cta: "Find Savings →" },
-          ].map(({ tab, emoji, label, tag, tagColor, desc, cta }) => (
-            <div key={tab} className="tool-card" onClick={() => onStart(tab)} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 18, padding: "26px 24px", cursor: "pointer", transition: "all 0.25s", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
-              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16 }}>
-                <div style={{ fontSize: 32 }}>{emoji}</div>
-                <div style={{ background: tagColor + "18", border: `1px solid ${tagColor}35`, color: tagColor, padding: "3px 10px", borderRadius: 20, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em" }}>{tag}</div>
-              </div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: "#f1f5f9", marginBottom: 10 }}>{label}</div>
-              <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.75, marginBottom: 18 }}>{desc}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#10b981" }}>{cta}</div>
+
+        {/* Bill Scan featured */}
+        <div
+          onClick={() => onStart("billscan")}
+          className="tool-card"
+          style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.05))", border: "1px solid rgba(16,185,129,0.3)", borderRadius: 18, padding: "22px 26px", cursor: "pointer", marginBottom: 40, display: "flex", alignItems: "center", gap: 20, transition: "all 0.2s" }}
+        >
+          <div style={{ fontSize: 40, flexShrink: 0 }}>📸</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "#f1f5f9" }}>Bill Scan</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#10b981", background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)", padding: "2px 8px", borderRadius: 8, letterSpacing: "0.08em" }}>FEATURED</div>
             </div>
-          ))}
+            <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6 }}>Take a photo or upload your bill — AI reads every charge and CPT code automatically. No typing required.</div>
+          </div>
+          <div style={{ fontSize: 20, color: "#10b981", flexShrink: 0 }}>→</div>
         </div>
+
+        {/* Categories */}
+        {ALL_SERVICES.map(cat => (
+          <div key={cat.label} style={{ marginBottom: 40 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+              <span style={{ fontSize: 16 }}>{cat.icon}</span>
+              <div style={{ fontSize: 11, fontWeight: 800, color: cat.color, letterSpacing: "0.12em", textTransform: "uppercase" }}>{cat.label}</div>
+              <div style={{ flex: 1, height: 1, background: `linear-gradient(to right, ${cat.color}40, transparent)` }} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+              {cat.tools.filter(t => t.tab !== "billscan").map(tool => (
+                <div
+                  key={tool.tab}
+                  className="tool-card"
+                  onClick={() => onStart(tool.tab)}
+                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "16px 18px", cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", gap: 14 }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${cat.color}50`; e.currentTarget.style.background = `${cat.color}08`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "translateY(0)"; }}
+                >
+                  <div style={{ fontSize: 24, flexShrink: 0 }}>{tool.emoji}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9", flex: 1 }}>{tool.label}</div>
+                  <div style={{ fontSize: 14, color: cat.color, flexShrink: 0 }}>→</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* Real Results */}
