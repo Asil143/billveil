@@ -81,14 +81,20 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
         </div>
 
         {/* Tool links — desktop only */}
-        <div className="nav-tools" style={{ display: "flex", alignItems: "center", gap: 2, flex: 1, justifyContent: "center" }}>
+        <div className="nav-tools" style={{ display: "flex", alignItems: "center", gap: 1, flex: 1, justifyContent: "center", flexWrap: "wrap" }}>
           {[
             { tab: "analyzer", label: "⚡ Bill Analyzer" },
             { tab: "dispute", label: "✉️ Dispute Letter" },
             { tab: "drug", label: "💊 Drug Prices" },
             { tab: "denial", label: "⚔️ Denial Fighter" },
+            { tab: "negotiate", label: "📞 Negotiate" },
+            { tab: "eob", label: "📋 EOB" },
+            { tab: "priorauth", label: "📝 Prior Auth" },
+            { tab: "debtrights", label: "⚖️ Debt Rights" },
+            { tab: "secondopinion", label: "🩺 2nd Opinion" },
+            { tab: "genericdrug", label: "💊 Generic Drug" },
           ].map(({ tab, label }) => (
-            <button key={tab} className="nav-tool" onClick={() => onStart(tab)} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, borderRadius: 7, transition: "all 0.15s" }}>
+            <button key={tab} className="nav-tool" onClick={() => onStart(tab)} style={{ padding: "5px 9px", background: "transparent", border: "none", color: "#64748b", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, borderRadius: 7, transition: "all 0.15s" }}>
               {label}
             </button>
           ))}
@@ -272,7 +278,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
       <section style={{ position: "relative", zIndex: 1, padding: "90px 20px", maxWidth: 820, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 16 }}>YOUR TOOLKIT</div>
-          <h2 style={{ fontSize: "clamp(26px, 5vw, 40px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9" }}>Four tools. One mission.</h2>
+          <h2 style={{ fontSize: "clamp(26px, 5vw, 40px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9" }}>10 tools. One mission.</h2>
         </div>
         <div className="land-2col" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
           {[
@@ -280,6 +286,12 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
             { tab: "dispute", emoji: "✉️", label: "Dispute Letter", tag: "Save Money", tagColor: "#3b82f6", desc: "Describe what you were charged. We write a professional, ready-to-send dispute letter that hospitals and insurers take seriously.", cta: "Write a Letter →" },
             { tab: "drug", emoji: "💊", label: "Drug Price Comparator", tag: "Cut Costs", tagColor: "#8b5cf6", desc: "Enter any medication. We show the fair price, Cost Plus Drugs rate, cheapest alternatives, and how much you could save monthly.", cta: "Compare Prices →" },
             { tab: "denial", emoji: "⚔️", label: "Denial Fighter", tag: "Fight Back", tagColor: "#ef4444", desc: "Insurance denied your claim? We analyze the denial, write your appeal letter, and walk you through every escalation step.", cta: "Fight a Denial →" },
+            { tab: "negotiate", emoji: "📞", label: "Negotiation Script", tag: "New", tagColor: "#10b981", desc: "AI writes your word-for-word phone script to call the billing department and negotiate a lower bill — including what to say if they push back.", cta: "Get My Script →" },
+            { tab: "eob", emoji: "📋", label: "EOB Explainer", tag: "New", tagColor: "#60a5fa", desc: "Paste your Explanation of Benefits. We decode what insurance paid, what you actually owe, red flags, and whether to appeal.", cta: "Decode My EOB →" },
+            { tab: "priorauth", emoji: "📝", label: "Prior Auth Helper", tag: "New", tagColor: "#a78bfa", desc: "Generates a complete prior authorization letter for your insurance company — with medical necessity arguments, ready to print and submit.", cta: "Get My Letter →" },
+            { tab: "debtrights", emoji: "⚖️", label: "Debt Rights Checker", tag: "New", tagColor: "#fbbf24", desc: "Select your state. AI explains your exact legal rights against medical debt collectors — including what to say to stop the calls.", cta: "Know My Rights →" },
+            { tab: "secondopinion", emoji: "🩺", label: "Second Opinion Finder", tag: "New", tagColor: "#34d399", desc: "Enter your diagnosis. Get which specialist to see, 8–10 tailored questions to ask, and red flags in your original diagnosis.", cta: "Get My Guide →" },
+            { tab: "genericdrug", emoji: "💊", label: "Generic Drug Finder", tag: "New", tagColor: "#f87171", desc: "Enter any brand-name drug. We find the generic equivalent, cheapest pharmacies, discount programs, and a script to ask your doctor.", cta: "Find Savings →" },
           ].map(({ tab, emoji, label, tag, tagColor, desc, cta }) => (
             <div key={tab} className="tool-card" onClick={() => onStart(tab)} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 18, padding: "26px 24px", cursor: "pointer", transition: "all 0.25s", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16 }}>
@@ -441,6 +453,12 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
                   { tab: "dispute", label: "✉️ Dispute Letter" },
                   { tab: "drug", label: "💊 Drug Prices" },
                   { tab: "denial", label: "⚔️ Denial Fighter" },
+                  { tab: "negotiate", label: "📞 Negotiation Script" },
+                  { tab: "eob", label: "📋 EOB Explainer" },
+                  { tab: "priorauth", label: "📝 Prior Auth Helper" },
+                  { tab: "debtrights", label: "⚖️ Debt Rights Checker" },
+                  { tab: "secondopinion", label: "🩺 Second Opinion" },
+                  { tab: "genericdrug", label: "💊 Generic Drug Finder" },
                 ].map(({ tab, label }) => (
                   <button key={tab} className="footer-link" onClick={() => onStart(tab)} style={{ background: "none", border: "none", color: "#475569", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>
                     {label}
