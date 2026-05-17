@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import axios from "axios";
 import Landing from "./Landing";
@@ -52,6 +52,9 @@ import HospitalQualityChecker from "./HospitalQualityChecker";
 import { AuthProvider, useAuth } from "./AuthContext";
 import Profile from "./Profile";
 import ErrorBoundary from "./ErrorBoundary";
+import NotFound from "./NotFound";
+import RelatedTools from "./RelatedTools";
+import EmailCapture from "./EmailCapture";
 
 const EXAMPLES = [
   "CPT 99214 — $385",
@@ -118,7 +121,7 @@ export default function App() {
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/:tab" element={<AppShell />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <FloatingChat />
         </ErrorBoundary>
@@ -215,7 +218,7 @@ function AppShell() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, location.state]);
 
-  if (!VALID_TABS.includes(tab)) return <Navigate to="/analyzer" replace />;
+  if (!VALID_TABS.includes(tab)) return <NotFound />;
 
   const analyzeBill = async () => {
     if (!bill.trim()) return;
@@ -279,7 +282,11 @@ function AppShell() {
 
   const TABS = [
     { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
-    { id: "services", emoji: "🛠️", label: "Services" },
+    { id: "services", emoji: "🛠️", label: "All Tools" },
+    { id: "dispute", emoji: "✉️", label: "Dispute" },
+    { id: "drug", emoji: "💊", label: "Drug Prices" },
+    { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
+    { id: "concierge", emoji: "🤖", label: "AI Chat" },
   ];
 
   return (
@@ -341,6 +348,7 @@ function AppShell() {
         </div>
       </div>
 
+      <EmailCapture trigger={!!result} />
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "28px 16px 48px" }}>
 
         {tab === "services" && <ServicesHub />}
@@ -387,6 +395,10 @@ function AppShell() {
         {tab === "glossary" && <MedicalGlossary />}
         {tab === "hospitalquality" && <HospitalQualityChecker />}
 
+        {tab !== "analyzer" && tab !== "services" && tab !== "hub" && tab !== "savings" && tab !== "casetracker" && tab !== "profile" && (
+          <RelatedTools currentTab={tab} />
+        )}
+
         {tab === "analyzer" && <>
 
         <div style={{ textAlign: "center", marginBottom: 28 }}>
@@ -432,6 +444,23 @@ function AppShell() {
         </div>
 
         {error && <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 12, padding: 16, color: "#f87171", fontSize: 14, marginBottom: 16 }}>{error}</div>}
+
+        {loading && (
+          <div style={{ animation: "fadeUp 0.3s ease" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <div style={{ height: 10, width: 120, background: "rgba(255,255,255,0.06)", borderRadius: 6, animation: "pulse 1.5s ease-in-out infinite" }} />
+              <div style={{ height: 28, width: 70, background: "rgba(255,255,255,0.04)", borderRadius: 8 }} />
+            </div>
+            {[{ w: "45%", lines: 2 }, { w: "60%", lines: 3 }, { w: "35%", lines: 2 }, { w: "55%", lines: 3 }, { w: "50%", lines: 2 }].map((s, i) => (
+              <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderLeft: "3px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "20px 24px", marginBottom: 10 }}>
+                <div style={{ height: 8, width: s.w, background: "rgba(255,255,255,0.07)", borderRadius: 4, marginBottom: 14, animation: `pulse 1.5s ease-in-out ${i * 0.1}s infinite` }} />
+                {Array.from({ length: s.lines }).map((_, j) => (
+                  <div key={j} style={{ height: 7, width: j === s.lines - 1 ? "70%" : "100%", background: "rgba(255,255,255,0.05)", borderRadius: 4, marginBottom: 8, animation: `pulse 1.5s ease-in-out ${(i + j) * 0.08}s infinite` }} />
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
 
         {!result && !loading && (
           <div style={{ marginTop: 40 }}>

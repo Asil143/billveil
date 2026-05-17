@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const FONT = "'Inter', system-ui, sans-serif";
@@ -101,20 +102,51 @@ const COMING_SOON = [
 
 export default function ServicesHub() {
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
+  const filteredCategories = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return CATEGORIES;
+    return CATEGORIES.map(cat => ({
+      ...cat,
+      tools: cat.tools.filter(t =>
+        t.label.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)
+      ),
+    })).filter(cat => cat.tools.length > 0);
+  }, [search]);
+
+  const totalMatches = filteredCategories.reduce((n, c) => n + c.tools.length, 0);
 
   return (
     <div>
-      <div style={{ textAlign: "center", marginBottom: 36 }}>
+      <div style={{ textAlign: "center", marginBottom: 28 }}>
         <h1 style={{ fontSize: "clamp(22px, 6vw, 32px)", fontWeight: 900, lineHeight: 1.15, letterSpacing: "-0.03em", marginBottom: 8, color: "#f1f5f9" }}>
           Your medical billing <span style={{ color: "#10b981", textShadow: "0 0 20px rgba(16,185,129,0.4)" }}>arsenal.</span>
         </h1>
-        <p style={{ fontSize: "clamp(13px, 3vw, 15px)", color: "#64748b", lineHeight: 1.6, maxWidth: 460, margin: "0 auto" }}>
+        <p style={{ fontSize: "clamp(13px, 3vw, 15px)", color: "#64748b", lineHeight: 1.6, maxWidth: 460, margin: "0 auto 20px" }}>
           Every tool you need to understand, fight, and reduce your medical bills — in one place.
         </p>
+        <div style={{ position: "relative", maxWidth: 420, margin: "0 auto" }}>
+          <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16, pointerEvents: "none" }}>🔍</span>
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search tools… e.g. dispute, drug price, Medicare"
+            style={{ width: "100%", padding: "11px 14px 11px 40px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, fontSize: 14, color: "#f1f5f9", fontFamily: FONT, boxSizing: "border-box" }}
+          />
+          {search && (
+            <button onClick={() => setSearch("")} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#475569", fontSize: 18, cursor: "pointer", lineHeight: 1 }}>×</button>
+          )}
+        </div>
+        {search && (
+          <div style={{ fontSize: 12, color: "#475569", marginTop: 8 }}>
+            {totalMatches} {totalMatches === 1 ? "tool" : "tools"} found
+          </div>
+        )}
       </div>
 
       {/* Featured: Bill Scan */}
-      <button
+      {(!search || "bill scan photo upload image".includes(search.toLowerCase())) && <button
         onClick={() => navigate("/billscan")}
         style={{ width: "100%", background: "linear-gradient(135deg, rgba(16,185,129,0.12), rgba(5,150,105,0.06))", border: "1px solid rgba(16,185,129,0.35)", borderRadius: 16, padding: "20px 24px", cursor: "pointer", textAlign: "left", fontFamily: FONT, marginBottom: 32, display: "flex", alignItems: "center", gap: 20, transition: "all 0.2s" }}
         onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(16,185,129,0.6)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
@@ -129,10 +161,19 @@ export default function ServicesHub() {
           <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6 }}>Take a photo or upload an image of any medical bill — AI reads every charge, CPT code, and amount automatically. No typing required.</div>
         </div>
         <div style={{ fontSize: 20, color: "#10b981", flexShrink: 0 }}>→</div>
-      </button>
+      </button>}
+
+      {search && totalMatches === 0 && (
+        <div style={{ textAlign: "center", padding: "40px 20px", color: "#475569" }}>
+          <div style={{ fontSize: 36, marginBottom: 12 }}>🔍</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#64748b", marginBottom: 6 }}>No tools match "{search}"</div>
+          <div style={{ fontSize: 13, color: "#334155" }}>Try "dispute", "insurance", "drug", or "Medicare"</div>
+          <button onClick={() => setSearch("")} style={{ marginTop: 14, padding: "8px 18px", background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", borderRadius: 10, color: "#10b981", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>Clear search</button>
+        </div>
+      )}
 
       {/* Active tools by category */}
-      {CATEGORIES.map((cat) => (
+      {filteredCategories.map((cat) => (
         <div key={cat.label} style={{ marginBottom: 32 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
             <span style={{ fontSize: 16 }}>{cat.icon}</span>

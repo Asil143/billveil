@@ -42,6 +42,7 @@ export default function ERvsUrgentCare() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showEmergency, setShowEmergency] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const assess = async () => {
     if (!symptoms.trim()) return;
@@ -141,7 +142,10 @@ export default function ERvsUrgentCare() {
 
       {result && (
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.12em", marginBottom: 14 }}>ASSESSMENT</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.12em" }}>ASSESSMENT</div>
+            <button onClick={() => { navigator.clipboard.writeText(result); setCopied(true); setTimeout(() => setCopied(false), 2000); }} style={{ fontSize: 12, color: copied ? "#10b981" : "#64748b", background: "rgba(255,255,255,0.04)", border: `1px solid ${copied ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`, padding: "4px 12px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}>{copied ? "✓ Copied" : "Copy"}</button>
+          </div>
           {parseResult(result)}
           <button onClick={() => { setResult(null); setSymptoms(""); }} style={{ marginTop: 8, padding: "8px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, color: "#64748b", fontSize: 12, cursor: "pointer", fontFamily: FONT }}>← Assess different symptoms</button>
         </div>

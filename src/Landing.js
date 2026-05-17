@@ -32,6 +32,8 @@ const CSS = `
     .land-2col, .land-3col { grid-template-columns: 1fr !important; }
     .land-testimonials { grid-template-columns: 1fr !important; }
     .footer-grid { grid-template-columns: 1fr 1fr !important; }
+    .land-mobile-nav { display: flex !important; }
+    body { padding-bottom: 68px; }
   }
   @media (max-width: 480px) {
     .footer-grid { grid-template-columns: 1fr !important; }
@@ -716,6 +718,21 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
           </div>
         </div>
       </footer>
+      {/* Mobile bottom nav — hidden on desktop via CSS */}
+      <nav className="land-mobile-nav" style={{ display: "none", position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100, background: "rgba(5,8,16,0.97)", backdropFilter: "blur(20px)", borderTop: "1px solid rgba(255,255,255,0.08)", padding: "8px 4px", justifyContent: "space-around", alignItems: "center" }}>
+        {[
+          { label: "Analyze", emoji: "⚡", tab: "analyzer" },
+          { label: "Scan Bill", emoji: "📸", tab: "billscan" },
+          { label: "Dispute", emoji: "✉️", tab: "dispute" },
+          { label: "All Tools", emoji: "🛠️", tab: "services" },
+          { label: "AI Chat", emoji: "🤖", tab: "concierge" },
+        ].map(({ label, emoji, tab }) => (
+          <button key={tab} onClick={() => onStart(tab)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, background: "none", border: "none", cursor: "pointer", fontFamily: FONT, padding: "4px 10px", borderRadius: 10 }}>
+            <span style={{ fontSize: 20 }}>{emoji}</span>
+            <span style={{ fontSize: 10, color: "#475569", fontWeight: 600 }}>{label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   );
 }
