@@ -45,8 +45,8 @@ export default function MentalHealthParityChecker() {
     try {
       const r = await axios.post("/api/tools", { tool: "mentalparity", situation, state });
       setResult(r.data.result);
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      setError(err?.response?.data?.error || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
