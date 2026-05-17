@@ -99,7 +99,7 @@ export default function About({ onBack, onStart }) {
             onClick={() => onStart("analyzer")}
             style={{ padding: "17px 50px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 14, fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: FONT, boxShadow: "0 8px 32px rgba(16,185,129,0.4)", transition: "all 0.25s", letterSpacing: "0.01em" }}
           >
-            ⚡ Analyze My Bill — Free
+            ⚡ Analyze My Bill
           </button>
           <div style={{ marginTop: 14, fontSize: 12, color: "#334155" }}>No signup · No credit card · Results in 30 seconds</div>
         </div>

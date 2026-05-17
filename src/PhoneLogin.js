@@ -95,7 +95,7 @@ export default function PhoneLogin({ onClose, onSuccess }) {
 
         {step === "phone" ? (
           <>
-            <div style={{ fontSize: 20, fontWeight: 800, color: "#f1f5f9", marginBottom: 6 }}>Create your free account</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#f1f5f9", marginBottom: 6 }}>Create your account</div>
             <div style={{ fontSize: 14, color: "#64748b", lineHeight: 1.6, marginBottom: 28 }}>Sign up with your phone number. No passwords, no credit card — ever.</div>
 
             <label style={{ fontSize: 11, fontWeight: 700, color: "#475569", display: "block", marginBottom: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>Phone Number</label>

@@ -127,7 +127,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
 
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#10b981", padding: "6px 18px", borderRadius: 24, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 28, animation: "fadeUp 0.6s ease both" }}>
           <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", animation: "pulse 2s ease-in-out infinite" }} />
-          AI-POWERED · FREE · NO SIGNUP REQUIRED
+          AI-POWERED · NO SIGNUP REQUIRED
         </div>
 
         <h1 className="hero-h1" style={{ fontSize: "clamp(34px, 7.5vw, 62px)", fontWeight: 900, lineHeight: 1.06, letterSpacing: "-0.04em", marginBottom: 20, animation: "fadeUp 0.6s 0.1s ease both" }}>
@@ -164,7 +164,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
             style={{ width: "100%", height: 90, padding: "12px 14px", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, fontSize: 14, color: "#f1f5f9", resize: "none", fontFamily: FONT, lineHeight: 1.6, background: "rgba(255,255,255,0.03)", boxSizing: "border-box", marginBottom: 12 }}
           />
           <button className="hero-cta" onClick={handleAnalyze} style={{ width: "100%", padding: "15px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 12, fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: FONT, transition: "all 0.25s", boxShadow: "0 8px 32px rgba(16,185,129,0.4)", letterSpacing: "0.01em" }}>
-            ⚡ Analyze My Bill — Free
+            ⚡ Analyze My Bill
           </button>
         </div>
 
@@ -363,12 +363,12 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {[
-              { q: "Is BillVeil really free?", a: "Yes, completely. No credit card, no signup, no hidden fees. You get 3 free analyses, then create a free account with your phone number to continue. We accept optional tips but never require them." },
+              { q: "How much does BillVeil cost?", a: "You get 3 analyses with no account required. After that, create an account with just your phone number to continue — no password, no credit card. We accept optional tips but never require them." },
               { q: "Is my medical information safe?", a: "We never store, log, or share what you enter. Every analysis is processed and immediately discarded. There is no account database holding your medical data — only your phone number for login." },
               { q: "How accurate are the results?", a: "Our AI is trained on Medicare allowable rates, fair market pricing data, and billing guidelines. It gives accurate benchmarks for most common charges. Use the results as a strong starting point for negotiation." },
               { q: "Can I actually negotiate a medical bill?", a: "Yes — over 60% of patients who negotiate their medical bills get a reduction. Hospitals have a chargemaster rate and a much lower negotiated rate. You can almost always pay less than the original bill." },
               { q: "What if my insurance company ignores my appeal?", a: "Under the ACA and ERISA, insurers must respond within 30–60 days. If denied again, you have the right to a free external review by an Independent Review Organization. 73% of externally reviewed denials are overturned." },
-              { q: "Do I need to create an account?", a: "No. You get 3 free analyses with no account required. After that, you can create a free account using just your phone number — no password, no email, no credit card." },
+              { q: "Do I need to create an account?", a: "No. You get 3 analyses with no account required. After that, create an account using just your phone number — no password, no email, no credit card." },
             ].map(({ q, a }, i) => (
               <div key={q} className="faq-item" onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "20px 24px", cursor: "pointer", transition: "border-color 0.2s" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
@@ -397,7 +397,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
             330 million Americans deserve to understand their medical bills. BillVeil exists because healthcare transparency should not be a luxury.
           </p>
           <button className="hero-cta" onClick={() => onStart("analyzer")} style={{ padding: "18px 52px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 14, fontSize: 17, fontWeight: 800, cursor: "pointer", fontFamily: FONT, transition: "all 0.25s", boxShadow: "0 10px 40px rgba(16,185,129,0.4)", letterSpacing: "0.01em" }}>
-            ⚡ Analyze My Bill — Free
+            ⚡ Analyze My Bill
           </button>
           <div style={{ marginTop: 16, fontSize: 12, color: "#334155" }}>No signup · No credit card · Results in 30 seconds</div>
         </div>
@@ -415,7 +415,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
                 <span style={{ fontSize: 16, fontWeight: 800, color: "#f1f5f9" }}>BillVeil</span>
               </div>
               <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.75, maxWidth: 240, marginBottom: 20 }}>
-                Free AI tools for medical billing transparency. Built for the 330 million Americans who deserve better.
+                AI tools for medical billing transparency. Built for the 330 million Americans who deserve better.
               </p>
               <div style={{ fontSize: 12, color: "#334155", marginBottom: 16 }}>🔒 We never store your medical data</div>
               <div style={{ display: "flex", gap: 10 }}>

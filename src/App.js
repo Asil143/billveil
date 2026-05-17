@@ -264,7 +264,7 @@ function AppShell() {
                 {usesLeft > 0 && (
                   <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", padding: "4px 12px", borderRadius: 20 }}>
                     <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", animation: "pulse 2s ease-in-out infinite" }} />
-                    {usesLeft} free {usesLeft === 1 ? "analysis" : "analyses"} left
+                    {usesLeft} {usesLeft === 1 ? "analysis" : "analyses"} left
                   </div>
                 )}
                 <button onClick={showLoginModal} style={{ padding: "7px 14px", background: "none", border: "1px solid rgba(255,255,255,0.12)", color: "#94a3b8", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Log In</button>
@@ -329,7 +329,7 @@ function AppShell() {
             </div>
           </div>
           <button className="analyze-btn" onClick={analyzeBill} disabled={loading || !bill.trim()} style={{ width: "100%", padding: "15px", background: loading || !bill.trim() ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #10b981, #059669)", color: loading || !bill.trim() ? "#334155" : "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading || !bill.trim() ? "default" : "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading || !bill.trim() ? "none" : "0 8px 28px rgba(16,185,129,0.35)", fontFamily: FONT }}>
-            {loading ? (<><span style={{ width: 17, height: 17, border: "2px solid rgba(255,255,255,0.15)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />Analyzing your bill...</>) : <>⚡ Analyze My Bill — Free</>}
+            {loading ? (<><span style={{ width: 17, height: 17, border: "2px solid rgba(255,255,255,0.15)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />Analyzing your bill...</>) : <>⚡ Analyze My Bill</>}
           </button>
         </div>
 
