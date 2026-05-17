@@ -140,11 +140,6 @@ export default function Profile() {
   const emailLocked = isEmailVerified && emailLockDate && new Date() < emailLockDate;
   const emailUnlockDate = emailLockDate?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
-  const hasPersonalInfo = !!(form.firstName || form.lastName || form.dob || form.gender || form.middleName);
-  const hasInsurance = !!(form.insuranceProvider || form.planName || form.memberId || form.groupNumber);
-  const hasAddress = !!(form.street || form.city || form.state || form.zip);
-  const hasHealthcare = !!(form.primaryDoctor || form.hasHSA);
-
   // Poll Firestore every 4s after sending verification link
   const startPolling = (email) => {
     clearInterval(pollRef.current);
@@ -293,79 +288,77 @@ export default function Profile() {
       <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 18, padding: 28 }}>
 
         {/* 1 — PERSONAL INFO */}
-        {(editing || hasPersonalInfo) && <>
-          <SectionTitle>PERSONAL INFORMATION</SectionTitle>
-          {editing ? (
-            <>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
-                <div><Label>First Name</Label>{inp("firstName", { placeholder: "Jane" })}</div>
-                <div><Label optional>Middle Name</Label>{inp("middleName", { placeholder: "Optional" })}</div>
-                <div><Label>Last Name</Label>{inp("lastName", { placeholder: "Doe" })}</div>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <div><Label>Date of Birth</Label>{inp("dob", { type: "date" })}</div>
-                <div><Label>Gender</Label>{sel("gender", GENDERS)}</div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
-                <InfoRow label="First Name" value={form.firstName} />
-                <InfoRow label="Middle Name" value={form.middleName} optional />
-                <InfoRow label="Last Name" value={form.lastName} />
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                <InfoRow label="Date of Birth" value={form.dob} />
-                <InfoRow label="Gender" value={form.gender} />
-              </div>
-            </>
-          )}
-          {(editing || hasInsurance) && <Divider />}
-        </>}
+        <SectionTitle>PERSONAL INFORMATION</SectionTitle>
+        {editing ? (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
+              <div><Label>First Name</Label>{inp("firstName", { placeholder: "Jane" })}</div>
+              <div><Label optional>Middle Name</Label>{inp("middleName", { placeholder: "Optional" })}</div>
+              <div><Label>Last Name</Label>{inp("lastName", { placeholder: "Doe" })}</div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div><Label>Date of Birth</Label>{inp("dob", { type: "date" })}</div>
+              <div><Label>Gender</Label>{sel("gender", GENDERS)}</div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
+              <InfoRow label="First Name" value={form.firstName} />
+              <InfoRow label="Middle Name" value={form.middleName} optional />
+              <InfoRow label="Last Name" value={form.lastName} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <InfoRow label="Date of Birth" value={form.dob} />
+              <InfoRow label="Gender" value={form.gender} />
+            </div>
+          </>
+        )}
+
+        <Divider />
 
         {/* 2 — INSURANCE */}
-        {(editing || hasInsurance) && <>
-          <SectionTitle>INSURANCE</SectionTitle>
-          {editing ? (
-            <>
-              <div style={{ marginBottom: 12 }}>
-                <Label>Insurance Provider</Label>
-                {sel("insuranceProvider", INSURERS)}
-                {draft.insuranceProvider === "Other" && (
-                  <input
-                    value={draft.insuranceOther}
-                    onChange={(e) => setDraft((d) => ({ ...d, insuranceOther: toProperCase(e.target.value) }))}
-                    placeholder="Type your insurance company name"
-                    style={{ ...IS, marginTop: 8 }}
-                    onFocus={onFo}
-                    onBlur={onBl}
-                    autoFocus
-                  />
-                )}
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-                <div><Label optional>Plan Name</Label>{inp("planName", { placeholder: "e.g. PPO Gold" })}</div>
-                <div><Label optional>Member ID</Label>{inp("memberId", { placeholder: "e.g. W123456789" })}</div>
-              </div>
-              <div>
-                <Label optional>Group Number</Label>
-                {inp("groupNumber", { placeholder: "e.g. 78234" })}
-              </div>
-            </>
-          ) : (
-            <>
-              <div style={{ marginBottom: 16 }}>
-                <InfoRow label="Insurance Provider" value={form.insuranceProvider === "Other" ? form.insuranceOther || "Other" : form.insuranceProvider} />
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
-                <InfoRow label="Plan Name" value={form.planName} optional />
-                <InfoRow label="Member ID" value={form.memberId} optional />
-              </div>
-              <InfoRow label="Group Number" value={form.groupNumber} optional />
-            </>
-          )}
-          <Divider />
-        </>}
+        <SectionTitle>INSURANCE</SectionTitle>
+        {editing ? (
+          <>
+            <div style={{ marginBottom: 12 }}>
+              <Label>Insurance Provider</Label>
+              {sel("insuranceProvider", INSURERS)}
+              {draft.insuranceProvider === "Other" && (
+                <input
+                  value={draft.insuranceOther}
+                  onChange={(e) => setDraft((d) => ({ ...d, insuranceOther: toProperCase(e.target.value) }))}
+                  placeholder="Type your insurance company name"
+                  style={{ ...IS, marginTop: 8 }}
+                  onFocus={onFo}
+                  onBlur={onBl}
+                  autoFocus
+                />
+              )}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+              <div><Label optional>Plan Name</Label>{inp("planName", { placeholder: "e.g. PPO Gold" })}</div>
+              <div><Label optional>Member ID</Label>{inp("memberId", { placeholder: "e.g. W123456789" })}</div>
+            </div>
+            <div>
+              <Label optional>Group Number</Label>
+              {inp("groupNumber", { placeholder: "e.g. 78234" })}
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ marginBottom: 16 }}>
+              <InfoRow label="Insurance Provider" value={form.insuranceProvider === "Other" ? form.insuranceOther || "Other" : form.insuranceProvider} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+              <InfoRow label="Plan Name" value={form.planName} optional />
+              <InfoRow label="Member ID" value={form.memberId} optional />
+            </div>
+            <InfoRow label="Group Number" value={form.groupNumber} optional />
+          </>
+        )}
+
+        <Divider />
 
         {/* 3 — CONTACT & VERIFICATION */}
         <SectionTitle>CONTACT &amp; VERIFICATION</SectionTitle>
@@ -435,96 +428,93 @@ export default function Profile() {
           )}
         </div>
 
-        {(editing || hasAddress) && <Divider />}
+        <Divider />
 
         {/* 4 — ADDRESS */}
-        {(editing || hasAddress) && <>
-          <SectionTitle>ADDRESS</SectionTitle>
-          {editing ? (
-            <>
-              <div style={{ marginBottom: 12, position: "relative" }}>
-                <Label>Street Address</Label>
-                <input
-                  value={draft.street}
-                  onChange={handleStreetChange}
-                  placeholder="Start typing your address…"
-                  style={IS}
-                  onFocus={onFo}
-                  onBlur={(e) => { onBl(e); setTimeout(() => setSuggestions([]), 200); }}
-                  autoComplete="off"
-                />
-                {suggestions.length > 0 && (
-                  <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, zIndex: 50, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}>
-                    {suggestions.map((s, i) => (
-                      <button key={i} onMouseDown={() => pickAddress(s)}
-                        style={{ width: "100%", padding: "10px 14px", background: "none", border: "none", borderBottom: i < suggestions.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none", color: "#94a3b8", fontSize: 13, textAlign: "left", cursor: "pointer", fontFamily: FONT, display: "block" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
-                      >
-                        📍 {formatSuggestion(s)}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 100px", gap: 12 }}>
-                <div><Label>City</Label>{inp("city", { placeholder: "City" })}</div>
-                <div><Label>State</Label>{sel("state", US_STATES)}</div>
-                <div>
-                  <Label>ZIP</Label>
-                  <input value={draft.zip} onChange={handleZipChange} placeholder="12345" maxLength={5} style={IS} onFocus={onFo} onBlur={onBl} />
+        <SectionTitle>ADDRESS</SectionTitle>
+        {editing ? (
+          <>
+            <div style={{ marginBottom: 12, position: "relative" }}>
+              <Label>Street Address</Label>
+              <input
+                value={draft.street}
+                onChange={handleStreetChange}
+                placeholder="Start typing your address…"
+                style={IS}
+                onFocus={onFo}
+                onBlur={(e) => { onBl(e); setTimeout(() => setSuggestions([]), 200); }}
+                autoComplete="off"
+              />
+              {suggestions.length > 0 && (
+                <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, zIndex: 50, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}>
+                  {suggestions.map((s, i) => (
+                    <button key={i} onMouseDown={() => pickAddress(s)}
+                      style={{ width: "100%", padding: "10px 14px", background: "none", border: "none", borderBottom: i < suggestions.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none", color: "#94a3b8", fontSize: 13, textAlign: "left", cursor: "pointer", fontFamily: FONT, display: "block" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
+                    >
+                      📍 {formatSuggestion(s)}
+                    </button>
+                  ))}
                 </div>
+              )}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 100px", gap: 12 }}>
+              <div><Label>City</Label>{inp("city", { placeholder: "City" })}</div>
+              <div><Label>State</Label>{sel("state", US_STATES)}</div>
+              <div>
+                <Label>ZIP</Label>
+                <input value={draft.zip} onChange={handleZipChange} placeholder="12345" maxLength={5} style={IS} onFocus={onFo} onBlur={onBl} />
               </div>
-              <div style={{ marginTop: 8, fontSize: 11, color: "#334155" }}>💡 Type your street address to auto-fill city, state &amp; ZIP — or enter ZIP alone to auto-fill city &amp; state</div>
-            </>
-          ) : (
-            <>
-              <div style={{ marginBottom: 16 }}>
-                <InfoRow label="Street Address" value={form.street} />
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 100px", gap: 16 }}>
-                <InfoRow label="City" value={form.city} />
-                <InfoRow label="State" value={form.state} />
-                <InfoRow label="ZIP" value={form.zip} />
-              </div>
-            </>
-          )}
-          {(editing || hasHealthcare) && <Divider />}
-        </>}
+            </div>
+            <div style={{ marginTop: 8, fontSize: 11, color: "#334155" }}>💡 Type your street address to auto-fill city, state &amp; ZIP — or enter ZIP alone to auto-fill city &amp; state</div>
+          </>
+        ) : (
+          <>
+            <div style={{ marginBottom: 16 }}>
+              <InfoRow label="Street Address" value={form.street} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 100px", gap: 16 }}>
+              <InfoRow label="City" value={form.city} />
+              <InfoRow label="State" value={form.state} />
+              <InfoRow label="ZIP" value={form.zip} />
+            </div>
+          </>
+        )}
+
+        <Divider />
 
         {/* 5 — HEALTHCARE DETAILS */}
-        {(editing || hasHealthcare) && <>
-          <SectionTitle>HEALTHCARE DETAILS</SectionTitle>
-          {editing ? (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <div>
-                <Label optional>Primary Care Doctor</Label>
-                {inp("primaryDoctor", { placeholder: "Dr. Smith" })}
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
-                <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", padding: "11px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10 }}>
-                  <input
-                    type="checkbox"
-                    checked={draft.hasHSA}
-                    onChange={(e) => setDraft((d) => ({ ...d, hasHSA: e.target.checked }))}
-                    style={{ width: 16, height: 16, accentColor: "#10b981", cursor: "pointer" }}
-                  />
-                  <span style={{ fontSize: 14, color: "#94a3b8" }}>I have an HSA / FSA account</span>
-                </label>
-              </div>
+        <SectionTitle>HEALTHCARE DETAILS</SectionTitle>
+        {editing ? (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <Label optional>Primary Care Doctor</Label>
+              {inp("primaryDoctor", { placeholder: "Dr. Smith" })}
             </div>
-          ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <InfoRow label="Primary Care Doctor" value={form.primaryDoctor} optional />
-              <div>
-                <Label optional>HSA / FSA</Label>
-                <span style={{ fontSize: 14, color: form.hasHSA ? "#10b981" : "#334155" }}>
-                  {form.hasHSA ? "✓ Has HSA/FSA account" : "—"}
-                </span>
-              </div>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", padding: "11px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10 }}>
+                <input
+                  type="checkbox"
+                  checked={draft.hasHSA}
+                  onChange={(e) => setDraft((d) => ({ ...d, hasHSA: e.target.checked }))}
+                  style={{ width: 16, height: 16, accentColor: "#10b981", cursor: "pointer" }}
+                />
+                <span style={{ fontSize: 14, color: "#94a3b8" }}>I have an HSA / FSA account</span>
+              </label>
             </div>
-          )}
-        </>}
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <InfoRow label="Primary Care Doctor" value={form.primaryDoctor} optional />
+            <div>
+              <Label optional>HSA / FSA</Label>
+              <span style={{ fontSize: 14, color: form.hasHSA ? "#10b981" : "#334155" }}>
+                {form.hasHSA ? "✓ Has HSA/FSA account" : "—"}
+              </span>
+            </div>
+          </div>
+        )}
 
       </div>
 
