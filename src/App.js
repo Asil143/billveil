@@ -154,7 +154,7 @@ function AppShell() {
   const [tip, setTip] = useState(false);
   const [copied, setCopied] = useState(false);
   const [focused, setFocused] = useState(false);
-  const autoAnalyzeRef = useRef(!!location.state?.initialBill);
+  const autoAnalyzeRef = useRef(false);
   const accountMenuRef = useRef(null);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
 
@@ -173,20 +173,22 @@ function AppShell() {
   }, [emailJustVerified, navigate]);
 
   useEffect(() => {
-    if (autoAnalyzeRef.current && bill.trim() && tab === "analyzer") {
-      autoAnalyzeRef.current = false;
-      if (consumeCredit()) {
-        setLoading(true);
-        setResult(null);
-        setError(null);
-        axios.post("/api/analyze", { bill })
-          .then(r => setResult(r.data.result))
-          .catch(() => setError("Something went wrong. Please try again."))
-          .finally(() => setLoading(false));
-      }
+    if (tab !== "analyzer") return;
+    const incoming = location.state?.initialBill;
+    if (!incoming || autoAnalyzeRef.current) return;
+    autoAnalyzeRef.current = true;
+    setBill(incoming);
+    if (consumeCredit()) {
+      setLoading(true);
+      setResult(null);
+      setError(null);
+      axios.post("/api/analyze", { bill: incoming })
+        .then(r => setResult(r.data.result))
+        .catch(() => setError("Something went wrong. Please try again."))
+        .finally(() => setLoading(false));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [tab, location.state]);
 
   if (!VALID_TABS.includes(tab)) return <Navigate to="/analyzer" replace />;
 
