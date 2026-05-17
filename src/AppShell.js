@@ -51,7 +51,6 @@ import MedicalGlossary from "./MedicalGlossary";
 import HospitalQualityChecker from "./HospitalQualityChecker";
 import { useAuth } from "./AuthContext";
 import Profile from "./Profile";
-import AdminDashboard from "./AdminDashboard";
 import { trackEvent } from "./analytics";
 import ErrorBoundary from "./ErrorBoundary";
 import NotFound from "./NotFound";
@@ -109,7 +108,7 @@ const CSS = `
   }
 `;
 
-const VALID_TABS = ["analyzer", "services", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "genericdrug", "insplan", "surprisebill", "itemization", "charitycare", "paymentplan", "creditcard", "hsafsa", "providercheck", "costestimate", "billscan", "casetracker", "savings", "concierge", "planoptimizer", "hospitalprice", "priceboard", "hub", "insurance", "profile", "cobra", "cptlookup", "preventive", "erurgent", "patientrights", "hipaa", "mentalparity", "medtax", "fsatracker", "medicare", "veterans", "chronicdisease", "glossary", "hospitalquality", "admin"];
+const VALID_TABS = ["analyzer", "services", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "genericdrug", "insplan", "surprisebill", "itemization", "charitycare", "paymentplan", "creditcard", "hsafsa", "providercheck", "costestimate", "billscan", "casetracker", "savings", "concierge", "planoptimizer", "hospitalprice", "priceboard", "hub", "insurance", "profile", "cobra", "cptlookup", "preventive", "erurgent", "patientrights", "hipaa", "mentalparity", "medtax", "fsatracker", "medicare", "veterans", "chronicdisease", "glossary", "hospitalquality"];
 
 const TABS = [
   { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
@@ -276,9 +275,6 @@ export default function AppShell() {
                 {showAccountMenu && (
                   <div style={{ position: "absolute", top: 42, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: 6, minWidth: 190, boxShadow: "0 16px 40px rgba(0,0,0,0.6)", zIndex: 100 }}>
                     <button onClick={() => { router.push("/profile"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>👤 My Profile</button>
-                    {user?.uid === process.env.NEXT_PUBLIC_ADMIN_UID && (
-                      <button onClick={() => { router.push("/admin"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#10b981", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>⚙️ Admin</button>
-                    )}
                     <button onClick={() => { logout(); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#f87171", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>Sign Out</button>
                   </div>
                 )}
@@ -358,7 +354,6 @@ export default function AppShell() {
         {tab === "chronicdisease" && <ChronicDiseasePlanner />}
         {tab === "glossary" && <MedicalGlossary />}
         {tab === "hospitalquality" && <HospitalQualityChecker />}
-        {tab === "admin" && <AdminDashboard />}
 
         {tab !== "analyzer" && tab !== "services" && tab !== "hub" && tab !== "savings" && tab !== "casetracker" && tab !== "profile" && (
           <RelatedTools currentTab={tab} />
