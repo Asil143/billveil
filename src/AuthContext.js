@@ -5,7 +5,7 @@ import {
   isSignInWithEmailLink, signInWithEmailLink,
   linkWithCredential, EmailAuthProvider,
 } from "firebase/auth";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import PhoneLogin from "./PhoneLogin";
 
@@ -217,24 +217,45 @@ export function AuthProvider({ children }) {
     return unsub;
   }, [user?.uid, emailVerified, profileData?.email]);
 
-  // Load profile data when user changes
+  // Load profile from Firestore when user logs in; migrate localStorage data if present
   useEffect(() => {
-    if (user?.uid) {
+    if (!user?.uid) { setProfileData(null); return; }
+    let cancelled = false;
+    (async () => {
       try {
-        const stored = localStorage.getItem(`bv_profile_${user.uid}`);
-        setProfileData(stored ? JSON.parse(stored) : null);
-      } catch { setProfileData(null); }
-    } else {
-      setProfileData(null);
-    }
+        const ref = doc(db, "users", user.uid);
+        const snap = await getDoc(ref);
+        if (cancelled) return;
+        if (snap.exists()) {
+          setProfileData(snap.data().profile || null);
+        } else {
+          // First-time login: migrate any existing localStorage data then clear it
+          const legacy = localStorage.getItem(`bv_profile_${user.uid}`);
+          const profile = legacy ? JSON.parse(legacy) : null;
+          await setDoc(ref, {
+            uid: user.uid,
+            phone: user.phoneNumber || null,
+            createdAt: serverTimestamp(),
+            profile: profile || null,
+          });
+          if (legacy) localStorage.removeItem(`bv_profile_${user.uid}`);
+          if (!cancelled) setProfileData(profile);
+        }
+      } catch { if (!cancelled) setProfileData(null); }
+    })();
+    return () => { cancelled = true; };
   }, [user]);
 
-  const updateProfile = (data) => {
+  const updateProfile = async (data) => {
     if (!user?.uid) return;
-    localStorage.setItem(`bv_profile_${user.uid}`, JSON.stringify(data));
     setProfileData(data);
+    try {
+      await setDoc(doc(db, "users", user.uid), { profile: data }, { merge: true });
+    } catch (err) {
+      console.error("Profile save failed:", err);
+    }
 
-    // Reset verification if the email was changed to something not already linked
+    // Reset verification if email changed to something not already linked
     const linkedEmail = auth.currentUser?.providerData
       ?.find(p => p.providerId === "password")?.email?.toLowerCase();
     const newEmail = data.email?.trim()?.toLowerCase();
