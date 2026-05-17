@@ -11,8 +11,6 @@ const IS = {
   borderRadius: 10, fontSize: 14, color: "#f1f5f9",
   fontFamily: FONT, outline: "none", boxSizing: "border-box",
 };
-const onFo = (e) => (e.target.style.borderColor = "rgba(16,185,129,0.5)");
-const onBl = (e) => (e.target.style.borderColor = "rgba(255,255,255,0.08)");
 
 const SECTIONS = [
   { key: "OPENING", emoji: "👋", color: "#60a5fa", label: "Opening" },
