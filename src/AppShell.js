@@ -201,12 +201,13 @@ export default function AppShell() {
       { key: "MONEY YOU COULD SAVE", emoji: "💵", color: "#34d399", label: "Money You Could Save" },
     ];
 
+    const clean = text.replace(/\*\*/g, "").replace(/^#{1,3}\s*/gm, "");
     return sections.map((section, i) => {
       const regex = new RegExp(`(?:#{1,3}\\s*)?${section.key}:\\n([\\s\\S]*?)(?=\\n(?:#{1,3}\\s*)?[A-Z][A-Z ]+:|$)`);
-      const match = text.match(regex);
+      const match = clean.match(regex);
       const raw = match ? match[1].trim() : null;
       if (!raw) return null;
-      const content = raw.replace(/^#{1,3}\s*/gm, "").replace(/\*\*/g, "").trim();
+      const content = raw.trim();
       if (!content) return null;
 
       const isVerdict = section.key === "VERDICT";

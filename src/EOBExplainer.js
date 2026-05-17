@@ -25,7 +25,7 @@ const SECTIONS = [
 function parseEOB(text) {
   return SECTIONS.map((section, i) => {
     const regex = new RegExp(`${section.key}:\\n([\\s\\S]*?)(?=\\n[A-Z][A-Z &]+:|$)`);
-    const match = text.match(regex);
+    const match = clean.match(regex);
     const content = match ? match[1].trim() : null;
     if (!content) return null;
 

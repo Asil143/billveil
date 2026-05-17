@@ -61,12 +61,13 @@ export default function ERvsUrgentCare() {
   };
 
   const parseResult = (text) => {
+    const clean = text.replace(/\*\*/g, "").replace(/^#{1,3}\s*/gm, "");
     return SECTIONS.map((s, i) => {
       const regex = new RegExp(`${s.key}:\\n([\\s\\S]*?)(?=\\n[A-Z][A-Z &]+:|$)`);
-      const match = text.match(regex);
+      const match = clean.match(regex);
       const raw = match ? match[1].trim() : null;
       if (!raw) return null;
-      const content = raw.replace(/\*\*/g, "").replace(/^#{1,3}\s*/gm, "").trim();
+      const content = raw.trim();
       if (!content) return null;
       const isRec = s.key === "RECOMMENDATION";
       const isER = content.toUpperCase().includes("EMERGENCY");

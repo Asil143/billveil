@@ -44,7 +44,7 @@ export default function DrugComparator() {
 
     return sections.map((section, i) => {
       const regex = new RegExp(`(?:#{1,3}\\s*)?${section.key}:\\n([\\s\\S]*?)(?=\\n(?:#{1,3}\\s*)?[A-Z][A-Z ]+:|$)`);
-      const match = text.match(regex);
+      const match = clean.match(regex);
       const raw = match ? match[1].trim() : null;
       if (!raw) return null;
       const content = raw.replace(/^#{1,3}\s*/gm, "").replace(/\*\*/g, "").trim();

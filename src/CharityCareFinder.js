@@ -17,8 +17,9 @@ const SECTIONS = [
 ];
 
 function parse(text) {
+  const clean = text.replace(/\*\*/g, "").replace(/^#{1,3}\s*/gm, "");
   return SECTIONS.map((s, i) => {
-    const m = text.match(new RegExp(`${s.key}:\\n([\\s\\S]*?)(?=\\n[A-Z][A-Z ']+:|$)`));
+    const m = clean.match(new RegExp(`${s.key}:\\n([\\s\\S]*?)(?=\\n[A-Z][A-Z ']+:|$)`));
     const content = m ? m[1].trim() : null;
     if (!content) return null;
     return (

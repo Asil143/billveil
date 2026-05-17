@@ -46,12 +46,13 @@ export default function ChronicDiseasePlanner() {
   };
 
   const parseResult = (text) => {
+    const clean = text.replace(/\*\*/g, "").replace(/^#{1,3}\s*/gm, "");
     return SECTIONS.map((s, i) => {
       const regex = new RegExp(`${s.key}:\\n([\\s\\S]*?)(?=\\n[A-Z][A-Z/ &]+:|$)`);
-      const match = text.match(regex);
+      const match = clean.match(regex);
       const raw = match ? match[1].trim() : null;
       if (!raw) return null;
-      const content = raw.replace(/\*\*/g, "").replace(/^#{1,3}\s*/gm, "").trim();
+      const content = raw.trim();
       if (!content) return null;
       return (
         <div key={s.key} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderLeft: `3px solid ${s.color}`, borderRadius: 12, padding: "16px 20px", marginBottom: 10, animation: "fadeUp 0.35s ease forwards", animationDelay: `${i * 0.07}s`, animationFillMode: "both" }}>
