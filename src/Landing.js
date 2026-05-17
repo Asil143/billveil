@@ -565,7 +565,7 @@ export default function Landing() {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {[
               { q: "How much does BillVeil cost?", a: "You get 3 analyses with no account required. After that, create an account with just your phone number to continue — no password, no credit card. We accept optional tips but never require them." },
-              { q: "Is my medical information safe?", a: "We never store, log, or share what you enter. Every analysis is processed and immediately discarded. There is no account database holding your medical data — only your phone number for login." },
+              { q: "Is my medical information safe?", a: "Bill text you type into any tool is processed and immediately discarded — we never log or store your medical queries. Your optional profile (name, insurance info) is stored securely on your account and never shared. No diagnosis or treatment data is ever collected." },
               { q: "How accurate are the results?", a: "Our AI is trained on Medicare allowable rates, fair market pricing data, and billing guidelines. It gives accurate benchmarks for most common charges. Use the results as a strong starting point for negotiation." },
               { q: "Can I actually negotiate a medical bill?", a: "Yes — over 60% of patients who negotiate their medical bills get a reduction. Hospitals have a chargemaster rate and a much lower negotiated rate. You can almost always pay less than the original bill." },
               { q: "What if my insurance company ignores my appeal?", a: "Under the ACA and ERISA, insurers must respond within 30–60 days. If denied again, you have the right to a free external review by an Independent Review Organization. 73% of externally reviewed denials are overturned." },
@@ -597,7 +597,7 @@ export default function Landing() {
             {[
               { icon: "🚫", title: "Nothing stored", body: "We do not log, save, or store anything you type into BillVeil. Every session is stateless — when you close the tab, the data is gone." },
               { icon: "🔒", title: "256-bit TLS encryption", body: "All data travels between your browser and our servers over 256-bit TLS — the same standard used by banks and healthcare systems." },
-              { icon: "👤", title: "No health record created", body: "We never build a health profile. We don't know your name, diagnoses, or provider. A phone number for login is all we ever ask for." },
+              { icon: "👤", title: "Your profile, your control", body: "Any profile info you add (name, insurance, address) is optional and stored securely on your account. Bill text you analyze is never saved or logged — it's gone the moment the response is returned." },
             ].map(({ icon, title, body }) => (
               <div key={title} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: "24px 20px" }}>
                 <div style={{ fontSize: 28, marginBottom: 12 }}>{icon}</div>
