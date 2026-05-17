@@ -559,8 +559,10 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
 
       {/* Footer */}
       <footer style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.01)", padding: "56px 28px 32px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+
+          {/* Top row: brand + quick links */}
+          <div style={{ display: "grid", gridTemplateColumns: "240px 1fr", gap: 48, marginBottom: 48, alignItems: "start" }}>
 
             {/* Brand */}
             <div>
@@ -568,13 +570,13 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
                 <div style={{ width: 28, height: 28, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>🛡️</div>
                 <span style={{ fontSize: 16, fontWeight: 800, color: "#f1f5f9" }}>BillVeil</span>
               </div>
-              <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.75, maxWidth: 240, marginBottom: 20 }}>
-                AI tools for medical billing transparency. Built for the 330 million Americans who deserve better.
+              <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.75, marginBottom: 20 }}>
+                44 AI tools for medical billing transparency. Built for the 330 million Americans who deserve better.
               </p>
               <div style={{ fontSize: 12, color: "#334155", marginBottom: 16 }}>🔒 We never store your medical data</div>
-              <div style={{ display: "flex", gap: 10 }}>
+              <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
                 {[
-                  { href: "https://twitter.com/billveil", label: "𝕏", title: "BillVeil on X (Twitter)" },
+                  { href: "https://twitter.com/billveil", label: "𝕏", title: "BillVeil on X" },
                   { href: "https://linkedin.com/company/billveil", label: "in", title: "BillVeil on LinkedIn" },
                 ].map(({ href, label, title }) => (
                   <a key={href} href={href} target="_blank" rel="noopener noreferrer" title={title} style={{ width: 32, height: 32, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", fontSize: 13, fontWeight: 800, textDecoration: "none", transition: "all 0.15s" }}
@@ -584,61 +586,53 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
                   </a>
                 ))}
               </div>
+              {/* Company + Legal inline */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 2 }}>Company</div>
+                <button className="footer-link" onClick={onAbout} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>About</button>
+                <a href="mailto:hello@billveil.com" className="footer-link" style={{ color: "#475569", fontSize: 12, fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}>Contact</a>
+                <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Privacy Policy</button>
+                <button className="footer-link" onClick={onTerms} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Terms of Service</button>
+              </div>
             </div>
 
-            {/* Tools */}
+            {/* Tools sitemap — all categories */}
             <div>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", letterSpacing: "0.12em", marginBottom: 16, textTransform: "uppercase" }}>Tools</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {[
-                  { tab: "analyzer", label: "⚡ Bill Analyzer" },
-                  { tab: "dispute", label: "✉️ Dispute Letter" },
-                  { tab: "drug", label: "💊 Drug Prices" },
-                  { tab: "denial", label: "⚔️ Denial Fighter" },
-                  { tab: "negotiate", label: "📞 Negotiation Script" },
-                  { tab: "eob", label: "📋 EOB Explainer" },
-                  { tab: "priorauth", label: "📝 Prior Auth Helper" },
-                  { tab: "debtrights", label: "⚖️ Debt Rights Checker" },
-                  { tab: "secondopinion", label: "🩺 Second Opinion" },
-                  { tab: "genericdrug", label: "💊 Generic Drug Finder" },
-                ].map(({ tab, label }) => (
-                  <button key={tab} className="footer-link" onClick={() => onStart(tab)} style={{ background: "none", border: "none", color: "#475569", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>
-                    {label}
-                  </button>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", letterSpacing: "0.12em", textTransform: "uppercase" }}>All Tools</div>
+                <button className="footer-link" onClick={() => onStart("services")} style={{ background: "none", border: "none", color: "#10b981", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, padding: 0, transition: "color 0.15s" }}>Browse all 44 tools →</button>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px 32px" }}>
+                {ALL_SERVICES.map(cat => (
+                  <div key={cat.label}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: cat.color, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8, display: "flex", alignItems: "center", gap: 5 }}>
+                      <span style={{ fontSize: 12 }}>{cat.icon}</span> {cat.label}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      {cat.tools.slice(0, 4).map(tool => (
+                        <button key={tool.tab} className="footer-link" onClick={() => onStart(tool.tab)} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s", lineHeight: 1.4 }}>
+                          {tool.emoji} {tool.label}
+                        </button>
+                      ))}
+                      {cat.tools.length > 4 && (
+                        <button className="footer-link" onClick={() => onStart("services")} style={{ background: "none", border: "none", color: "#334155", fontSize: 11, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>
+                          +{cat.tools.length - 4} more →
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
-
-            {/* Company */}
-            <div>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", letterSpacing: "0.12em", marginBottom: 16, textTransform: "uppercase" }}>Company</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <button className="footer-link" onClick={onAbout} style={{ background: "none", border: "none", color: "#475569", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>About</button>
-                <a href="mailto:hello@billveil.com" className="footer-link" style={{ color: "#475569", fontSize: 13, fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}>Contact</a>
-              </div>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", letterSpacing: "0.12em", marginBottom: 16, textTransform: "uppercase" }}>Legal</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#475569", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Privacy Policy</button>
-                <button className="footer-link" onClick={onTerms} style={{ background: "none", border: "none", color: "#475569", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Terms of Service</button>
-                <div style={{ fontSize: 12, color: "#1e293b", lineHeight: 1.6, marginTop: 4 }}>Not medical or legal advice.</div>
-              </div>
-            </div>
-
           </div>
 
           {/* Bottom bar */}
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 24, display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 24, display: "flex", flexDirection: "column", gap: 10 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
               <div style={{ fontSize: 12, color: "#1e293b" }}>© 2026 BillVeil</div>
               <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                 <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Privacy</button>
                 <button className="footer-link" onClick={onTerms} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Terms</button>
-                <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Accessibility</button>
-                <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Do Not Sell My Personal Information</button>
               </div>
             </div>
             <div style={{ fontSize: 11, color: "#1e293b", lineHeight: 1.8 }}>
