@@ -43,7 +43,7 @@ export default function ProviderNetworkChecker() {
   const run = async () => {
     if (!provider.trim() || !insurance.trim() || !consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
-    try { const r = await axios.post("/api/providercheck", { provider, insurance, procedure }); setResult(r.data.result); }
+    try { const r = await axios.post("/api/tools", { tool: "providercheck", provider, insurance, procedure }); setResult(r.data.result); }
     catch { setError("Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };

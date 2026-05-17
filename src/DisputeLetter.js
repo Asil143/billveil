@@ -21,7 +21,7 @@ export default function DisputeLetter() {
     setResult(null);
     setError(null);
     try {
-      const response = await axios.post("/api/dispute", { bill, amount });
+      const response = await axios.post("/api/tools", { tool: "dispute", bill, amount });
       setResult(response.data.result);
     } catch (err) {
       setError("Something went wrong. Please try again.");

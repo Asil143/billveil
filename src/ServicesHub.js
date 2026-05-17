@@ -42,15 +42,21 @@ const CATEGORIES = [
       { tab: "costestimate", emoji: "🔮", label: "Pre-Treatment Cost Estimator", desc: "Estimate your real out-of-pocket before any procedure — find cheaper options first." },
     ],
   },
+  {
+    label: "Track Your Progress",
+    color: "#a78bfa",
+    icon: "📊",
+    tools: [
+      { tab: "casetracker", emoji: "📊", label: "Case Tracker", desc: "Track every dispute, appeal, and negotiation with deadlines and real-time status updates." },
+      { tab: "savings", emoji: "🏆", label: "Savings Dashboard", desc: "Your total savings, BillVeil Score, wins, and shareable results card — all in one place." },
+    ],
+  },
 ];
 
 const COMING_SOON = [
   { emoji: "🏥", label: "Hospital Price Lookup", desc: "Federal law requires hospitals to publish prices. Find what yours actually charges.", color: "#60a5fa" },
   { emoji: "👥", label: "Community Price Board", desc: "Crowdsourced real prices from patients. What people actually paid near you.", color: "#a78bfa" },
   { emoji: "🤖", label: "BillVeil Concierge", desc: "One AI chat that handles everything. Just describe your situation and talk.", color: "#10b981" },
-  { emoji: "📊", label: "Case Tracker", desc: "Track every dispute with legal deadlines and automatic follow-up alerts.", color: "#f87171" },
-  { emoji: "🏆", label: "Savings Dashboard", desc: "Your total savings, disputes won, and shareable savings card.", color: "#34d399" },
-  { emoji: "🎯", label: "Bill Score", desc: "A single number showing your medical billing health and overpayment risk.", color: "#60a5fa" },
   { emoji: "📧", label: "Automatic Bill Monitor", desc: "Connects to your email — flags suspicious charges before you pay.", color: "#a78bfa" },
   { emoji: "📬", label: "Instant Dispute Filing", desc: "Submit dispute letters directly to the billing department — no printing.", color: "#fbbf24" },
   { emoji: "📈", label: "Insurance Plan Optimizer", desc: "Analyzes your medical history to recommend the best plan during open enrollment.", color: "#10b981" },

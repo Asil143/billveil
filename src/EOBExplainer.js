@@ -68,7 +68,7 @@ export default function EOBExplainer() {
     setResult(null);
     setError(null);
     try {
-      const res = await axios.post("/api/eob", { eob });
+      const res = await axios.post("/api/tools", { tool: "eob", eob });
       setResult(res.data.result);
     } catch {
       setError("Something went wrong. Please try again.");

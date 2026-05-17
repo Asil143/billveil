@@ -46,7 +46,7 @@ export default function CharityCareFinder() {
   const run = async () => {
     if (!hospital.trim() || !state || !consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
-    try { const r = await axios.post("/api/charitycare", { hospital, state, income, household, name }); setResult(r.data.result); }
+    try { const r = await axios.post("/api/tools", { tool: "charitycare", hospital, state, income, household, name }); setResult(r.data.result); }
     catch { setError("Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };

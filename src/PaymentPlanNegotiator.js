@@ -43,7 +43,7 @@ export default function PaymentPlanNegotiator() {
   const run = async () => {
     if (!hospital.trim() || !amount.trim() || !consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
-    try { const r = await axios.post("/api/paymentplan", { hospital, amount, income, name }); setResult(r.data.result); }
+    try { const r = await axios.post("/api/tools", { tool: "paymentplan", hospital, amount, income, name }); setResult(r.data.result); }
     catch { setError("Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };

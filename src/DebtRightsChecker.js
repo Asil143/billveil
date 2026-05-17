@@ -74,7 +74,7 @@ export default function DebtRightsChecker() {
     setResult(null);
     setError(null);
     try {
-      const res = await axios.post("/api/debtrights", { state, situation });
+      const res = await axios.post("/api/tools", { tool: "debtrights", state, situation });
       setResult(res.data.result);
     } catch {
       setError("Something went wrong. Please try again.");

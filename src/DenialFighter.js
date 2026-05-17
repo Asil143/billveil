@@ -52,7 +52,7 @@ export default function DenialFighter() {
     setExternalLetter(null);
     setActionsDone({});
     try {
-      const response = await axios.post("/api/denial", { denial, amount });
+      const response = await axios.post("/api/tools", { tool: "denial", denial, amount });
       setResult(response.data.result);
     } catch (err) {
       setError("Something went wrong. Please try again.");
@@ -64,7 +64,7 @@ export default function DenialFighter() {
   const generateExternalLetter = async () => {
     setExternalLoading(true);
     try {
-      const response = await axios.post("/api/external-review", { denial, amount });
+      const response = await axios.post("/api/tools", { tool: "external-review", denial, amount });
       setExternalLetter(response.data.result);
     } catch (err) {
       setError("Failed to generate letter. Please try again.");

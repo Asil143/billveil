@@ -42,7 +42,7 @@ export default function HSAFSAOptimizer() {
   const run = async () => {
     if (!expenses.trim() || !consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
-    try { const r = await axios.post("/api/hsafsa", { expenses, accountType }); setResult(r.data.result); }
+    try { const r = await axios.post("/api/tools", { tool: "hsafsa", expenses, accountType }); setResult(r.data.result); }
     catch { setError("Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };

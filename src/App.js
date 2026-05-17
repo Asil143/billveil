@@ -26,6 +26,8 @@ import HSAFSAOptimizer from "./HSAFSAOptimizer";
 import ProviderNetworkChecker from "./ProviderNetworkChecker";
 import CostEstimator from "./CostEstimator";
 import BillScan from "./BillScan";
+import CaseTracker from "./CaseTracker";
+import SavingsDashboard from "./SavingsDashboard";
 import { AuthProvider, useAuth } from "./AuthContext";
 import Profile from "./Profile";
 
@@ -80,7 +82,7 @@ const CSS = `
   }
 `;
 
-const VALID_TABS = ["analyzer", "services", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "genericdrug", "insplan", "surprisebill", "itemization", "charitycare", "paymentplan", "creditcard", "hsafsa", "providercheck", "costestimate", "billscan", "profile"];
+const VALID_TABS = ["analyzer", "services", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "genericdrug", "insplan", "surprisebill", "itemization", "charitycare", "paymentplan", "creditcard", "hsafsa", "providercheck", "costestimate", "billscan", "casetracker", "savings", "profile"];
 
 export default function App() {
   return (
@@ -141,7 +143,7 @@ function AppShell() {
   const location = useLocation();
   const { user, usesLeft, consumeCredit, logout, showLoginModal, initials, emailJustVerified, clearEmailJustVerified } = useAuth();
 
-  const TAB_TITLES = { analyzer: "Bill Analyzer", services: "Services", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", eob: "EOB Explainer", priorauth: "Prior Auth Helper", debtrights: "Debt Rights Checker", secondopinion: "Second Opinion Finder", genericdrug: "Generic Drug Finder", insplan: "Insurance Plan Decoder", surprisebill: "Surprise Billing Checker", itemization: "Itemization Request", charitycare: "Charity Care Finder", paymentplan: "Payment Plan Negotiator", creditcard: "Medical Credit Card Warning", hsafsa: "HSA/FSA Optimizer", providercheck: "Provider Network Checker", costestimate: "Pre-Treatment Cost Estimator", billscan: "Bill Scan", profile: "My Profile" };
+  const TAB_TITLES = { analyzer: "Bill Analyzer", services: "Services", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", eob: "EOB Explainer", priorauth: "Prior Auth Helper", debtrights: "Debt Rights Checker", secondopinion: "Second Opinion Finder", genericdrug: "Generic Drug Finder", insplan: "Insurance Plan Decoder", surprisebill: "Surprise Billing Checker", itemization: "Itemization Request", charitycare: "Charity Care Finder", paymentplan: "Payment Plan Negotiator", creditcard: "Medical Credit Card Warning", hsafsa: "HSA/FSA Optimizer", providercheck: "Provider Network Checker", costestimate: "Pre-Treatment Cost Estimator", billscan: "Bill Scan", casetracker: "Case Tracker", savings: "Savings Dashboard", profile: "My Profile" };
   useTitle(`${TAB_TITLES[tab] || "App"} — BillVeil`);
 
   const [bill, setBill] = useState(location.state?.initialBill || "");
@@ -325,6 +327,8 @@ function AppShell() {
         {tab === "providercheck" && <ProviderNetworkChecker />}
         {tab === "costestimate" && <CostEstimator />}
         {tab === "billscan" && <BillScan />}
+        {tab === "casetracker" && <CaseTracker />}
+        {tab === "savings" && <SavingsDashboard />}
         {tab === "dispute" && <DisputeLetter />}
         {tab === "drug" && <DrugComparator />}
         {tab === "denial" && <DenialFighter />}

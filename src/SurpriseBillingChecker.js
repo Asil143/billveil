@@ -44,7 +44,7 @@ export default function SurpriseBillingChecker() {
   const run = async () => {
     if (!bill.trim() || !consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
-    try { const r = await axios.post("/api/surprisebill", { bill, situation }); setResult(r.data.result); }
+    try { const r = await axios.post("/api/tools", { tool: "surprisebill", bill, situation }); setResult(r.data.result); }
     catch { setError("Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };

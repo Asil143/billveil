@@ -22,7 +22,7 @@ export default function DrugComparator() {
     setResult(null);
     setError(null);
     try {
-      const response = await axios.post("/api/drug", { drug, price });
+      const response = await axios.post("/api/tools", { tool: "drug", drug, price });
       setResult(response.data.result);
     } catch (err) {
       setError("Something went wrong. Please try again.");

@@ -44,7 +44,7 @@ export default function CostEstimator() {
   const run = async () => {
     if (!procedure.trim() || !consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
-    try { const r = await axios.post("/api/costestimate", { procedure, insurance, location, deductible }); setResult(r.data.result); }
+    try { const r = await axios.post("/api/tools", { tool: "costestimate", procedure, insurance, location, deductible }); setResult(r.data.result); }
     catch { setError("Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };

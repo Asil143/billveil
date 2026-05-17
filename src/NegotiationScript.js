@@ -60,7 +60,7 @@ export default function NegotiationScript() {
     setResult(null);
     setError(null);
     try {
-      const res = await axios.post("/api/negotiate", { bill, amount, name });
+      const res = await axios.post("/api/tools", { tool: "negotiate", bill, amount, name });
       setResult(res.data.result);
     } catch {
       setError("Something went wrong. Please try again.");

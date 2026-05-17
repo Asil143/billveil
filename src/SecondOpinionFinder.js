@@ -65,7 +65,7 @@ export default function SecondOpinionFinder() {
     setResult(null);
     setError(null);
     try {
-      const res = await axios.post("/api/secondopinion", { diagnosis, procedure, concern });
+      const res = await axios.post("/api/tools", { tool: "secondopinion", diagnosis, procedure, concern });
       setResult(res.data.result);
     } catch {
       setError("Something went wrong. Please try again.");

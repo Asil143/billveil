@@ -46,7 +46,7 @@ export default function CreditCardWarning() {
     if (!situation.trim() && !card.trim()) return;
     if (!consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
-    try { const r = await axios.post("/api/creditcardwarn", { card, amount, situation }); setResult(r.data.result); }
+    try { const r = await axios.post("/api/tools", { tool: "creditcard", card, amount, situation }); setResult(r.data.result); }
     catch { setError("Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };

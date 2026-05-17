@@ -42,7 +42,7 @@ export default function InsurancePlanDecoder() {
   const run = async () => {
     if (!plan.trim() || !consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
-    try { const r = await axios.post("/api/insplan", { plan }); setResult(r.data.result); }
+    try { const r = await axios.post("/api/tools", { tool: "insplan", plan }); setResult(r.data.result); }
     catch { setError("Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };

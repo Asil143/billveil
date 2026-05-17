@@ -68,7 +68,7 @@ export default function PriorAuthHelper() {
     setResult(null);
     setError(null);
     try {
-      const res = await axios.post("/api/priorauth", { procedure, diagnosis, insurance, doctor, name });
+      const res = await axios.post("/api/tools", { tool: "priorauth", procedure, diagnosis, insurance, doctor, name });
       setResult(res.data.result);
     } catch {
       setError("Something went wrong. Please try again.");

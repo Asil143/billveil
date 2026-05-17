@@ -65,7 +65,7 @@ export default function GenericDrugFinder() {
     setResult(null);
     setError(null);
     try {
-      const res = await axios.post("/api/drugfinder", { drug, dose, insurance });
+      const res = await axios.post("/api/tools", { tool: "drugfinder", drug, dose, insurance });
       setResult(res.data.result);
     } catch {
       setError("Something went wrong. Please try again.");

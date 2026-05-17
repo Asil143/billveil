@@ -42,7 +42,7 @@ export default function ItemizationRequest() {
   const run = async () => {
     if (!hospital.trim() || !consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
-    try { const r = await axios.post("/api/itemization", { hospital, date, amount, name }); setResult(r.data.result); }
+    try { const r = await axios.post("/api/tools", { tool: "itemization", hospital, date, amount, name }); setResult(r.data.result); }
     catch { setError("Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };
