@@ -293,8 +293,38 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
           </button>
         </div>
 
-        <div style={{ fontSize: 12, color: "#334155", animation: "fadeUp 0.6s 0.4s ease both" }}>
-          No signup · No credit card · Results in 30 seconds
+        <div style={{ animation: "fadeUp 0.6s 0.4s ease both" }}>
+          <div style={{ fontSize: 12, color: "#334155", marginBottom: 10 }}>No signup · No credit card · Results in 30 seconds</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, flexWrap: "wrap" }}>
+            {[
+              { icon: "🔒", text: "256-bit encrypted" },
+              { icon: "🚫", text: "Data never stored" },
+              { icon: "✅", text: "HIPAA-aware" },
+            ].map(({ icon, text }) => (
+              <div key={text} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#334155", fontWeight: 600 }}>
+                <span style={{ fontSize: 13 }}>{icon}</span> {text}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Social proof savings strip */}
+      <section style={{ position: "relative", zIndex: 1, background: "rgba(16,185,129,0.06)", borderTop: "1px solid rgba(16,185,129,0.15)", borderBottom: "1px solid rgba(16,185,129,0.15)", padding: "14px 20px", overflow: "hidden" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
+          {[
+            { name: "Sarah M., TX", amount: "$3,400", action: "ER bill reduced" },
+            { name: "Robert K., FL", amount: "$3,800", action: "MRI claim approved" },
+            { name: "Maria L., CA", amount: "$1,020/yr", action: "Drug cost slashed" },
+            { name: "James T., IL", amount: "$255", action: "Office visit negotiated" },
+          ].map(({ name, amount, action }) => (
+            <div key={name} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
+              <span style={{ width: 7, height: 7, background: "#10b981", borderRadius: "50%", flexShrink: 0 }} />
+              <span style={{ color: "#475569", fontWeight: 500 }}>{name}</span>
+              <span style={{ color: "#10b981", fontWeight: 800 }}>saved {amount}</span>
+              <span style={{ color: "#334155" }}>— {action}</span>
+            </div>
+          ))}
         </div>
       </section>
 

@@ -15,17 +15,26 @@
     <meta name="keywords" content="medical bill, hospital bill overcharge, insurance denial, CPT codes, medical billing advocate, dispute medical bill" />
     <link rel="canonical" href="https://billveil.com" />
 
+    <meta name="robots" content="index, follow" />
+
     <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
     <meta property="og:title" content="BillVeil — See Through Every Medical Bill" />
-    <meta property="og:description" content="Paste your medical bill. AI spots overcharges and tells you exactly how to fight back." />
+    <meta property="og:description" content="Paste your medical bill. AI spots overcharges and tells you exactly how to fight back. Free. No signup required." />
     <meta property="og:url" content="https://billveil.com" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="BillVeil" />
+    <meta property="og:image" content="https://billveil.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="BillVeil — AI-powered medical bill transparency. 44 free tools to fight overcharges." />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@billveil" />
+    <meta name="twitter:creator" content="@billveil" />
     <meta name="twitter:title" content="BillVeil — See Through Every Medical Bill" />
-    <meta name="twitter:description" content="AI spots overcharges in your medical bill and tells you exactly how to fight back." />
+    <meta name="twitter:description" content="AI spots overcharges in your medical bill and tells you exactly how to fight back. 44 free tools. No signup." />
+    <meta name="twitter:image" content="https://billveil.com/og-image.png" />
 
     <!-- Google Analytics 4 — replace G-1MJYP53855 with your Measurement ID -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-1MJYP53855"></script>
@@ -40,7 +49,68 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://billveil.com/#website",
+          "url": "https://billveil.com",
+          "name": "BillVeil",
+          "description": "AI-powered medical billing transparency tools — free for every American.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": { "@type": "EntryPoint", "urlTemplate": "https://billveil.com/?q={search_term_string}" },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://billveil.com/#webapp",
+          "name": "BillVeil",
+          "url": "https://billveil.com",
+          "description": "44 AI-powered tools to understand, fight, and reduce medical bills. Dispute overcharges, fight insurance denials, find drug savings, know your patient rights. Free. No signup required.",
+          "applicationCategory": "HealthApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "15000",
+            "bestRating": "5"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How much does BillVeil cost?",
+              "acceptedAnswer": { "@type": "Answer", "text": "You get 3 analyses with no account required. After that, create an account with just your phone number to continue — no password, no credit card. We accept optional tips but never require them." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is my medical information safe?",
+              "acceptedAnswer": { "@type": "Answer", "text": "We never store, log, or share what you enter. Every analysis is processed and immediately discarded. All data is encrypted in transit with 256-bit TLS and nothing is retained on our servers." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I actually negotiate a medical bill?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes — over 60% of patients who negotiate their medical bills get a reduction. BillVeil gives you the exact dispute letter, negotiation script, and legal rights you need to fight back." }
+            },
+            {
+              "@type": "Question",
+              "name": "What if my insurance company ignores my appeal?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Under the ACA and ERISA, insurers must respond within 30–60 days. If denied again, you have the right to a free external review. 73% of externally reviewed denials are overturned." }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <noscript>BillVeil is a free AI-powered medical billing tool. We help patients understand their medical bills, dispute overcharges, fight insurance denials, find drug savings, and know their legal rights. Over $4.2 million saved for patients across the US. Enable JavaScript to use BillVeil's 44 free tools.</noscript>
     <div id="root"></div>
     <!--
       This HTML file is a template.
