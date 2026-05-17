@@ -34,6 +34,7 @@ import HospitalPriceLookup from "./HospitalPriceLookup";
 import CommunityPriceBoard from "./CommunityPriceBoard";
 import PersonalFinanceHub from "./PersonalFinanceHub";
 import InsuranceFinder from "./InsuranceFinder";
+import FloatingChat from "./FloatingChat";
 import COBRACalculator from "./COBRACalculator";
 import CPTCodeLookup from "./CPTCodeLookup";
 import PreventiveCareChecker from "./PreventiveCareChecker";
@@ -119,6 +120,7 @@ export default function App() {
             <Route path="/:tab" element={<AppShell />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <FloatingChat />
         </ErrorBoundary>
       </BrowserRouter>
     </AuthProvider>
