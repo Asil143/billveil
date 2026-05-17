@@ -77,6 +77,6 @@ Extract every number, code, and charge visible. If something is unclear or not v
   }
 };
 
-module.exports.config = {
+export const config = {
   api: { bodyParser: { sizeLimit: "12mb" } },
 };
