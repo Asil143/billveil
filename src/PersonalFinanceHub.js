@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "./firebase";
 import { useAuth } from "./AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -40,7 +40,7 @@ function scoreTier(score) {
 
 export default function PersonalFinanceHub() {
   const { user, showLoginModal, initials, profileData } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -92,7 +92,7 @@ export default function PersonalFinanceHub() {
       {/* Score + Stats row */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr", gap: 12, marginBottom: 20 }}>
         {/* Score card */}
-        <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${tier.color}40`, borderRadius: 16, padding: "20px 16px", textAlign: "center", cursor: "pointer" }} onClick={() => navigate("/savings")}>
+        <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${tier.color}40`, borderRadius: 16, padding: "20px 16px", textAlign: "center", cursor: "pointer" }} onClick={() => router.push("/savings")}>
           <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", letterSpacing: "0.1em", marginBottom: 8 }}>BILLVEIL SCORE</div>
           <div style={{ fontSize: 42, fontWeight: 900, color: tier.color, lineHeight: 1, marginBottom: 4, textShadow: `0 0 24px ${tier.color}60` }}>{loading ? "—" : score}</div>
           <div style={{ fontSize: 11, fontWeight: 700, color: tier.color, background: `${tier.color}18`, border: `1px solid ${tier.color}30`, padding: "2px 10px", borderRadius: 8, display: "inline-block" }}>{tier.label}</div>
@@ -117,13 +117,13 @@ export default function PersonalFinanceHub() {
 
       {/* Action buttons */}
       <div style={{ display: "flex", gap: 10, marginBottom: 24, flexWrap: "wrap" }}>
-        <button onClick={() => navigate("/casetracker")} style={{ padding: "10px 18px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 16px rgba(16,185,129,0.3)" }}>
+        <button onClick={() => router.push("/casetracker")} style={{ padding: "10px 18px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 16px rgba(16,185,129,0.3)" }}>
           + New Case
         </button>
-        <button onClick={() => navigate("/savings")} style={{ padding: "10px 18px", background: "rgba(255,255,255,0.04)", color: "#94a3b8", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>
+        <button onClick={() => router.push("/savings")} style={{ padding: "10px 18px", background: "rgba(255,255,255,0.04)", color: "#94a3b8", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>
           View Full Dashboard →
         </button>
-        <button onClick={() => navigate("/billscan")} style={{ padding: "10px 18px", background: "rgba(255,255,255,0.04)", color: "#94a3b8", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>
+        <button onClick={() => router.push("/billscan")} style={{ padding: "10px 18px", background: "rgba(255,255,255,0.04)", color: "#94a3b8", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>
           📸 Scan a Bill
         </button>
       </div>
@@ -137,7 +137,7 @@ export default function PersonalFinanceHub() {
               const statusColors = { open: "#60a5fa", in_progress: "#fbbf24", appealed: "#a78bfa", won: "#10b981", lost: "#f87171", closed: "#475569" };
               const col = statusColors[c.status] || "#64748b";
               return (
-                <div key={c.id} onClick={() => navigate("/casetracker")} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                <div key={c.id} onClick={() => router.push("/casetracker")} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9", marginBottom: 2 }}>{c.title}</div>
                     <div style={{ fontSize: 11, color: "#475569" }}>{c.hospital || "No hospital"} · ${(c.amountBilled || 0).toLocaleString()} billed</div>
@@ -149,7 +149,7 @@ export default function PersonalFinanceHub() {
               );
             })}
             {cases.length > 3 && (
-              <button onClick={() => navigate("/casetracker")} style={{ background: "none", border: "1px dashed rgba(255,255,255,0.08)", borderRadius: 12, padding: "10px", color: "#475569", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>
+              <button onClick={() => router.push("/casetracker")} style={{ background: "none", border: "1px dashed rgba(255,255,255,0.08)", borderRadius: 12, padding: "10px", color: "#475569", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>
                 View all {cases.length} cases →
               </button>
             )}
@@ -162,7 +162,7 @@ export default function PersonalFinanceHub() {
           <div style={{ fontSize: 28, marginBottom: 8 }}>📊</div>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>No cases yet</div>
           <div style={{ fontSize: 13, color: "#64748b", marginBottom: 14 }}>Start tracking a dispute, negotiation, or appeal to earn your BillVeil Score.</div>
-          <button onClick={() => navigate("/casetracker")} style={{ padding: "9px 20px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>
+          <button onClick={() => router.push("/casetracker")} style={{ padding: "9px 20px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>
             Open Case Tracker
           </button>
         </div>
@@ -172,7 +172,7 @@ export default function PersonalFinanceHub() {
       <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", letterSpacing: "0.1em", marginBottom: 12 }}>QUICK ACCESS</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 10 }}>
         {QUICK_TOOLS.map(t => (
-          <button key={t.tab} onClick={() => navigate(`/${t.tab}`)} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "14px 12px", cursor: "pointer", textAlign: "left", fontFamily: FONT, transition: "all 0.15s" }}
+          <button key={t.tab} onClick={() => router.push(`/${t.tab}`)} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "14px 12px", cursor: "pointer", textAlign: "left", fontFamily: FONT, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = `${t.color}60`; e.currentTarget.style.background = `${t.color}08`; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}>
             <div style={{ fontSize: 22, marginBottom: 6 }}>{t.emoji}</div>

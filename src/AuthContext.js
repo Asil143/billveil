@@ -1,3 +1,4 @@
+'use client';
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   onAuthStateChanged, signOut,
@@ -74,7 +75,7 @@ function EmailLinkScreen({ status, errorCode, syncOk, syncError }) {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(undefined);
-  const [uses, setUses] = useState(() => parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10));
+  const [uses, setUses] = useState(() => typeof window !== 'undefined' ? parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10) : 0);
   const [showModal, setShowModal] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [emailVerified, setEmailVerified] = useState(false);
@@ -84,9 +85,9 @@ export function AuthProvider({ children }) {
   const [linkSyncOk, setLinkSyncOk] = useState(false);
   const [linkSyncError, setLinkSyncError] = useState(null);
 
-  const pendingEmailLink = useRef(
-    isSignInWithEmailLink(auth, window.location.href) ? window.location.href : null
-  ).current;
+  const pendingEmailLink = typeof window !== 'undefined' && isSignInWithEmailLink(auth, window.location.href)
+    ? window.location.href
+    : null;
 
   // Process email link once on mount using a one-shot auth listener
   useEffect(() => {

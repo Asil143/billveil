@@ -1,3 +1,5 @@
+'use client';
+import { useRouter } from "next/navigation";
 const FONT = "'Inter', system-ui, sans-serif";
 
 const Section = ({ title, children }) => (
@@ -7,12 +9,13 @@ const Section = ({ title, children }) => (
   </div>
 );
 
-export default function Terms({ onBack }) {
+export default function Terms() {
+  const router = useRouter();
   return (
     <div style={{ minHeight: "100vh", background: "#050810", fontFamily: FONT, color: "#f1f5f9" }}>
 
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: "rgba(5,8,16,0.9)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", height: 60 }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>← Back</button>
+        <button onClick={() => router.back()} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>← Back</button>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ width: 26, height: 26, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🛡️</div>
           <span style={{ fontSize: 15, fontWeight: 800, color: "#f1f5f9" }}>BillVeil</span>

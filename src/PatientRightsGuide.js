@@ -1,5 +1,6 @@
+'use client';
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -63,7 +64,7 @@ const RIGHTS = [
 ];
 
 export default function PatientRightsGuide() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState({});
   const [expandedCat, setExpandedCat] = useState({});
@@ -121,10 +122,10 @@ export default function PatientRightsGuide() {
       ))}
 
       <div style={{ marginTop: 32, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <button onClick={() => navigate("/dispute")} style={{ padding: "12px", background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", color: "#f87171", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>✉️ Write a Dispute Letter</button>
-        <button onClick={() => navigate("/denial")} style={{ padding: "12px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", color: "#60a5fa", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>⚔️ Fight a Denial</button>
-        <button onClick={() => navigate("/hipaa")} style={{ padding: "12px", background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.2)", color: "#a78bfa", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>📁 HIPAA Rights Guide</button>
-        <button onClick={() => navigate("/mentalparity")} style={{ padding: "12px", background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", color: "#10b981", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>🧠 Mental Health Parity</button>
+        <button onClick={() => router.push("/dispute")} style={{ padding: "12px", background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", color: "#f87171", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>✉️ Write a Dispute Letter</button>
+        <button onClick={() => router.push("/denial")} style={{ padding: "12px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", color: "#60a5fa", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>⚔️ Fight a Denial</button>
+        <button onClick={() => router.push("/hipaa")} style={{ padding: "12px", background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.2)", color: "#a78bfa", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>📁 HIPAA Rights Guide</button>
+        <button onClick={() => router.push("/mentalparity")} style={{ padding: "12px", background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", color: "#10b981", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>🧠 Mental Health Parity</button>
       </div>
     </div>
   );

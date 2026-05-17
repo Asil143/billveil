@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+'use client';
+import { useRouter } from "next/navigation";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -96,7 +97,7 @@ const TOOL_META = {
 };
 
 export default function RelatedTools({ currentTab }) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const tabs = (RELATED[currentTab] || []).slice(0, 4);
   if (tabs.length === 0) return null;
 
@@ -112,7 +113,7 @@ export default function RelatedTools({ currentTab }) {
           return (
             <button
               key={tab}
-              onClick={() => navigate(`/${tab}`)}
+              onClick={() => router.push(`/${tab}`)}
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "13px 14px", cursor: "pointer", fontFamily: FONT, display: "flex", alignItems: "center", gap: 10, transition: "all 0.2s", textAlign: "left" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${m.color}50`; e.currentTarget.style.background = `${m.color}08`; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}

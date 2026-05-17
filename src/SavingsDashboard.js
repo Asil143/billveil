@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "./firebase";
 import { useAuth } from "./AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -30,7 +30,7 @@ function scoreLabel(score) {
 
 export default function SavingsDashboard() {
   const { user, showLoginModal } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -178,10 +178,10 @@ export default function SavingsDashboard() {
           <div style={{ fontSize: 36, marginBottom: 12 }}>📊</div>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#475569", marginBottom: 6, fontFamily: FONT }}>No cases tracked yet</div>
           <div style={{ fontSize: 13, color: "#334155", marginBottom: 20, fontFamily: FONT }}>Add a case to start building your score and tracking savings.</div>
-          <button onClick={() => navigate("/casetracker")} style={{ padding: "10px 24px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>📊 Open Case Tracker</button>
+          <button onClick={() => router.push("/casetracker")} style={{ padding: "10px 24px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>📊 Open Case Tracker</button>
         </div>
       ) : (
-        <button onClick={() => navigate("/casetracker")} style={{ width: "100%", padding: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, color: "#64748b", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>→ Manage Cases in Case Tracker</button>
+        <button onClick={() => router.push("/casetracker")} style={{ width: "100%", padding: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, color: "#64748b", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>→ Manage Cases in Case Tracker</button>
       )}
 
       {lost > 0 && (

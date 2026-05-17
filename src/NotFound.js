@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+'use client';
+import { useRouter } from "next/navigation";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -12,7 +13,7 @@ const POPULAR = [
 ];
 
 export default function NotFound() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <div style={{ minHeight: "100vh", background: "#050810", fontFamily: FONT, color: "#f1f5f9", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 20px", textAlign: "center" }}>
@@ -29,7 +30,7 @@ export default function NotFound() {
         {POPULAR.map(({ tab, emoji, label }) => (
           <button
             key={tab}
-            onClick={() => navigate(`/${tab}`)}
+            onClick={() => router.push(`/${tab}`)}
             style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "14px 16px", cursor: "pointer", fontFamily: FONT, display: "flex", alignItems: "center", gap: 10, transition: "all 0.2s", textAlign: "left" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(16,185,129,0.4)"; e.currentTarget.style.background = "rgba(16,185,129,0.06)"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
@@ -41,7 +42,7 @@ export default function NotFound() {
       </div>
 
       <button
-        onClick={() => navigate("/")}
+        onClick={() => router.push("/")}
         style={{ padding: "12px 28px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 6px 20px rgba(16,185,129,0.35)" }}
       >
         ← Back to Homepage

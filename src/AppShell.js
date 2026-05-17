@@ -1,6 +1,7 @@
+'use client';
+
 import { useState, useEffect, useRef } from "react";
-import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from "react-router-dom";
-import { Analytics } from "@vercel/analytics/react";
+import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import Landing from "./Landing";
 import About from "./About";
@@ -34,7 +35,6 @@ import HospitalPriceLookup from "./HospitalPriceLookup";
 import CommunityPriceBoard from "./CommunityPriceBoard";
 import PersonalFinanceHub from "./PersonalFinanceHub";
 import InsuranceFinder from "./InsuranceFinder";
-import FloatingChat from "./FloatingChat";
 import COBRACalculator from "./COBRACalculator";
 import CPTCodeLookup from "./CPTCodeLookup";
 import PreventiveCareChecker from "./PreventiveCareChecker";
@@ -49,7 +49,7 @@ import VeteransBenefitsGuide from "./VeteransBenefitsGuide";
 import ChronicDiseasePlanner from "./ChronicDiseasePlanner";
 import MedicalGlossary from "./MedicalGlossary";
 import HospitalQualityChecker from "./HospitalQualityChecker";
-import { AuthProvider, useAuth } from "./AuthContext";
+import { useAuth } from "./AuthContext";
 import Profile from "./Profile";
 import ErrorBoundary from "./ErrorBoundary";
 import NotFound from "./NotFound";
@@ -109,76 +109,30 @@ const CSS = `
 
 const VALID_TABS = ["analyzer", "services", "dispute", "drug", "denial", "negotiate", "eob", "priorauth", "debtrights", "secondopinion", "genericdrug", "insplan", "surprisebill", "itemization", "charitycare", "paymentplan", "creditcard", "hsafsa", "providercheck", "costestimate", "billscan", "casetracker", "savings", "concierge", "planoptimizer", "hospitalprice", "priceboard", "hub", "insurance", "profile", "cobra", "cptlookup", "preventive", "erurgent", "patientrights", "hipaa", "mentalparity", "medtax", "fsatracker", "medicare", "veterans", "chronicdisease", "glossary", "hospitalquality"];
 
-export default function App() {
-  return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Analytics />
-        <ErrorBoundary>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/:tab" element={<AppShell />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <FloatingChat />
-        </ErrorBoundary>
-      </BrowserRouter>
-    </AuthProvider>
-  );
-}
+const TABS = [
+  { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
+  { id: "services", emoji: "🛠️", label: "All Tools" },
+  { id: "dispute", emoji: "✉️", label: "Dispute" },
+  { id: "drug", emoji: "💊", label: "Drug Prices" },
+  { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
+  { id: "concierge", emoji: "🤖", label: "AI Chat" },
+];
 
-function useTitle(title) {
-  useEffect(() => { document.title = title; }, [title]);
-}
-
-function LandingPage() {
-  const navigate = useNavigate();
-  useTitle("BillVeil — See Through Every Medical Bill");
-  return (
-    <Landing
-      onStart={(t, bill) => navigate(`/${t || "analyzer"}`, { state: { initialBill: bill } })}
-      onAbout={() => navigate("/about")}
-      onPrivacy={() => navigate("/privacy")}
-      onTerms={() => navigate("/terms")}
-    />
-  );
-}
-
-function AboutPage() {
-  const navigate = useNavigate();
-  useTitle("About — BillVeil");
-  return <About onBack={() => navigate(-1)} onStart={(t) => navigate(`/${t || "analyzer"}`)} />;
-}
-
-function PrivacyPage() {
-  const navigate = useNavigate();
-  useTitle("Privacy Policy — BillVeil");
-  return <Privacy onBack={() => navigate(-1)} />;
-}
-
-function TermsPage() {
-  const navigate = useNavigate();
-  useTitle("Terms of Service — BillVeil");
-  return <Terms onBack={() => navigate(-1)} />;
-}
-
-function AppShell() {
+export default function AppShell() {
   const { tab } = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
   const { user, usesLeft, consumeCredit, logout, showLoginModal, initials, emailJustVerified, clearEmailJustVerified } = useAuth();
 
-  const TAB_TITLES = { analyzer: "Bill Analyzer", services: "Services", dispute: "Dispute Letter", drug: "Drug Prices", denial: "Denial Fighter", negotiate: "Negotiation Script", eob: "EOB Explainer", priorauth: "Prior Auth Helper", debtrights: "Debt Rights Checker", secondopinion: "Second Opinion Finder", genericdrug: "Generic Drug Finder", insplan: "Insurance Plan Decoder", surprisebill: "Surprise Billing Checker", itemization: "Itemization Request", charitycare: "Charity Care Finder", paymentplan: "Payment Plan Negotiator", creditcard: "Medical Credit Card Warning", hsafsa: "HSA/FSA Optimizer", providercheck: "Provider Network Checker", costestimate: "Pre-Treatment Cost Estimator", billscan: "Bill Scan", casetracker: "Case Tracker", savings: "Savings Dashboard", concierge: "BillVeil Concierge", planoptimizer: "Insurance Plan Optimizer", hospitalprice: "Hospital Price Lookup", priceboard: "Community Price Board", hub: "My Hub", insurance: "Insurance Finder", profile: "My Profile", cobra: "COBRA Calculator", cptlookup: "CPT Code Lookup", preventive: "Preventive Care Checker", erurgent: "ER vs. Urgent Care Guide", patientrights: "Patient Rights Guide", hipaa: "HIPAA Rights Guide", mentalparity: "Mental Health Parity Checker", medtax: "Medical Tax Calculator", fsatracker: "FSA Tracker", medicare: "Medicare Navigator", veterans: "Veterans Benefits Guide", chronicdisease: "Chronic Disease Planner", glossary: "Medical Billing Glossary", hospitalquality: "Hospital Quality Checker" };
-  useTitle(`${TAB_TITLES[tab] || "App"} — BillVeil`);
-
-  const [bill, setBill] = useState(location.state?.initialBill || "");
+  const [bill, setBill] = useState(() => {
+    if (typeof window === "undefined") return "";
+    const saved = sessionStorage.getItem("bv_heroBill");
+    if (saved) sessionStorage.removeItem("bv_heroBill");
+    return saved || "";
+  });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [tipDismissed] = useState(() => !!sessionStorage.getItem("bv_tip_dismissed"));
+  const [tipDismissed] = useState(() => typeof window !== "undefined" && !!sessionStorage.getItem("bv_tip_dismissed"));
   const [tip, setTip] = useState(false);
   const [copied, setCopied] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -197,14 +151,15 @@ function AppShell() {
 
   useEffect(() => {
     if (!emailJustVerified) return;
-    navigate("/profile", { replace: true });
-  }, [emailJustVerified, navigate]);
+    router.replace("/profile");
+  }, [emailJustVerified, router]);
 
   useEffect(() => {
     if (tab !== "analyzer") return;
-    const incoming = location.state?.initialBill;
+    const incoming = sessionStorage.getItem("bv_heroBill_pending");
     if (!incoming || incoming === autoAnalyzeRef.current) return;
     autoAnalyzeRef.current = incoming;
+    sessionStorage.removeItem("bv_heroBill_pending");
     setBill(incoming);
     if (consumeCredit()) {
       setLoading(true);
@@ -216,7 +171,7 @@ function AppShell() {
         .finally(() => setLoading(false));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, location.state]);
+  }, [tab]);
 
   if (!VALID_TABS.includes(tab)) return <NotFound />;
 
@@ -229,7 +184,7 @@ function AppShell() {
     try {
       const response = await axios.post("/api/analyze", { bill });
       setResult(response.data.result);
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -280,15 +235,6 @@ function AppShell() {
     });
   };
 
-  const TABS = [
-    { id: "analyzer", emoji: "⚡", label: "Bill Analyzer" },
-    { id: "services", emoji: "🛠️", label: "All Tools" },
-    { id: "dispute", emoji: "✉️", label: "Dispute" },
-    { id: "drug", emoji: "💊", label: "Drug Prices" },
-    { id: "denial", emoji: "⚔️", label: "Denial Fighter" },
-    { id: "concierge", emoji: "🤖", label: "AI Chat" },
-  ];
-
   return (
     <div style={{ minHeight: "100vh", background: "#050810", fontFamily: FONT, color: "#f1f5f9" }}>
       <style>{CSS}</style>
@@ -306,12 +252,12 @@ function AppShell() {
 
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: "rgba(5,8,16,0.9)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 20px 6px" }}>
-          <button onClick={() => navigate("/")} style={{ display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+          <button onClick={() => router.push("/")} style={{ display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <div style={{ width: 28, height: 28, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: "0 0 12px rgba(16,185,129,0.4)" }}>🛡️</div>
             <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em", color: "#f1f5f9", fontFamily: FONT }}>BillVeil</span>
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <button onClick={() => navigate("/about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
+            <button onClick={() => router.push("/about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
 
             {user ? (
               <div style={{ position: "relative" }} ref={accountMenuRef}>
@@ -320,7 +266,7 @@ function AppShell() {
                 </button>
                 {showAccountMenu && (
                   <div style={{ position: "absolute", top: 42, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: 6, minWidth: 190, boxShadow: "0 16px 40px rgba(0,0,0,0.6)", zIndex: 100 }}>
-                    <button onClick={() => { navigate("/profile"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>👤 My Profile</button>
+                    <button onClick={() => { router.push("/profile"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>👤 My Profile</button>
                     <button onClick={() => { logout(); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#f87171", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>Sign Out</button>
                   </div>
                 )}
@@ -341,7 +287,7 @@ function AppShell() {
         </div>
         <div style={{ display: "flex", gap: 4, padding: "0 12px 10px", overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
           {TABS.map((t) => (
-            <button key={t.id} onClick={() => navigate(`/${t.id}`)} style={{ padding: "7px 14px", background: tab === t.id ? "rgba(16,185,129,0.12)" : "transparent", border: `1px solid ${tab === t.id ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.07)"}`, borderRadius: 8, color: tab === t.id ? "#10b981" : "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap", flexShrink: 0 }}>
+            <button key={t.id} onClick={() => router.push(`/${t.id}`)} style={{ padding: "7px 14px", background: tab === t.id ? "rgba(16,185,129,0.12)" : "transparent", border: `1px solid ${tab === t.id ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.07)"}`, borderRadius: 8, color: tab === t.id ? "#10b981" : "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap", flexShrink: 0 }}>
               {t.emoji} {t.label}
             </button>
           ))}

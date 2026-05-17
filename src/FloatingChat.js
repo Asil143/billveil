@@ -1,5 +1,6 @@
+'use client';
 import { useState, useRef, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
 
@@ -51,8 +52,8 @@ function ToolLink({ text, navigate }) {
 }
 
 export default function FloatingChat() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
   const { consumeCredit, showLoginModal } = useAuth();
 
   const [open, setOpen] = useState(false);
@@ -69,7 +70,7 @@ export default function FloatingChat() {
   const inputRef = useRef(null);
   const panelRef = useRef(null);
 
-  const hidden = HIDE_ON.includes(location.pathname);
+  const hidden = HIDE_ON.includes(pathname);
 
   useEffect(() => {
     if (open) {
@@ -212,7 +213,7 @@ export default function FloatingChat() {
                 </button>
               )}
               <button
-                onClick={() => navigate("/concierge")}
+                onClick={() => router.push("/concierge")}
                 title="Open full chat"
                 style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)", color: "#10b981", fontSize: 11, fontWeight: 700, cursor: "pointer", padding: "4px 10px", borderRadius: 8, fontFamily: FONT }}
               >
@@ -246,7 +247,7 @@ export default function FloatingChat() {
                   boxShadow: m.role === "user" ? "0 4px 14px rgba(16,185,129,0.25)" : "none",
                 }}>
                   {m.role === "assistant"
-                    ? <ToolLink text={m.content} navigate={navigate} />
+                    ? <ToolLink text={m.content} navigate={(p) => router.push(p)} />
                     : m.content
                   }
                 </div>

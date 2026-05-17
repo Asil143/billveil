@@ -1,5 +1,6 @@
+'use client';
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -20,7 +21,7 @@ const NON_EXPANSION = new Set(["AL", "FL", "GA", "KS", "MS", "SC", "TN", "TX", "
 const STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"];
 
 export default function COBRACalculator() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [form, setForm] = useState({ cobraPremium: "", income: "", familySize: "1", state: "", months: "6" });
   const [result, setResult] = useState(null);
 
@@ -190,8 +191,8 @@ export default function COBRACalculator() {
           </div>
 
           <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
-            <button onClick={() => navigate("/insurance")} style={{ flex: 1, padding: "11px", background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#10b981", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>Find All Insurance Options →</button>
-            <button onClick={() => navigate("/services")} style={{ padding: "11px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>All Tools</button>
+            <button onClick={() => router.push("/insurance")} style={{ flex: 1, padding: "11px", background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#10b981", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>Find All Insurance Options →</button>
+            <button onClick={() => router.push("/services")} style={{ padding: "11px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>All Tools</button>
           </div>
 
           <div style={{ padding: 14, background: "rgba(251,191,36,0.05)", border: "1px solid rgba(251,191,36,0.15)", borderRadius: 10 }}>

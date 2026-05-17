@@ -1,5 +1,6 @@
+'use client';
 import { useState, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
 
@@ -58,7 +59,7 @@ async function compressImage(file) {
 
 export default function BillScan() {
   const { consumeCredit } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
   const dropRef = useRef(null);
@@ -116,7 +117,8 @@ export default function BillScan() {
   const goToAnalyzer = () => {
     if (!result) return;
     const extracted = extractAnalyzerText(result);
-    navigate("/analyzer", { state: { initialBill: extracted } });
+    sessionStorage.setItem("bv_heroBill_pending", extracted);
+    router.push("/analyzer");
   };
 
   const reset = () => {

@@ -1,4 +1,6 @@
+'use client';
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
 
 const FONT = "'Inter', system-ui, sans-serif";
@@ -140,7 +142,8 @@ const ALL_SERVICES = [
   },
 ];
 
-export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
+export default function Landing() {
+  const router = useRouter();
   const { user, showLoginModal, logout, initials } = useAuth();
   const [heroBill, setHeroBill] = useState("");
   const [openFaq, setOpenFaq] = useState(null);
@@ -158,11 +161,16 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const goTo = (tab, bill) => {
+    if (bill) sessionStorage.setItem("bv_heroBill", bill);
+    router.push(`/${tab}`);
+  };
+
   const handleAnalyze = () => {
     if (heroBill.trim()) {
-      onStart("analyzer", heroBill);
+      goTo("analyzer", heroBill);
     } else {
-      onStart("analyzer");
+      goTo("analyzer");
     }
   };
 
@@ -182,7 +190,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
 
         {/* Services dropdown — desktop only */}
         <div className="nav-tools" style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, justifyContent: "center" }}>
-          <button className="nav-tool" onClick={() => onStart("analyzer")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, borderRadius: 7, transition: "all 0.15s" }}>
+          <button className="nav-tool" onClick={() => goTo("analyzer")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, borderRadius: 7, transition: "all 0.15s" }}>
             ⚡ Bill Analyzer
           </button>
           <div ref={servicesMenuRef} style={{ position: "relative" }}>
@@ -204,7 +212,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
                       {cat.tools.map(tool => (
                         <button
                           key={tool.tab}
-                          onClick={() => { onStart(tool.tab); setShowServicesMenu(false); }}
+                          onClick={() => { goTo(tool.tab); setShowServicesMenu(false); }}
                           style={{ padding: "7px 10px", background: "none", border: "none", color: "#64748b", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, textAlign: "left", borderRadius: 8, transition: "all 0.12s", display: "flex", alignItems: "center", gap: 7 }}
                           onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "#f1f5f9"; }}
                           onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#64748b"; }}
@@ -222,7 +230,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <button onClick={onAbout} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
+          <button onClick={() => router.push("/about")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
 
           {user ? (
             <div style={{ position: "relative" }} ref={accountMenuRef}>
@@ -231,7 +239,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
               </button>
               {showAccountMenu && (
                 <div style={{ position: "absolute", top: 42, right: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: 6, minWidth: 190, boxShadow: "0 16px 40px rgba(0,0,0,0.6)", zIndex: 100 }}>
-                  <button onClick={() => { onStart("profile"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>👤  My Profile</button>
+                  <button onClick={() => { goTo("profile"); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>👤  My Profile</button>
                   <button onClick={() => { logout(); setShowAccountMenu(false); }} style={{ width: "100%", padding: "9px 12px", background: "none", border: "none", color: "#f87171", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: FONT, borderRadius: 8, display: "block" }}>Sign Out</button>
                 </div>
               )}
@@ -444,7 +452,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
 
         {/* Bill Scan featured */}
         <div
-          onClick={() => onStart("billscan")}
+          onClick={() => goTo("billscan")}
           className="tool-card"
           style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.05))", border: "1px solid rgba(16,185,129,0.3)", borderRadius: 18, padding: "22px 26px", cursor: "pointer", marginBottom: 40, display: "flex", alignItems: "center", gap: 20, transition: "all 0.2s" }}
         >
@@ -472,7 +480,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
                 <div
                   key={tool.tab}
                   className="tool-card"
-                  onClick={() => onStart(tool.tab)}
+                  onClick={() => goTo(tool.tab)}
                   style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "16px 18px", cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", gap: 14 }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = `${cat.color}50`; e.currentTarget.style.background = `${cat.color}08`; e.currentTarget.style.transform = "translateY(-2px)"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "translateY(0)"; }}
@@ -627,7 +635,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
           <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.75, marginBottom: 36 }}>
             330 million Americans deserve to understand their medical bills. BillVeil exists because healthcare transparency should not be a luxury.
           </p>
-          <button className="hero-cta" onClick={() => onStart("analyzer")} style={{ padding: "18px 52px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 14, fontSize: 17, fontWeight: 800, cursor: "pointer", fontFamily: FONT, transition: "all 0.25s", boxShadow: "0 10px 40px rgba(16,185,129,0.4)", letterSpacing: "0.01em" }}>
+          <button className="hero-cta" onClick={() => goTo("analyzer")} style={{ padding: "18px 52px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 14, fontSize: 17, fontWeight: 800, cursor: "pointer", fontFamily: FONT, transition: "all 0.25s", boxShadow: "0 10px 40px rgba(16,185,129,0.4)", letterSpacing: "0.01em" }}>
             ⚡ Analyze My Bill
           </button>
           <div style={{ marginTop: 16, fontSize: 12, color: "#334155" }}>No signup · No credit card · Results in 30 seconds</div>
@@ -666,10 +674,10 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
               {/* Company + Legal inline */}
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 2 }}>Company</div>
-                <button className="footer-link" onClick={onAbout} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>About</button>
+                <button className="footer-link" onClick={() => router.push("/about")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>About</button>
                 <a href="mailto:hello@billveil.com" className="footer-link" style={{ color: "#475569", fontSize: 12, fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}>Contact</a>
-                <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Privacy Policy</button>
-                <button className="footer-link" onClick={onTerms} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Terms of Service</button>
+                <button className="footer-link" onClick={() => router.push("/privacy")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Privacy Policy</button>
+                <button className="footer-link" onClick={() => router.push("/terms")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Terms of Service</button>
               </div>
             </div>
 
@@ -677,7 +685,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
             <div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", letterSpacing: "0.12em", textTransform: "uppercase" }}>All Tools</div>
-                <button className="footer-link" onClick={() => onStart("services")} style={{ background: "none", border: "none", color: "#10b981", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, padding: 0, transition: "color 0.15s" }}>Browse all 44 tools →</button>
+                <button className="footer-link" onClick={() => goTo("services")} style={{ background: "none", border: "none", color: "#10b981", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, padding: 0, transition: "color 0.15s" }}>Browse all 44 tools →</button>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px 32px" }}>
                 {ALL_SERVICES.map(cat => (
@@ -687,12 +695,12 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                       {cat.tools.slice(0, 4).map(tool => (
-                        <button key={tool.tab} className="footer-link" onClick={() => onStart(tool.tab)} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s", lineHeight: 1.4 }}>
+                        <button key={tool.tab} className="footer-link" onClick={() => goTo(tool.tab)} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s", lineHeight: 1.4 }}>
                           {tool.emoji} {tool.label}
                         </button>
                       ))}
                       {cat.tools.length > 4 && (
-                        <button className="footer-link" onClick={() => onStart("services")} style={{ background: "none", border: "none", color: "#334155", fontSize: 11, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>
+                        <button className="footer-link" onClick={() => goTo("services")} style={{ background: "none", border: "none", color: "#334155", fontSize: 11, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>
                           +{cat.tools.length - 4} more →
                         </button>
                       )}
@@ -708,8 +716,8 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
               <div style={{ fontSize: 12, color: "#1e293b" }}>© 2026 BillVeil</div>
               <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                <button className="footer-link" onClick={onPrivacy} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Privacy</button>
-                <button className="footer-link" onClick={onTerms} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Terms</button>
+                <button className="footer-link" onClick={() => router.push("/privacy")} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Privacy</button>
+                <button className="footer-link" onClick={() => router.push("/terms")} style={{ background: "none", border: "none", color: "#1e293b", fontSize: 12, cursor: "pointer", fontFamily: FONT, padding: 0 }}>Terms</button>
               </div>
             </div>
             <div style={{ fontSize: 11, color: "#1e293b", lineHeight: 1.8 }}>
@@ -727,7 +735,7 @@ export default function Landing({ onStart, onAbout, onPrivacy, onTerms }) {
           { label: "All Tools", emoji: "🛠️", tab: "services" },
           { label: "AI Chat", emoji: "🤖", tab: "concierge" },
         ].map(({ label, emoji, tab }) => (
-          <button key={tab} onClick={() => onStart(tab)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, background: "none", border: "none", cursor: "pointer", fontFamily: FONT, padding: "4px 10px", borderRadius: 10 }}>
+          <button key={tab} onClick={() => goTo(tab)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, background: "none", border: "none", cursor: "pointer", fontFamily: FONT, padding: "4px 10px", borderRadius: 10 }}>
             <span style={{ fontSize: 20 }}>{emoji}</span>
             <span style={{ fontSize: 10, color: "#475569", fontWeight: 600 }}>{label}</span>
           </button>

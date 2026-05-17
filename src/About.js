@@ -1,3 +1,5 @@
+'use client';
+import { useRouter } from "next/navigation";
 const FONT = "'Inter', system-ui, sans-serif";
 
 const CSS = `
@@ -7,7 +9,8 @@ const CSS = `
   .about-tool:hover { border-color: rgba(16,185,129,0.3) !important; background: rgba(16,185,129,0.03) !important; }
 `;
 
-export default function About({ onBack, onStart }) {
+export default function About() {
+  const router = useRouter();
   return (
     <div style={{ minHeight: "100vh", background: "#050810", fontFamily: FONT, color: "#f1f5f9", overflowX: "hidden" }}>
       <style>{CSS}</style>
@@ -17,14 +20,14 @@ export default function About({ onBack, onStart }) {
 
       {/* Header */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, background: "rgba(5,8,16,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 28px", height: 60 }}>
-        <button className="about-back" onClick={onBack} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "color 0.2s" }}>
+        <button className="about-back" onClick={() => router.back()} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "color 0.2s" }}>
           ← Back
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ width: 28, height: 28, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: "0 0 14px rgba(16,185,129,0.4)" }}>🛡️</div>
           <div style={{ fontSize: 16, fontWeight: 800, color: "#f1f5f9" }}>BillVeil</div>
         </div>
-        <button onClick={() => onStart("analyzer")} style={{ padding: "7px 18px", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "#10b981", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>
+        <button onClick={() => router.push("/analyzer")} style={{ padding: "7px 18px", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "#10b981", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>
           Get Started →
         </button>
       </div>
@@ -96,7 +99,7 @@ export default function About({ onBack, onStart }) {
         <div style={{ textAlign: "center" }}>
           <button
             className="about-cta"
-            onClick={() => onStart("analyzer")}
+            onClick={() => router.push("/analyzer")}
             style={{ padding: "17px 50px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 14, fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: FONT, boxShadow: "0 8px 32px rgba(16,185,129,0.4)", transition: "all 0.25s", letterSpacing: "0.01em" }}
           >
             ⚡ Analyze My Bill

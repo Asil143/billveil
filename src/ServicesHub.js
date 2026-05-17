@@ -1,5 +1,6 @@
+'use client';
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -101,7 +102,7 @@ const COMING_SOON = [
 ];
 
 export default function ServicesHub() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [search, setSearch] = useState("");
 
   const filteredCategories = useMemo(() => {
@@ -147,7 +148,7 @@ export default function ServicesHub() {
 
       {/* Featured: Bill Scan */}
       {(!search || "bill scan photo upload image".includes(search.toLowerCase())) && <button
-        onClick={() => navigate("/billscan")}
+        onClick={() => router.push("/billscan")}
         style={{ width: "100%", background: "linear-gradient(135deg, rgba(16,185,129,0.12), rgba(5,150,105,0.06))", border: "1px solid rgba(16,185,129,0.35)", borderRadius: 16, padding: "20px 24px", cursor: "pointer", textAlign: "left", fontFamily: FONT, marginBottom: 32, display: "flex", alignItems: "center", gap: 20, transition: "all 0.2s" }}
         onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(16,185,129,0.6)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
         onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(16,185,129,0.35)"; e.currentTarget.style.transform = "translateY(0)"; }}
@@ -184,7 +185,7 @@ export default function ServicesHub() {
             {cat.tools.map((tool) => (
               <button
                 key={tool.tab}
-                onClick={() => navigate(`/${tool.tab}`)}
+                onClick={() => router.push(`/${tool.tab}`)}
                 style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "18px 20px", cursor: "pointer", textAlign: "left", fontFamily: FONT, transition: "all 0.2s", display: "flex", alignItems: "flex-start", gap: 14 }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = `${cat.color}60`; e.currentTarget.style.background = `${cat.color}08`; e.currentTarget.style.transform = "translateY(-2px)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "translateY(0)"; }}

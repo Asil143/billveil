@@ -1,5 +1,6 @@
+'use client';
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const FONT = "'Inter', system-ui, sans-serif";
 
@@ -12,7 +13,7 @@ const SPENDING_IDEAS = [
 ];
 
 export default function FSATracker() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [balance, setBalance] = useState("");
   const [deadline, setDeadline] = useState("");
   const [result, setResult] = useState(null);
@@ -128,8 +129,8 @@ export default function FSATracker() {
       </div>
 
       <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
-        <button onClick={() => navigate("/hsafsa")} style={{ flex: 1, padding: "11px", background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", color: "#10b981", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>HSA / FSA Optimizer →</button>
-        <button onClick={() => navigate("/medtax")} style={{ flex: 1, padding: "11px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Medical Tax Calculator</button>
+        <button onClick={() => router.push("/hsafsa")} style={{ flex: 1, padding: "11px", background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", color: "#10b981", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>HSA / FSA Optimizer →</button>
+        <button onClick={() => router.push("/medtax")} style={{ flex: 1, padding: "11px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Medical Tax Calculator</button>
       </div>
     </div>
   );
