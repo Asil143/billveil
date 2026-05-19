@@ -49,7 +49,7 @@ export default function CharityCareFinder() {
     if (!hospital.trim() || !state || !consumeCredit()) return;
     setLoading(true); setResult(null); setError(null);
     try { const r = await axios.post("/api/tools", { tool: "charitycare", hospital, state, income, household, name }); setResult(r.data.result); }
-    catch { setError("Something went wrong. Please try again."); }
+    catch (err) { setError(err?.response?.data?.error || err?.message || "Something went wrong. Please try again."); }
     finally { setLoading(false); }
   };
 
