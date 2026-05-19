@@ -1,11 +1,11 @@
 'use client';
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
-  onAuthStateChanged, signOut,
+  onAuthStateChanged, signOut, deleteUser,
   isSignInWithEmailLink, signInWithEmailLink,
   linkWithCredential, EmailAuthProvider,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, collection, getDocs, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { trackEvent } from "./analytics";
 import { auth, db } from "./firebase";
 import PhoneLogin from "./PhoneLogin";
@@ -281,6 +281,17 @@ export function AuthProvider({ children }) {
 
   const showLoginModal = () => setShowModal(true);
   const logout = () => signOut(auth);
+
+  const deleteAccount = async () => {
+    if (!user) return;
+    const uid = user.uid;
+    try {
+      const casesSnap = await getDocs(collection(db, "users", uid, "cases"));
+      await Promise.all(casesSnap.docs.map((d) => deleteDoc(d.ref)));
+    } catch {}
+    try { await deleteDoc(doc(db, "users", uid)); } catch {}
+    await deleteUser(auth.currentUser);
+  };
   const clearEmailJustVerified = () => setEmailJustVerified(false);
   const usesLeft = user ? null : Math.max(0, USE_LIMIT - uses);
 
@@ -292,7 +303,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      user, consumeCredit, usesLeft, logout, showLoginModal,
+      user, consumeCredit, usesLeft, logout, deleteAccount, showLoginModal,
       profileData, updateProfile, initials,
       emailVerified, emailJustVerified, clearEmailJustVerified,
     }}>

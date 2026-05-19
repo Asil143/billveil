@@ -21,7 +21,7 @@ export const metadata = {
     title: "BillVeil — See Through Every Medical Bill",
     description: "Paste your medical bill. AI spots overcharges and tells you exactly how to fight back. Free. No signup required.",
     url: "https://billveil.com",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "BillVeil — AI-powered medical bill transparency. 44 free tools to fight overcharges." }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "BillVeil — AI-powered medical bill transparency. 44 free tools to fight overcharges." }],
   },
   twitter: {
     card: "summary_large_image",
@@ -29,7 +29,7 @@ export const metadata = {
     creator: "@billveil",
     title: "BillVeil — See Through Every Medical Bill",
     description: "AI spots overcharges in your medical bill and tells you exactly how to fight back. 44 free tools. No signup.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
 };
 

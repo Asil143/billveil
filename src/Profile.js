@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "./AuthContext";
+import { useRouter } from "next/navigation";
 import { sendSignInLinkToEmail } from "firebase/auth";
 import { auth } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -124,12 +125,16 @@ const formatSuggestion = (item) => {
 };
 
 export default function Profile() {
-  const { user, profileData, updateProfile, emailVerified } = useAuth();
+  const { user, profileData, updateProfile, emailVerified, deleteAccount } = useAuth();
+  const router = useRouter();
   const [draft, setDraft] = useState(EMPTY);
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [verifyStatus, setVerifyStatus] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
   const debounceRef = useRef(null);
   const pollRef = useRef(null);
 
@@ -529,6 +534,64 @@ export default function Profile() {
           </button>
         </div>
       )}
+
+      {/* Danger Zone */}
+      <div style={{ marginTop: 32, background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 16, padding: 20 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#ef4444", letterSpacing: "0.12em", marginBottom: 10 }}>DANGER ZONE</div>
+        {!deleteConfirm ? (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#f1f5f9", marginBottom: 2 }}>Delete Account</div>
+              <div style={{ fontSize: 12, color: "#64748b" }}>Permanently deletes your profile, cases, and account. Cannot be undone.</div>
+            </div>
+            <button
+              onClick={() => setDeleteConfirm(true)}
+              style={{ padding: "9px 18px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 10, color: "#f87171", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, flexShrink: 0 }}
+            >
+              Delete Account
+            </button>
+          </div>
+        ) : (
+          <div>
+            <div style={{ fontSize: 14, color: "#f87171", fontWeight: 700, marginBottom: 6 }}>Are you absolutely sure?</div>
+            <div style={{ fontSize: 13, color: "#64748b", marginBottom: 16, lineHeight: 1.6 }}>
+              This will permanently delete your profile, all saved cases, and your account. This cannot be undone.
+            </div>
+            {deleteError && (
+              <div style={{ fontSize: 13, color: "#f87171", marginBottom: 12, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, padding: "10px 14px" }}>
+                {deleteError}
+              </div>
+            )}
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                onClick={() => { setDeleteConfirm(false); setDeleteError(null); }}
+                style={{ flex: 1, padding: "11px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}
+              >
+                Cancel
+              </button>
+              <button
+                disabled={deleting}
+                onClick={async () => {
+                  setDeleting(true);
+                  setDeleteError(null);
+                  try {
+                    await deleteAccount();
+                    router.push("/");
+                  } catch (err) {
+                    setDeleteError(err.code === "auth/requires-recent-login"
+                      ? "Please sign out and sign back in, then try again."
+                      : "Something went wrong. Please try again.");
+                    setDeleting(false);
+                  }
+                }}
+                style={{ flex: 2, padding: "11px", background: deleting ? "rgba(239,68,68,0.2)" : "rgba(239,68,68,0.9)", border: "none", borderRadius: 10, color: "#fff", fontSize: 13, fontWeight: 700, cursor: deleting ? "default" : "pointer", fontFamily: FONT }}
+              >
+                {deleting ? "Deleting…" : "Yes, Delete Everything"}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
