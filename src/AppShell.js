@@ -105,6 +105,10 @@ const CSS = `
 
   @media (max-width: 640px) {
     .how-grid { grid-template-columns: 1fr !important; }
+    .bv-about { display: none !important; }
+    .bv-login { display: none !important; }
+    .bv-credits { display: none !important; }
+    .bv-nav-right { gap: 6px !important; }
   }
 `;
 
@@ -264,8 +268,8 @@ export default function AppShell() {
             <div style={{ width: 28, height: 28, background: "linear-gradient(135deg, #10b981, #059669)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: "0 0 12px rgba(16,185,129,0.4)" }}>🛡️</div>
             <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em", color: "#f1f5f9", fontFamily: FONT }}>BillVeil</span>
           </button>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <button onClick={() => router.push("/about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
+          <div className="bv-nav-right" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button className="bv-about" onClick={() => router.push("/about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
 
             {user ? (
               <div style={{ position: "relative" }} ref={accountMenuRef}>
@@ -282,12 +286,12 @@ export default function AppShell() {
             ) : (
               <>
                 {usesLeft > 0 && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", padding: "4px 12px", borderRadius: 20 }}>
+                  <div className="bv-credits" style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#10b981", fontWeight: 600, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", padding: "4px 12px", borderRadius: 20 }}>
                     <span style={{ width: 6, height: 6, background: "#10b981", borderRadius: "50%", animation: "pulse 2s ease-in-out infinite" }} />
                     {usesLeft} {usesLeft === 1 ? "analysis" : "analyses"} left
                   </div>
                 )}
-                <button onClick={showLoginModal} style={{ padding: "7px 14px", background: "none", border: "1px solid rgba(255,255,255,0.12)", color: "#94a3b8", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Log In</button>
+                <button className="bv-login" onClick={showLoginModal} style={{ padding: "7px 14px", background: "none", border: "1px solid rgba(255,255,255,0.12)", color: "#94a3b8", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Log In</button>
                 <button onClick={showLoginModal} style={{ padding: "7px 14px", background: "linear-gradient(135deg, #10b981, #059669)", border: "none", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 12px rgba(16,185,129,0.35)" }}>Sign Up →</button>
               </>
             )}
