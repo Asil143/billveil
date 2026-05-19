@@ -459,6 +459,7 @@ export default function AppShell() {
               </div>
             </div>
             {parseResult(result)}
+            <StoryTeaser tool="analyzer" />
             {!tipDismissed && !tip && (
               <div style={{ marginTop: 24, background: "rgba(245,158,11,0.05)", border: "1px solid rgba(245,158,11,0.15)", borderRadius: 16, padding: "24px 20px", position: "relative" }}>
                 <button onClick={() => { sessionStorage.setItem("bv_tip_dismissed", "1"); setTip(true); }} style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: "#475569", fontSize: 18, cursor: "pointer", lineHeight: 1 }}>×</button>

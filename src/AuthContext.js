@@ -242,6 +242,12 @@ export function AuthProvider({ children }) {
           });
           if (legacy) localStorage.removeItem(`bv_profile_${user.uid}`);
           if (!cancelled) setProfileData(profile);
+          // Notify admin of new signup (fire-and-forget)
+          fetch("/api/notify-admin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ uid: u.uid, phone: u.phoneNumber || null, createdAt: new Date().toISOString() }),
+          }).catch(() => {});
         }
       } catch { if (!cancelled) setProfileData(null); }
     })();

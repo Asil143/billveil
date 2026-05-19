@@ -5,6 +5,7 @@ import { stories } from "./learnStories";
 const FONT = "'Inter', system-ui, sans-serif";
 
 const TOOL_TO_STORY = {
+  analyzer: "negotiate-hospital-bill",
   surprisebill: "surprise-billing",
   denial: "denied-claim-appeal",
   negotiate: "negotiate-hospital-bill",
