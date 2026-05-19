@@ -270,7 +270,7 @@ export default function AppShell() {
             <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em", color: "#f1f5f9", fontFamily: FONT }}>BillVeil</span>
           </button>
           <div className="bv-nav-right" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <button className="bv-about" onClick={() => router.push("/learn")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Learn</button>
+            {/* Learn nav hidden — re-enable when stories are ready */}
             <button className="bv-about" onClick={() => router.push("/about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
 
             {user ? (
@@ -363,7 +363,7 @@ export default function AppShell() {
 
         {tab !== "analyzer" && tab !== "services" && tab !== "hub" && tab !== "savings" && tab !== "casetracker" && tab !== "profile" && (
           <>
-            <StoryTeaser tool={tab} />
+            {/* <StoryTeaser tool={tab} /> — hidden until stories are ready */}
             <RelatedTools currentTab={tab} />
           </>
         )}
@@ -459,7 +459,7 @@ export default function AppShell() {
               </div>
             </div>
             {parseResult(result)}
-            <StoryTeaser tool="analyzer" />
+            {/* <StoryTeaser tool="analyzer" /> — hidden until stories are ready */}
             {!tipDismissed && !tip && (
               <div style={{ marginTop: 24, background: "rgba(245,158,11,0.05)", border: "1px solid rgba(245,158,11,0.15)", borderRadius: 16, padding: "24px 20px", position: "relative" }}>
                 <button onClick={() => { sessionStorage.setItem("bv_tip_dismissed", "1"); setTip(true); }} style={{ position: "absolute", top: 12, right: 14, background: "none", border: "none", color: "#475569", fontSize: 18, cursor: "pointer", lineHeight: 1 }}>×</button>
