@@ -246,7 +246,7 @@ export function AuthProvider({ children }) {
           fetch("/api/notify-admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ uid: u.uid, phone: u.phoneNumber || null, createdAt: new Date().toISOString() }),
+            body: JSON.stringify({ uid: user.uid, phone: user.phoneNumber || null, createdAt: new Date().toISOString() }),
           }).catch(() => {});
         }
       } catch { if (!cancelled) setProfileData(null); }
