@@ -374,25 +374,442 @@ export const stories = [
     },
   },
 
+  {
+    slug: "prior-auth",
+    status: "live",
+    emoji: "⏳",
+    color: "#60a5fa",
+    category: "Insurance",
+    character: { name: "Kevin", age: 42, role: "Warehouse Manager" },
+    title: "Kevin's ACL Surgery Was Delayed 6 Weeks. It Should Have Taken 48 Hours.",
+    hook: "Insurance denied prior authorization. His doctor never told him he could appeal.",
+    tool: "priorauth",
+    toolLabel: "Prior Auth Helper",
+    savingsTag: "Surgery approved",
+    tags: ["Prior Authorization", "ACL Surgery", "Appeal", "Peer-to-Peer"],
+    story: {
+      scene: {
+        heading: "Approved by the doctor. Denied by the insurer.",
+        body: [
+          "Kevin, 42, tore his ACL playing rec league basketball. His orthopedic surgeon ordered surgery — straightforward for a complete tear confirmed by MRI. Two weeks later, Kevin got a letter from his insurer: prior authorization denied. Reason: \"not medically necessary.\"",
+          "His surgeon's office said they'd \"try again.\" Another two weeks passed. Another denial. Kevin was told to just wait. Six weeks after his injury, he still hadn't had surgery.",
+        ],
+      },
+      confusion: {
+        heading: "Can insurance really block a surgery my doctor ordered?",
+        body: [
+          "\"I have a torn ACL. There's an MRI showing it. My surgeon says I need surgery. How is an insurance company — that has never examined me — allowed to say it's not necessary?\"",
+          "Kevin didn't know he had options beyond waiting for the insurer to say yes on its own timeline.",
+        ],
+      },
+      education: {
+        heading: "What prior authorization is — and how to fight it",
+        body: [
+          "Prior authorization is a requirement that your insurer approve certain procedures before they happen. Insurers use it to reduce costs — sometimes legitimately, often not. \"Not medically necessary\" denials are frequently issued automatically by algorithm before a physician ever reviews the case.",
+          "The most effective tool most patients never know about is a peer-to-peer review: your doctor calls the insurance company's medical reviewer directly — physician to physician — to make the case. Studies show peer-to-peer reviews overturn prior auth denials more than 70% of the time. Most doctors' offices don't offer it unless you specifically ask.",
+        ],
+      },
+      steps: {
+        heading: "What Kevin did",
+        items: [
+          "He used BillVeil's Prior Auth Helper, entered his procedure and denial reason.",
+          "He learned about peer-to-peer review — and that he could request it. His surgeon's office hadn't offered it.",
+          "He called the surgeon's office and said: \"I'd like to request a peer-to-peer review with the insurance company's medical director.\" They scheduled it for the next day.",
+          "His surgeon spoke directly with the insurer's physician reviewer for 12 minutes.",
+          "Authorization approved within 48 hours.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "Six weeks of delay ended with a 12-minute phone call that Kevin had to ask for himself. His surgery was scheduled the following week. The peer-to-peer review option existed the entire time.",
+        highlight: "Surgery approved in 48 hours",
+      },
+    },
+  },
+
+  {
+    slug: "itemization-request",
+    status: "live",
+    emoji: "🔎",
+    color: "#f87171",
+    category: "Bills & Charges",
+    character: { name: "Amy", age: 44, role: "HR Specialist" },
+    title: "Amy Found 8 Billing Errors by Requesting One Document the Hospital Never Offered",
+    hook: "She had the right to a line-by-line breakdown. Nobody told her.",
+    tool: "itemization",
+    toolLabel: "Itemization Request",
+    savingsTag: "Saved $1,360",
+    tags: ["Itemized Bill", "Billing Errors", "Hospital Bill", "Patient Rights"],
+    story: {
+      scene: {
+        heading: "A bill with no details",
+        body: [
+          "Amy, 44, had a two-night hospital stay for a kidney infection. The bill that arrived showed a single line: \"Inpatient Services — $7,200.\" No breakdown. No line items. Just a total.",
+          "She paid it. Or almost did — something felt off. She couldn't put her finger on what, because there was nothing to look at.",
+        ],
+      },
+      confusion: {
+        heading: "How do you dispute something you can't see?",
+        body: [
+          "\"How am I supposed to know if $7,200 is correct? They haven't told me what I'm paying for. Is this normal? Can I even ask for more information?\"",
+          "Amy assumed the one-page summary bill was the only document that existed.",
+        ],
+      },
+      education: {
+        heading: "You have the right to an itemized bill — always",
+        body: [
+          "Every patient has the legal right to request an itemized hospital bill: a complete line-by-line breakdown of every single charge, including the CPT or revenue code, quantity, and price for each item. The hospital is required to provide it.",
+          "Studies consistently show that 80% of hospital bills contain errors. The most common: duplicate charges (billed twice for the same item), charges for services not rendered, upcoding (billing a more complex code than what was delivered), and \"OR kit\" or \"supply\" charges for items that should be bundled into the room rate. You can only find these errors if you can see the lines.",
+        ],
+      },
+      steps: {
+        heading: "What Amy did",
+        items: [
+          "She used BillVeil's Itemization Request tool and got a formal letter to send to the hospital billing department requesting a complete itemized bill.",
+          "The hospital sent her a 4-page itemized breakdown within 5 business days.",
+          "She reviewed it line by line. With BillVeil's CPT Code Lookup to check each code.",
+          "She found 8 questionable charges: two duplicate medication charges, a \"patient kit\" billed at $340 that her nurse confirmed she never received, and a physical therapy session charge — she had no physical therapy.",
+          "She called the billing department with the specific line numbers and disputed each one. They removed all 8.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "$7,200 became $5,840 after removing 8 billing errors. The hospital didn't argue — the charges simply weren't defensible once Amy could name them specifically. She never would have found them without the itemized bill.",
+        highlight: "$1,360 saved",
+      },
+    },
+  },
+
+  {
+    slug: "dispute-letter",
+    status: "live",
+    emoji: "✉️",
+    color: "#f87171",
+    category: "Bills & Charges",
+    character: { name: "Alex", age: 37, role: "High School Teacher" },
+    title: "One Certified Letter Cut Alex's $3,800 Radiology Bill to $420",
+    hook: "The radiologist was out-of-network. Alex didn't choose him. Federal law said so.",
+    tool: "dispute",
+    toolLabel: "Dispute Letter Generator",
+    savingsTag: "Saved $3,380",
+    tags: ["Radiology Bill", "Out-of-Network", "NSA", "Dispute Letter"],
+    story: {
+      scene: {
+        heading: "A bill from someone he never saw",
+        body: [
+          "Alex, 37, broke his wrist and went to his in-network hospital for X-rays and a cast. His hospital bill came and went — manageable. Then a second bill arrived: $3,800 from \"Southwest Radiology Associates\" for \"interpretation of radiological images.\"",
+          "Alex had never met a radiologist. He didn't even know one had been involved. The person who read his X-rays worked for a separate group that his hospital had contracted — and that group was out-of-network.",
+        ],
+      },
+      confusion: {
+        heading: "How can I owe $3,800 to someone I never chose?",
+        body: [
+          "\"I went to an in-network hospital. I didn't hire a radiologist. I didn't know radiologists read images separately. Why am I getting a bill for $3,800 from someone I've never even spoken to?\"",
+          "Alex called Southwest Radiology. They said the bill was correct and he was responsible. He almost gave up.",
+        ],
+      },
+      education: {
+        heading: "A written dispute is legally different from a phone call",
+        body: [
+          "Under the No Surprises Act, out-of-network providers at in-network facilities — including radiologists, anesthesiologists, and pathologists — cannot charge patients more than in-network cost-sharing rates for most services. This is a federal law violation when they do.",
+          "A phone call asking a billing department to lower a bill is informal. A written dispute letter citing the specific law creates a legal paper trail, requires a formal written response, and makes clear you know your rights. Providers respond very differently to written disputes than to phone calls.",
+        ],
+      },
+      steps: {
+        heading: "What Alex did",
+        items: [
+          "He used BillVeil's Dispute Letter Generator, entered his situation: out-of-network radiologist at in-network hospital, emergency-related imaging.",
+          "He got a dispute letter citing the No Surprises Act and his insurer's in-network rate for the same service.",
+          "He sent it via certified mail to Southwest Radiology Associates — keeping the return receipt as proof.",
+          "He CC'd his insurer and noted in the letter that he'd filed a complaint with the federal No Surprises Help Desk.",
+          "Southwest Radiology responded 18 days later: bill adjusted to the in-network rate.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "$3,800 became $420 — Alex's in-network cost-sharing for radiology under his plan. The dispute letter cited one law. The letter took 8 minutes to generate. The certified mail cost $4.85.",
+        highlight: "$3,380 saved",
+      },
+    },
+  },
+
+  {
+    slug: "payment-plan",
+    status: "live",
+    emoji: "📅",
+    color: "#2dd4bf",
+    category: "Bills & Charges",
+    character: { name: "Ben", age: 33, role: "Restaurant Manager" },
+    title: "The Hospital Wanted $700/Month. Ben Got $175/Month With Zero Interest.",
+    hook: "He didn't know hospitals negotiate payment plans. They always do.",
+    tool: "paymentplan",
+    toolLabel: "Payment Plan Negotiator",
+    savingsTag: "Saved $525/month",
+    tags: ["Payment Plan", "Hospital Bill", "Negotiation", "Interest-Free"],
+    story: {
+      scene: {
+        heading: "A bill he couldn't ignore",
+        body: [
+          "Ben, 33, had emergency shoulder surgery after a bad fall — rotator cuff tear. His insurance covered most of it, but the remaining $4,200 balance landed in his lap two months later. The hospital's billing department called: \"We can set you up on a payment plan — $700 a month for six months.\"",
+          "Ben was making $3,400 a month take-home. A $700 payment would wreck his budget.",
+        ],
+      },
+      confusion: {
+        heading: "Is the $700 offer negotiable?",
+        body: [
+          "\"They said '$700 a month' like it was the only option. Is it? Can I ask for less? Will they send it to collections if I push back? I don't want to make this worse.\"",
+          "Ben assumed the hospital's first offer was their only offer. It almost never is.",
+        ],
+      },
+      education: {
+        heading: "Hospital billing departments have more flexibility than they reveal",
+        body: [
+          "Hospital billing departments are given significant latitude to negotiate payment plans — lower monthly amounts, extended terms, and zero interest. The $700/month offer was likely their opening position, not their floor. Most hospitals would rather collect $175/month for 24 months than send a balance to collections (which they sell for pennies on the dollar).",
+          "The key phrases: ask for their \"lowest available monthly payment,\" mention financial hardship specifically, and ask whether they have an internal hardship or financial assistance program for the remaining balance. Many hospitals have programs that weren't offered at discharge.",
+        ],
+      },
+      steps: {
+        heading: "What Ben did",
+        items: [
+          "He used BillVeil's Payment Plan Negotiator, entered his bill amount and monthly income.",
+          "He got a script for the exact conversation — including what to say and what to ask for.",
+          "He called the hospital's financial counselor (not the main billing line).",
+          "He asked: \"What is the lowest monthly payment available, and is there a financial hardship program I can apply for?\"",
+          "The financial counselor offered a 24-month plan at $175/month, zero interest, and noted he might qualify for partial forgiveness through their assistance program.",
+          "Ben applied for the assistance program — an additional $800 was forgiven.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "$4,200 balance → $3,400 after the hardship reduction → $175/month for 24 months at 0% interest. Ben's budget stayed intact. The difference between the hospital's first offer and what he actually got: $525/month.",
+        highlight: "$525/month less than first offer",
+      },
+    },
+  },
+
+  {
+    slug: "er-vs-urgent-care",
+    status: "live",
+    emoji: "🚑",
+    color: "#f87171",
+    category: "Bills & Charges",
+    character: { name: "Tom", age: 28, role: "Graduate Student" },
+    title: "Tom's Sore Throat Cost $2,400. Urgent Care Would Have Been $120.",
+    hook: "The ER and urgent care treat the same condition. The bill is not the same.",
+    tool: "erurgent",
+    toolLabel: "ER vs Urgent Care Guide",
+    savingsTag: "Now saves $2,280/visit",
+    tags: ["ER Bill", "Urgent Care", "Strep Throat", "Cost Comparison"],
+    story: {
+      scene: {
+        heading: "Sunday morning, sore throat",
+        body: [
+          "Tom, 28, woke up on a Sunday with a severe sore throat and 101°F fever. His primary care office was closed. He didn't know if there was an urgent care open nearby. The hospital was 10 minutes away, so he drove to the ER.",
+          "He waited 2.5 hours. A doctor saw him for 8 minutes. Rapid strep test: positive. Amoxicillin prescription. He was home by noon.",
+          "Three weeks later: a $2,400 ER bill.",
+        ],
+      },
+      confusion: {
+        heading: "It's not like I had a choice — it was Sunday",
+        body: [
+          "\"What was I supposed to do? My doctor's office was closed. I was sick. I went to the nearest place that could help me. How is $2,400 a reasonable charge for strep throat?\"",
+          "Tom genuinely hadn't known urgent care centers are often open on weekends, or that they treat exactly this kind of condition.",
+        ],
+      },
+      education: {
+        heading: "The ER is for emergencies. Urgent care is for everything else.",
+        body: [
+          "Emergency rooms are staffed and equipped for life-threatening situations: heart attacks, strokes, severe trauma, breathing emergencies. They charge accordingly — ER facility fees alone start at $500-$1,500 before any treatment. Strep throat, UTIs, minor cuts, ear infections, sprains, and most fevers are not ER-level emergencies.",
+          "Urgent care centers treat all of these — typically in less time, at a fraction of the cost ($100-$200 for an uninsured visit, much less with insurance). Most are open 7 days a week, including evenings. Knowing the difference before you go is worth thousands of dollars.",
+        ],
+      },
+      steps: {
+        heading: "What Tom does now",
+        items: [
+          "He saved BillVeil's ER vs Urgent Care Guide on his phone.",
+          "Two months later: knee sprain during a pickup basketball game. He wasn't sure if it was broken.",
+          "He checked the guide: knee sprains without deformity, ability to bear some weight, and no numbness → urgent care appropriate.",
+          "He found an urgent care 8 minutes from his apartment, open until 9pm.",
+          "X-ray confirmed: sprain, not fracture. Treatment: wrap and ice. Cost: $180.",
+          "He avoided an ER visit that would have cost $1,800+ for the same conclusion.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "Tom now checks before he goes. The strep throat visit cost $2,400 at the ER. The knee sprain visit cost $180 at urgent care — same quality of care, same outcome. He saved $1,620 on a single visit by knowing the difference.",
+        highlight: "$1,620 saved on next visit",
+      },
+    },
+  },
+
+  {
+    slug: "cpt-code-lookup",
+    status: "live",
+    emoji: "🔢",
+    color: "#a78bfa",
+    category: "Bills & Charges",
+    character: { name: "Robert", age: 50, role: "High School Principal" },
+    title: "Robert's Prescription Refill Was Billed as a Complex Medical Consultation",
+    hook: "CPT 99215 means high-complexity care. His visit was a 12-minute prescription refill.",
+    tool: "cptlookup",
+    toolLabel: "CPT Code Lookup",
+    savingsTag: "Saved $315",
+    tags: ["CPT Code", "Upcoding", "Office Visit", "Billing Fraud"],
+    story: {
+      scene: {
+        heading: "A routine visit, an unusual bill",
+        body: [
+          "Robert, 50, went to his primary care doctor for a routine blood pressure medication refill. In and out in 12 minutes. No new symptoms. No test results to review. His doctor renewed the prescription and he left.",
+          "The bill: CPT 99215 — $450. He'd seen similar charges before and always just paid them.",
+        ],
+      },
+      confusion: {
+        heading: "What is CPT 99215 and why does it cost $450?",
+        body: [
+          "\"I don't even know what 99215 means. It just shows up on my bill. I assume my doctor billed it correctly. Is $450 for a 12-minute prescription refill normal?\"",
+          "Most patients never look up the codes on their bills. Robert almost didn't.",
+        ],
+      },
+      education: {
+        heading: "Every charge on your bill has a code — and every code has a fair price",
+        body: [
+          "CPT (Current Procedural Terminology) codes are 5-digit numbers that identify exactly what service was billed. Every code has a nationally published Medicare reimbursement rate, which is a reliable benchmark for what a service should cost.",
+          "CPT 99215 is the highest level of office visit — reserved for patients with complex medical problems requiring high-complexity medical decision making, typically 40-60 minutes of face-to-face time. A routine prescription refill for a stable condition is CPT 99212 or 99213 — $75 to $140. Billing a higher-level code than what was actually delivered is called upcoding, and it's the most common form of medical billing fraud.",
+        ],
+      },
+      steps: {
+        heading: "What Robert did",
+        items: [
+          "He used BillVeil's CPT Code Lookup and searched 99215.",
+          "The tool showed the code description: \"Office or outpatient visit, high complexity, typically 40-60 minutes.\" His visit was 12 minutes for a prescription refill.",
+          "He looked up 99213 — \"established patient, low complexity, 20-29 minutes\" — fair price: $135.",
+          "He called the billing department and said: \"I'm looking at CPT 99215 on my bill. My visit was a 12-minute prescription refill for a stable condition. Can you review whether this was coded correctly?\"",
+          "After a brief hold: \"We're going to adjust that to 99213.\" No argument.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "$450 became $135. Robert now looks up every CPT code on every bill before paying. He's found upcoding on three bills in the last two years. Total saved: over $700. It takes about 3 minutes per bill.",
+        highlight: "$315 saved",
+      },
+    },
+  },
+
+  {
+    slug: "medical-credit-card",
+    status: "live",
+    emoji: "💳",
+    color: "#ef4444",
+    category: "Debt & Rights",
+    character: { name: "Linda", age: 39, role: "Salon Owner" },
+    title: "Linda's \"Interest-Free\" Medical Card Hit Her With $2,400 in Surprise Interest on Month 19",
+    hook: "Deferred interest is not the same as no interest. Almost nobody reads the fine print.",
+    tool: "creditcard",
+    toolLabel: "Medical Credit Card Warning",
+    savingsTag: "Avoided $2,400",
+    tags: ["CareCredit", "Deferred Interest", "Medical Debt", "Credit Card Trap"],
+    story: {
+      scene: {
+        heading: "An offer that sounded perfect",
+        body: [
+          "Linda, 39, needed $2,800 of dental work — crowns and a root canal. Her dentist's office offered CareCredit: \"18 months interest-free financing! Just make the minimum payments and you're covered.\" Linda signed up. The monthly minimum was about $60.",
+          "She paid faithfully for 18 months. On month 19, her statement showed a $2,400 charge — \"accrued interest.\"",
+        ],
+      },
+      confusion: {
+        heading: "I made every payment. How do I owe $2,400 in interest?",
+        body: [
+          "\"They said interest-free. I paid every month. Where did $2,400 come from? This doesn't make sense.\" Linda called CareCredit's customer service. They explained that the promotional period had ended and the deferred interest had been applied.",
+          "She hadn't read the fine print. Almost nobody does.",
+        ],
+      },
+      education: {
+        heading: "Deferred interest vs. 0% APR — a $2,400 difference",
+        body: [
+          "\"Interest-free\" medical financing cards like CareCredit typically use deferred interest — not true 0% APR. The difference is enormous. With true 0% APR, you only owe interest on whatever balance remains if you don't pay it off. With deferred interest, the interest accrues on the full original amount from day one — it's just hidden. If you don't pay the full balance before the promotional period ends, the entire accrued amount hits your account at once.",
+          "A $2,800 balance at 26.99% APR over 18 months generates approximately $2,300-$2,500 in deferred interest — nearly the same as the original bill. Better alternatives: negotiate a direct payment plan with the provider (often 0% interest, no fine print), apply for charity care first, or use a personal loan at a fixed lower rate.",
+        ],
+      },
+      steps: {
+        heading: "What Linda does now — and what you should do before signing",
+        items: [
+          "Before her next procedure, Linda used BillVeil's Medical Credit Card Warning tool.",
+          "She entered the financing terms — the tool flagged deferred interest immediately and calculated the potential retroactive charge.",
+          "She asked the dental office: \"Do you offer a direct payment plan without CareCredit?\" They did — 12 months, no interest, no fine print.",
+          "She also negotiated the bill down 15% for paying in installments directly.",
+          "She set up autopay for the full balance within 10 months.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "Linda avoided the $2,400 deferred interest trap on her next procedure by simply asking one question before signing. The direct payment plan her dental office offered was better in every way — and she only found out it existed because she asked.",
+        highlight: "Avoided $2,400 in hidden interest",
+      },
+    },
+  },
+
+  {
+    slug: "insurance-plan-decoder",
+    status: "live",
+    emoji: "📋",
+    color: "#34d399",
+    category: "Insurance",
+    character: { name: "Angela", age: 26, role: "Graphic Designer" },
+    title: "Angela's First Job Came With 3 Insurance Options. She Almost Picked the Wrong One.",
+    hook: "The cheapest premium was the most expensive plan. The math took 10 minutes.",
+    tool: "insplan",
+    toolLabel: "Insurance Plan Decoder",
+    savingsTag: "Saved $2,400/year",
+    tags: ["Open Enrollment", "Deductible", "Premiums", "First Job Insurance"],
+    story: {
+      scene: {
+        heading: "Open enrollment, five days, three plans",
+        body: [
+          "Angela, 26, landed her first full-time job with benefits. HR emailed her a PDF comparing three health plans and told her she had five days to choose. She opened it: columns of numbers labeled \"premium,\" \"deductible,\" \"coinsurance,\" \"out-of-pocket max.\" She'd never had to think about any of this.",
+          "She almost just picked Plan A — the lowest monthly premium at $89. It seemed obvious.",
+        ],
+      },
+      confusion: {
+        heading: "What do any of these words actually mean?",
+        body: [
+          "\"Deductible? Coinsurance? Out-of-pocket maximum? I googled these and every explanation used more words I didn't understand. I just want to know which plan is going to cost me less.\"",
+          "Angela didn't know that \"cheapest premium\" and \"cheapest plan\" are almost never the same thing.",
+        ],
+      },
+      education: {
+        heading: "The four numbers that actually determine what you pay",
+        body: [
+          "Premium: the monthly amount you pay regardless of whether you use healthcare. Deductible: the amount you pay out-of-pocket before insurance covers anything. Coinsurance: the percentage you pay after meeting your deductible (e.g., 20% you, 80% insurer). Out-of-pocket maximum: the most you'll ever pay in a year — after this, insurance covers 100%.",
+          "A plan with a $89 premium and a $4,000 deductible costs $1,068/year if you never get sick, but $5,068 if you need any significant care. A plan with a $150 premium and a $1,500 deductible costs $1,800/year if healthy, but $3,300 at worst. If you visit a doctor more than twice a year, the 'expensive' plan is often cheaper in total.",
+        ],
+      },
+      steps: {
+        heading: "What Angela did",
+        items: [
+          "She used BillVeil's Insurance Plan Decoder and entered the details of all three plans.",
+          "The tool translated each term into plain English and calculated her expected total annual cost under two scenarios: healthy year (few visits) and moderate year (a few specialist visits, one urgent care).",
+          "Plan A ($89/mo, $4,000 deductible): cheapest if perfectly healthy, most expensive with any real care.",
+          "Plan C ($150/mo, $1,500 deductible, lower coinsurance): more expensive monthly, but capped much lower.",
+          "For her expected usage — she takes a monthly medication and sees her doctor 2-3 times a year — Plan C saved her an estimated $2,400 annually.",
+          "She changed her selection before the deadline.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "Angela picked Plan C. Based on her actual healthcare usage that year, she estimates she saved $2,400 compared to what she would have paid with Plan A. The 10-minute calculation changed her entire year's financial picture.",
+        highlight: "$2,400 saved",
+      },
+    },
+  },
+
   // ─── COMING SOON ─────────────────────────────────────────────────────────────
 
   { slug: "bill-analyzer", status: "coming-soon", emoji: "⚡", color: "#10b981", category: "Bills & Charges", character: { name: "Mark", age: 45, role: "Construction Foreman" }, title: "The 5-Minute Check That Found $1,100 in Overcharges on Mark's Lab Bill", hook: "He almost paid it without looking.", tool: "analyzer", toolLabel: "Bill Analyzer", tags: ["Lab Bill", "Overcharge", "CPT Codes"] },
 
   { slug: "bill-scan", status: "coming-soon", emoji: "📷", color: "#f59e0b", category: "Bills & Charges", character: { name: "Emma", age: 31, role: "Nurse" }, title: "Emma's Camera Caught a $600 Billing Error Her Eyes Missed", hook: "She knew bills had errors. She just didn't know how to find them.", tool: "billscan", toolLabel: "Bill Scanner", tags: ["Bill Scan", "Billing Error", "OCR"] },
 
-  { slug: "dispute-letter", status: "coming-soon", emoji: "✉️", color: "#f87171", category: "Bills & Charges", character: { name: "Alex", age: 37, role: "Teacher" }, title: "The Letter That Got Alex's $3,800 Radiology Bill Cut in Half", hook: "One certified letter. Two weeks. $1,900 saved.", tool: "dispute", toolLabel: "Dispute Letter Generator", tags: ["Dispute", "Radiology", "Letter"] },
 
   { slug: "drug-comparator", status: "coming-soon", emoji: "🔬", color: "#a78bfa", category: "Drugs", character: { name: "Phil", age: 55, role: "Accountant" }, title: "Phil's Two Prescriptions Were Interacting — and He Was Overpaying for Both", hook: "His pharmacist never mentioned it. BillVeil did.", tool: "drug", toolLabel: "Drug Comparator", tags: ["Drug Interaction", "Prescription", "Cost Comparison"] },
-
-  { slug: "prior-auth", status: "coming-soon", emoji: "⏳", color: "#60a5fa", category: "Insurance", character: { name: "Kevin", age: 42, role: "Warehouse Manager" }, title: "Kevin's Surgery Was Delayed 6 Weeks Because of Prior Authorization", hook: "He didn't know he could fight it — or how.", tool: "priorauth", toolLabel: "Prior Auth Helper", tags: ["Prior Authorization", "Surgery Delay", "Appeal"] },
-
-  { slug: "insurance-plan-decoder", status: "coming-soon", emoji: "📋", color: "#34d399", category: "Insurance", character: { name: "Angela", age: 26, role: "Graphic Designer" }, title: "Angela Picked the Wrong Plan — Because Nobody Explained What the Words Meant", hook: "Deductible. Out-of-pocket max. Coinsurance. Finally explained.", tool: "insplan", toolLabel: "Insurance Plan Decoder", tags: ["Open Enrollment", "Deductible", "Coinsurance"] },
-
-  { slug: "itemization-request", status: "coming-soon", emoji: "🔎", color: "#f87171", category: "Bills & Charges", character: { name: "Amy", age: 44, role: "HR Specialist" }, title: "Amy Found 8 Fake Line Items on Her Hospital Bill by Requesting One Document", hook: "Hospitals bill for items never delivered. Requesting the itemized bill reveals them.", tool: "itemization", toolLabel: "Itemization Request", tags: ["Hospital Bill", "Itemized Bill", "Billing Fraud"] },
-
-  { slug: "payment-plan", status: "coming-soon", emoji: "📅", color: "#2dd4bf", category: "Bills & Charges", character: { name: "Ben", age: 33, role: "Restaurant Manager" }, title: "The Hospital Wanted $600/Month. Ben Got $150/Month With No Interest.", hook: "Most hospitals will negotiate payment plans. Most patients never ask.", tool: "paymentplan", toolLabel: "Payment Plan Negotiator", tags: ["Payment Plan", "Hospital Bill", "Negotiation"] },
-
-  { slug: "medical-credit-card", status: "coming-soon", emoji: "💳", color: "#ef4444", category: "Debt & Rights", character: { name: "Linda", age: 39, role: "Salon Owner" }, title: "The Medical Credit Card Trap That Cost Linda $2,400 in Surprise Interest", hook: "She thought it was interest-free. It was deferred interest.", tool: "creditcard", toolLabel: "Medical Credit Card Warning", tags: ["CareCredit", "Deferred Interest", "Medical Debt"] },
 
   { slug: "hsa-fsa-optimizer", status: "coming-soon", emoji: "💰", color: "#10b981", category: "Insurance", character: { name: "Anna", age: 34, role: "Software Developer" }, title: "Anna's HSA Saved Her $1,400 in Taxes — Without Changing a Single Doctor", hook: "She had an HSA for two years and didn't know how to use it.", tool: "hsafsa", toolLabel: "HSA/FSA Optimizer", tags: ["HSA", "FSA", "Tax Savings"] },
 
@@ -412,11 +829,7 @@ export const stories = [
 
   { slug: "cobra-calculator", status: "coming-soon", emoji: "📉", color: "#f87171", category: "Insurance", character: { name: "Jake", age: 35, role: "Marketing Director" }, title: "Jake Paid $780/Month for COBRA When Marketplace Coverage Was $220", hook: "He assumed COBRA was the safe choice. He was paying $6,720 too much.", tool: "cobra", toolLabel: "COBRA Calculator", tags: ["COBRA", "Job Loss", "Cost Comparison"] },
 
-  { slug: "cpt-code-lookup", status: "coming-soon", emoji: "🔢", color: "#a78bfa", category: "Bills & Charges", character: { name: "Robert", age: 50, role: "High School Principal" }, title: "Robert's Bill Said CPT 99215 — $450. Was That Fair?", hook: "Every charge on your bill has a code. Every code has a fair price.", tool: "cptlookup", toolLabel: "CPT Code Lookup", tags: ["CPT Codes", "Office Visit", "Billing Codes"] },
-
   { slug: "preventive-care", status: "coming-soon", emoji: "🩺", color: "#2dd4bf", category: "Insurance", character: { name: "Sandra", age: 54, role: "Librarian" }, title: "The Free Screening Sandra Almost Skipped Found Her Pre-Cancer", hook: "Under the ACA, preventive care is 100% covered. Most people skip it anyway.", tool: "preventive", toolLabel: "Preventive Care Checker", tags: ["Preventive Care", "Free Screenings", "ACA", "Cancer"] },
-
-  { slug: "er-vs-urgent-care", status: "coming-soon", emoji: "🚑", color: "#f87171", category: "Bills & Charges", character: { name: "Tom", age: 28, role: "College Student" }, title: "Tom's Sore Throat Cost $2,400 at the ER. Urgent Care Would Have Been $120.", hook: "The wrong door can cost you thousands.", tool: "erurgent", toolLabel: "ER vs Urgent Care Guide", tags: ["ER", "Urgent Care", "Cost Comparison"] },
 
   { slug: "patient-rights", status: "coming-soon", emoji: "📜", color: "#60a5fa", category: "Debt & Rights", character: { name: "Marcus", age: 44, role: "Truck Driver" }, title: "The Rights Every Patient Has — That Nobody Ever Tells You", hook: "You can dispute any bill. You can request any record. You have more power than you think.", tool: "patientrights", toolLabel: "Patient Rights Guide", tags: ["Patient Rights", "Billing", "Medical Records"] },
 

@@ -59,6 +59,14 @@
   <url><loc>https://billveil.com/learn/medical-debt-collectors</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://billveil.com/learn/charity-care</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://billveil.com/learn/generic-drug-savings</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/prior-auth</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/itemization-request</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/dispute-letter</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/payment-plan</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/er-vs-urgent-care</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/cpt-code-lookup</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/medical-credit-card</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/insurance-plan-decoder</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <!-- Static pages -->
   <url><loc>https://billveil.com/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://billveil.com/privacy</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>

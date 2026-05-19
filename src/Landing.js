@@ -556,6 +556,46 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Real Stories strip */}
+      <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "80px 20px", background: "rgba(16,185,129,0.02)" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 44 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 14 }}>REAL STORIES · REAL SAVINGS</div>
+            <h2 style={{ fontSize: "clamp(24px, 5vw, 38px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 12 }}>
+              See how people just like you fought back
+            </h2>
+            <p style={{ fontSize: 15, color: "#64748b", maxWidth: 480, margin: "0 auto" }}>
+              Step-by-step stories of real situations — and exactly what each person did to win.
+            </p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16, marginBottom: 32 }}>
+            {[
+              { emoji: "🚨", color: "#f87171", name: "Asil, 28", title: "The $2,500 Bill From a Doctor He Never Met", savings: "Saved $2,350", slug: "surprise-billing" },
+              { emoji: "🤝", color: "#2dd4bf", name: "Lisa, 38", title: "Her $9,800 Hospital Bill Became $0", savings: "Saved $9,800", slug: "charity-care" },
+              { emoji: "💬", color: "#34d399", name: "David, 34", title: "Uninsured. $14,200 ER Bill. He Paid $1,900.", savings: "Saved $12,300", slug: "negotiate-hospital-bill" },
+            ].map(s => (
+              <button
+                key={s.slug}
+                onClick={() => router.push(`/learn/${s.slug}`)}
+                style={{ background: "rgba(255,255,255,0.03)", border: `1px solid rgba(255,255,255,0.08)`, borderTop: `3px solid ${s.color}`, borderRadius: 14, padding: "20px", cursor: "pointer", textAlign: "left", fontFamily: FONT, transition: "all 0.18s" }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.4)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+              >
+                <div style={{ fontSize: 28, marginBottom: 10 }}>{s.emoji}</div>
+                <div style={{ fontSize: 11, color: "#475569", fontWeight: 600, marginBottom: 6 }}>{s.name}</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: "#f1f5f9", lineHeight: 1.4, marginBottom: 12 }}>{s.title}</div>
+                <div style={{ fontSize: 12, fontWeight: 800, color: "#10b981", background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", display: "inline-block", padding: "3px 10px", borderRadius: 10 }}>{s.savings}</div>
+              </button>
+            ))}
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <button onClick={() => router.push("/learn")} style={{ padding: "11px 28px", background: "none", border: "1px solid rgba(16,185,129,0.3)", borderRadius: 10, color: "#10b981", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}>
+              See all 15 stories →
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "90px 20px", background: "rgba(255,255,255,0.015)" }}>
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
