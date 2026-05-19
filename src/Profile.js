@@ -276,7 +276,7 @@ export default function Profile() {
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#f1f5f9", marginBottom: 6, letterSpacing: "-0.02em" }}>My Profile</h2>
-          <p style={{ fontSize: 14, color: "#64748b" }}>Stored locally on your device. Never shared.</p>
+          <p style={{ fontSize: 14, color: "#64748b" }}>Stored securely on your account. Never shared.</p>
         </div>
         {!editing && (
           <button onClick={startEdit} style={{ padding: "8px 18px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#94a3b8", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, flexShrink: 0 }}>

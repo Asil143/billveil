@@ -315,7 +315,7 @@ export default function AppShell() {
       )}
 
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "28px 16px 48px" }}>
-
+      <ErrorBoundary>
         {tab === "insplan" && <InsurancePlanDecoder />}
         {tab === "surprisebill" && <SurpriseBillingChecker />}
         {tab === "itemization" && <ItemizationRequest />}
@@ -362,6 +362,7 @@ export default function AppShell() {
         {tab !== "analyzer" && tab !== "services" && tab !== "hub" && tab !== "savings" && tab !== "casetracker" && tab !== "profile" && (
           <RelatedTools currentTab={tab} />
         )}
+      </ErrorBoundary>
 
         {tab === "analyzer" && <>
 
