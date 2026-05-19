@@ -56,6 +56,7 @@ import ErrorBoundary from "./ErrorBoundary";
 import NotFound from "./NotFound";
 import RelatedTools from "./RelatedTools";
 import EmailCapture from "./EmailCapture";
+import StoryTeaser from "./StoryTeaser";
 
 const EXAMPLES = [
   "CPT 99214 — $385",
@@ -361,7 +362,10 @@ export default function AppShell() {
         {tab === "hospitalquality" && <HospitalQualityChecker />}
 
         {tab !== "analyzer" && tab !== "services" && tab !== "hub" && tab !== "savings" && tab !== "casetracker" && tab !== "profile" && (
-          <RelatedTools currentTab={tab} />
+          <>
+            <StoryTeaser tool={tab} />
+            <RelatedTools currentTab={tab} />
+          </>
         )}
       </ErrorBoundary>
 
