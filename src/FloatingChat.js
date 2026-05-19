@@ -55,7 +55,7 @@ function ToolLink({ text, navigate }) {
 export default function FloatingChat() {
   const pathname = usePathname();
   const router = useRouter();
-  const { consumeCredit, showLoginModal } = useAuth();
+  const { consumeCredit, showLoginModal, user } = useAuth();
 
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
