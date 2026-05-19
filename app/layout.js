@@ -15,6 +15,9 @@ export const metadata = {
   description: "AI-powered tool to analyze medical bills, expose overcharges, and fight insurance denials. Free. No signup required.",
   keywords: ["medical bill", "hospital bill overcharge", "insurance denial", "CPT codes", "medical billing advocate", "dispute medical bill"],
   robots: { index: true, follow: true },
+  verification: {
+    google: "hGJdAuOboXZGR_Md_TezB3DsNMLUHrTQ3vEWy4tUcJI",
+  },
   openGraph: {
     type: "website",
     siteName: "BillVeil",
