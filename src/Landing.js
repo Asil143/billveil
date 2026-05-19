@@ -279,11 +279,11 @@ export default function Landing() {
 
         <div style={{ display: "inline-flex", alignItems: "center", gap: 20, marginBottom: 28, animation: "fadeUp 0.6s 0.25s ease both", flexWrap: "wrap", justifyContent: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#10b981", fontWeight: 700 }}>
-            <span style={{ fontSize: 18 }}>💰</span> $4.2M+ saved by patients like you
+            <span style={{ fontSize: 18 }}>🛡️</span> 44 free tools, no signup needed
           </div>
           <div style={{ width: 1, height: 18, background: "rgba(255,255,255,0.08)" }} />
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#64748b", fontWeight: 600 }}>
-            <span style={{ fontSize: 18 }}>👥</span> 15,000+ patients helped
+            <span style={{ fontSize: 18 }}>🔒</span> Your bill is never stored or shared
           </div>
         </div>
 
@@ -321,24 +321,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Social proof savings strip */}
-      <section style={{ position: "relative", zIndex: 1, background: "rgba(16,185,129,0.06)", borderTop: "1px solid rgba(16,185,129,0.15)", borderBottom: "1px solid rgba(16,185,129,0.15)", padding: "14px 20px", overflow: "hidden" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
-          {[
-            { name: "Sarah M., TX", amount: "$3,400", action: "ER bill reduced" },
-            { name: "Robert K., FL", amount: "$3,800", action: "MRI claim approved" },
-            { name: "Maria L., CA", amount: "$1,020/yr", action: "Drug cost slashed" },
-            { name: "James T., IL", amount: "$255", action: "Office visit negotiated" },
-          ].map(({ name, amount, action }) => (
-            <div key={name} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
-              <span style={{ width: 7, height: 7, background: "#10b981", borderRadius: "50%", flexShrink: 0 }} />
-              <span style={{ color: "#475569", fontWeight: 500 }}>{name}</span>
-              <span style={{ color: "#10b981", fontWeight: 800 }}>saved {amount}</span>
-              <span style={{ color: "#334155" }}>— {action}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Social proof savings strip — hidden until real user data available */}
 
       {/* Stats */}
       <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "36px 20px", background: "rgba(255,255,255,0.02)" }}>
@@ -364,8 +347,8 @@ export default function Landing() {
             { icon: "🔒", text: "256-bit encrypted" },
             { icon: "🚫", text: "No data stored" },
             { icon: "✅", text: "HIPAA-aware" },
-            { icon: "⭐", text: "4.9/5 average rating" },
-            { icon: "👥", text: "Trusted by 15,000+ patients" },
+            { icon: "⚡", text: "Results in seconds" },
+            { icon: "💸", text: "Always free" },
           ].map(({ icon, text }) => (
             <div key={text} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#475569", fontWeight: 600 }}>
               <span style={{ fontSize: 14 }}>{icon}</span> {text}
@@ -525,37 +508,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section style={{ position: "relative", zIndex: 1, padding: "90px 20px" }}>
-        <div style={{ maxWidth: 820, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 52 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 16 }}>PATIENT STORIES</div>
-            <h2 style={{ fontSize: "clamp(26px, 5vw, 40px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 10 }}>Real patients. Real savings.</h2>
-            <p style={{ fontSize: 14, color: "#475569" }}>Over $4.2 million saved by BillVeil users since launch.</p>
-          </div>
-          <div className="land-testimonials" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="testimonial-card" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 18, padding: "26px 24px", transition: "border-color 0.2s" }}>
-                <div style={{ display: "flex", gap: 2, marginBottom: 16 }}>
-                  {Array.from({ length: t.stars }).map((_, i) => (
-                    <span key={i} style={{ color: "#fbbf24", fontSize: 14 }}>★</span>
-                  ))}
-                </div>
-                <p style={{ fontSize: 14, color: "#94a3b8", lineHeight: 1.85, marginBottom: 20, fontStyle: "italic" }}>"{t.quote}"</p>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>{t.name}</div>
-                    <div style={{ fontSize: 11, color: "#475569" }}>{t.location}</div>
-                  </div>
-                  <div style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#10b981", padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>
-                    {t.saved}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Testimonials — hidden until real user testimonials are collected */}
 
       {/* Real Stories strip — hidden until stories are ready to promote */}
 
