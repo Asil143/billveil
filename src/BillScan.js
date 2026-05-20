@@ -66,6 +66,7 @@ export default function BillScan() {
 
   const [preview, setPreview] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [isPdf, setIsPdf] = useState(false);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -74,18 +75,28 @@ export default function BillScan() {
 
   const handleFile = useCallback(async (file) => {
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setError("Please upload an image file (JPG, PNG, HEIC, WebP). PDF support coming soon.");
+    const pdf = file.type === "application/pdf";
+    const img = file.type.startsWith("image/");
+    if (!pdf && !img) {
+      setError("Please upload an image (JPG, PNG, HEIC) or a PDF file.");
       return;
     }
     setError(null);
     setResult(null);
     setFileName(file.name);
-    try {
-      const dataUrl = await compressImage(file);
-      setPreview(dataUrl);
-    } catch {
-      setError("Could not read the image. Please try another file.");
+    setIsPdf(pdf);
+    if (pdf) {
+      const reader = new FileReader();
+      reader.onload = (e) => setPreview(e.target.result);
+      reader.onerror = () => setError("Could not read the PDF. Please try another file.");
+      reader.readAsDataURL(file);
+    } else {
+      try {
+        const dataUrl = await compressImage(file);
+        setPreview(dataUrl);
+      } catch {
+        setError("Could not read the image. Please try another file.");
+      }
     }
   }, []);
 
@@ -104,11 +115,11 @@ export default function BillScan() {
     setError(null);
     try {
       const base64 = preview.split(",")[1];
-      const mimeType = preview.split(";")[0].split(":")[1];
+      const mimeType = isPdf ? "application/pdf" : preview.split(";")[0].split(":")[1];
       const r = await axios.post("/api/billscan", { image: base64, mimeType });
       setResult(r.data.result);
     } catch (err) {
-      setError(err.response?.data?.error || "Scan failed. Please try again with a clearer image.");
+      setError(err.response?.data?.error || "Scan failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -126,6 +137,7 @@ export default function BillScan() {
     setResult(null);
     setError(null);
     setFileName("");
+    setIsPdf(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
     if (cameraInputRef.current) cameraInputRef.current.value = "";
   };
@@ -137,7 +149,7 @@ export default function BillScan() {
           Scan your <span style={{ color: "#10b981", textShadow: "0 0 20px rgba(16,185,129,0.4)" }}>medical bill.</span>
         </h1>
         <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.6, maxWidth: 460, margin: "0 auto" }}>
-          Take a photo or upload an image — AI reads every charge, CPT code, and amount automatically.
+          Upload a photo or PDF — AI reads every charge, CPT code, and amount automatically.
         </p>
       </div>
 
@@ -150,15 +162,15 @@ export default function BillScan() {
           style={{ border: `2px dashed ${dragging ? "rgba(16,185,129,0.6)" : "rgba(255,255,255,0.12)"}`, borderRadius: 18, padding: "48px 24px", textAlign: "center", background: dragging ? "rgba(16,185,129,0.05)" : "rgba(255,255,255,0.02)", transition: "all 0.2s", cursor: "pointer" }}
           onClick={() => fileInputRef.current?.click()}
         >
-          <div style={{ fontSize: 48, marginBottom: 16 }}>📸</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>Drop your bill image here</div>
-          <div style={{ fontSize: 13, color: "#64748b", marginBottom: 24 }}>or click to browse — JPG, PNG, HEIC, WebP</div>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>📂</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>Drop your bill here</div>
+          <div style={{ fontSize: 13, color: "#64748b", marginBottom: 24 }}>JPG, PNG, HEIC, WebP — or <strong style={{ color: "#10b981" }}>PDF</strong></div>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <button
               onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
               style={{ padding: "10px 24px", background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}
             >
-              📂 Choose File
+              📂 Choose File or PDF
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); cameraInputRef.current?.click(); }}
@@ -167,18 +179,26 @@ export default function BillScan() {
               📷 Take Photo
             </button>
           </div>
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={onFileChange} style={{ display: "none" }} />
+          <input ref={fileInputRef} type="file" accept="image/*,.pdf,application/pdf" onChange={onFileChange} style={{ display: "none" }} />
           <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={onFileChange} style={{ display: "none" }} />
         </div>
       ) : (
         <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 20, marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
             <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 16 }}>📄</span> {fileName || "bill image"}
+              <span style={{ fontSize: 16 }}>{isPdf ? "📄" : "🖼️"}</span> {fileName || "bill file"}
             </div>
             <button onClick={reset} style={{ fontSize: 12, color: "#64748b", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", padding: "4px 10px", borderRadius: 8, cursor: "pointer", fontFamily: FONT }}>✕ Remove</button>
           </div>
-          <img src={preview} alt="Bill preview" style={{ width: "100%", maxHeight: 320, objectFit: "contain", borderRadius: 10, background: "rgba(0,0,0,0.3)", marginBottom: 16 }} />
+          {isPdf ? (
+            <div style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 12, padding: "24px 20px", textAlign: "center", marginBottom: 16 }}>
+              <div style={{ fontSize: 40, marginBottom: 8 }}>📄</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>{fileName}</div>
+              <div style={{ fontSize: 12, color: "#64748b" }}>PDF ready — AI will extract all charges</div>
+            </div>
+          ) : (
+            <img src={preview} alt="Bill preview" style={{ width: "100%", maxHeight: 320, objectFit: "contain", borderRadius: 10, background: "rgba(0,0,0,0.3)", marginBottom: 16 }} />
+          )}
           {!result && (
             <button
               onClick={scan}
@@ -186,8 +206,8 @@ export default function BillScan() {
               style={{ width: "100%", padding: 14, background: loading ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #10b981, #059669)", color: loading ? "#334155" : "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, fontFamily: FONT, boxShadow: loading ? "none" : "0 8px 28px rgba(16,185,129,0.35)" }}
             >
               {loading
-                ? <><span style={{ width: 17, height: 17, border: "2px solid rgba(255,255,255,0.15)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />Reading your bill...</>
-                : "📸 Scan This Bill"}
+                ? <><span style={{ width: 17, height: 17, border: "2px solid rgba(255,255,255,0.15)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />{isPdf ? "Reading PDF..." : "Reading your bill..."}</>
+                : isPdf ? "📄 Extract Bill from PDF" : "📸 Scan This Bill"}
             </button>
           )}
         </div>
