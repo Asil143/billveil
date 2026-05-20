@@ -729,6 +729,45 @@ Physician Consultation (10 min) - $850
 Ibuprofen 200mg x2 - $95
 Chest X-Ray - $1,100`;
 
+const DEMO_SECTIONS = [
+  { key: "WHAT IS THIS", emoji: "🔍", color: "#60a5fa", label: "What Is This" },
+  { key: "FAIR PRICE", emoji: "💰", color: "#34d399", label: "Fair Price" },
+  { key: "VERDICT", emoji: "⚖️", color: "#fbbf24", label: "Verdict" },
+  { key: "WHY", emoji: "📋", color: "#a78bfa", label: "Why" },
+  { key: "WHAT TO DO", emoji: "✅", color: "#34d399", label: "What To Do" },
+  { key: "MONEY YOU COULD SAVE", emoji: "💵", color: "#34d399", label: "Money You Could Save" },
+];
+
+function parseDemoResult(text) {
+  const clean = text.replace(/\*\*/g, "").replace(/^#{1,3}\s*/gm, "");
+  return DEMO_SECTIONS.map((section, i) => {
+    const regex = new RegExp(`(?:#{1,3}\\s*)?${section.key}:\\n([\\s\\S]*?)(?=\\n(?:#{1,3}\\s*)?[A-Z][A-Z ]+:|$)`);
+    const match = clean.match(regex);
+    const content = match ? match[1].trim() : null;
+    if (!content) return null;
+    const isVerdict = section.key === "VERDICT";
+    const verdictColor = content.includes("SIGNIFICANTLY OVERCHARGED") ? "#f87171"
+      : content.includes("POSSIBLY OVERCHARGED") ? "#fbbf24" : "#34d399";
+    const verdictBg = content.includes("SIGNIFICANTLY OVERCHARGED") ? "rgba(239,68,68,0.08)"
+      : content.includes("POSSIBLY OVERCHARGED") ? "rgba(251,191,36,0.08)" : "rgba(52,211,153,0.08)";
+    return (
+      <div key={section.key} style={{ background: isVerdict ? verdictBg : "rgba(255,255,255,0.03)", border: `1px solid ${isVerdict ? verdictColor + "40" : "rgba(255,255,255,0.08)"}`, borderLeft: `3px solid ${isVerdict ? verdictColor : section.color}`, borderRadius: 12, padding: "18px 22px", marginBottom: 10 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: isVerdict ? verdictColor : section.color, letterSpacing: "0.12em", marginBottom: 10, textTransform: "uppercase" }}>
+          {section.emoji} {section.label}
+        </div>
+        {isVerdict ? (
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: verdictColor + "20", border: `1px solid ${verdictColor}50`, color: verdictColor, padding: "8px 20px", borderRadius: 24, fontSize: 14, fontWeight: 800, letterSpacing: "0.04em" }}>
+            <span style={{ width: 8, height: 8, background: verdictColor, borderRadius: "50%", display: "inline-block" }} />
+            {content}
+          </div>
+        ) : (
+          <div style={{ fontSize: 14, color: "#cbd5e1", lineHeight: 1.8, whiteSpace: "pre-line" }}>{content}</div>
+        )}
+      </div>
+    );
+  });
+}
+
 function LiveDemo({ onFullTool }) {
   const [bill, setBill] = useState(SAMPLE_BILL);
   const [result, setResult] = useState(null);
@@ -770,7 +809,6 @@ function LiveDemo({ onFullTool }) {
         </div>
 
         <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 20, overflow: "hidden" }}>
-          {/* Bill input */}
           <div style={{ padding: "24px 24px 0" }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.12em", marginBottom: 10 }}>SAMPLE BILL — edit or paste your own</div>
             <textarea
@@ -781,7 +819,6 @@ function LiveDemo({ onFullTool }) {
             />
           </div>
 
-          {/* Analyze button */}
           <div style={{ padding: "16px 24px 24px" }}>
             <button
               onClick={analyze}
@@ -794,31 +831,21 @@ function LiveDemo({ onFullTool }) {
             </button>
           </div>
 
-          {/* Error */}
           {error && (
             <div style={{ margin: "0 24px 24px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 12, padding: "12px 16px", color: "#f87171", fontSize: 13 }}>
               {error}
             </div>
           )}
 
-          {/* Results */}
           {result && (
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "24px" }}>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 16 }}>⚡ ANALYSIS COMPLETE</div>
-              <div style={{ fontSize: 14, color: "#cbd5e1", lineHeight: 1.85, whiteSpace: "pre-line", marginBottom: 24 }}>
-                {result}
-              </div>
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <button
-                  onClick={onFullTool}
-                  style={{ padding: "11px 24px", background: "linear-gradient(135deg,#10b981,#059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 16px rgba(16,185,129,0.3)" }}
-                >
+              {parseDemoResult(result)}
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
+                <button onClick={onFullTool} style={{ padding: "11px 24px", background: "linear-gradient(135deg,#10b981,#059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 16px rgba(16,185,129,0.3)" }}>
                   Use full Bill Analyzer →
                 </button>
-                <button
-                  onClick={() => { setResult(null); setBill(SAMPLE_BILL); }}
-                  style={{ padding: "11px 20px", background: "rgba(255,255,255,0.04)", color: "#64748b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}
-                >
+                <button onClick={() => { setResult(null); setBill(SAMPLE_BILL); }} style={{ padding: "11px 20px", background: "rgba(255,255,255,0.04)", color: "#64748b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>
                   Reset
                 </button>
               </div>
