@@ -424,6 +424,9 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Live Demo */}
+      <LiveDemo onFullTool={() => router.push("/analyzer")} />
+
       {/* Services */}
       <section id="services" style={{ position: "relative", zIndex: 1, padding: "90px 20px", maxWidth: 900, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 56 }}>
@@ -716,5 +719,113 @@ export default function Landing() {
         ))}
       </nav>
     </div>
+  );
+}
+
+const SAMPLE_BILL = `Emergency Room Visit - $3,200
+CBC Blood Test x2 - $480
+IV Saline 1000ml - $800
+Physician Consultation (10 min) - $850
+Ibuprofen 200mg x2 - $95
+Chest X-Ray - $1,100`;
+
+function LiveDemo({ onFullTool }) {
+  const [bill, setBill] = useState(SAMPLE_BILL);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const analyze = async () => {
+    if (!bill.trim() || loading) return;
+    setLoading(true); setResult(null); setError(null);
+    try {
+      const r = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bill }),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || "Failed");
+      setResult(data.result);
+    } catch (e) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "90px 20px", background: "#050810" }}>
+      <div style={{ maxWidth: 820, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", borderRadius: 20, padding: "5px 14px", fontSize: 11, fontWeight: 700, color: "#10b981", marginBottom: 16, letterSpacing: "0.08em" }}>
+            ⚡ LIVE DEMO
+          </div>
+          <h2 style={{ fontSize: "clamp(24px, 5vw, 38px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 12 }}>
+            Try it right now
+          </h2>
+          <p style={{ fontSize: 15, color: "#64748b", maxWidth: 460, margin: "0 auto" }}>
+            A sample hospital bill is loaded below. Hit Analyze and watch BillVeil find the overcharges in seconds.
+          </p>
+        </div>
+
+        <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 20, overflow: "hidden" }}>
+          {/* Bill input */}
+          <div style={{ padding: "24px 24px 0" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.12em", marginBottom: 10 }}>SAMPLE BILL — edit or paste your own</div>
+            <textarea
+              value={bill}
+              onChange={e => { setBill(e.target.value); setResult(null); }}
+              rows={6}
+              style={{ width: "100%", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "14px 16px", fontSize: 13, color: "#cbd5e1", fontFamily: "'Courier New', monospace", resize: "vertical", boxSizing: "border-box", lineHeight: 1.7 }}
+            />
+          </div>
+
+          {/* Analyze button */}
+          <div style={{ padding: "16px 24px 24px" }}>
+            <button
+              onClick={analyze}
+              disabled={loading || !bill.trim()}
+              style={{ width: "100%", padding: "14px", background: loading ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg,#10b981,#059669)", color: loading ? "#334155" : "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? "default" : "pointer", fontFamily: FONT, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading ? "none" : "0 8px 28px rgba(16,185,129,0.35)", transition: "all 0.2s" }}
+            >
+              {loading
+                ? <><span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.15)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} /> Analyzing your bill...</>
+                : "⚡ Analyze This Bill"}
+            </button>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div style={{ margin: "0 24px 24px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 12, padding: "12px 16px", color: "#f87171", fontSize: 13 }}>
+              {error}
+            </div>
+          )}
+
+          {/* Results */}
+          {result && (
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "24px" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.12em", marginBottom: 16 }}>⚡ ANALYSIS COMPLETE</div>
+              <div style={{ fontSize: 14, color: "#cbd5e1", lineHeight: 1.85, whiteSpace: "pre-line", marginBottom: 24 }}>
+                {result}
+              </div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <button
+                  onClick={onFullTool}
+                  style={{ padding: "11px 24px", background: "linear-gradient(135deg,#10b981,#059669)", color: "#fff", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 16px rgba(16,185,129,0.3)" }}
+                >
+                  Use full Bill Analyzer →
+                </button>
+                <button
+                  onClick={() => { setResult(null); setBill(SAMPLE_BILL); }}
+                  style={{ padding: "11px 20px", background: "rgba(255,255,255,0.04)", color: "#64748b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
