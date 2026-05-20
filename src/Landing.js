@@ -236,6 +236,7 @@ export default function Landing() {
 
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <button onClick={() => router.push("/learn")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Case Files</button>
+          <button onClick={() => router.push("/blog")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Guides</button>
           <button onClick={() => router.push("/about")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
 
           {user ? (
@@ -634,6 +635,7 @@ export default function Landing() {
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 2 }}>Company</div>
                 <button className="footer-link" onClick={() => router.push("/learn")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Case Files</button>
+                <button className="footer-link" onClick={() => router.push("/blog")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Guides & Blog</button>
                 <button className="footer-link" onClick={() => router.push("/about")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>About</button>
                 <a href="mailto:hello@billveil.com" className="footer-link" style={{ color: "#475569", fontSize: 12, fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}>Contact</a>
                 <button className="footer-link" onClick={() => router.push("/privacy")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Privacy Policy</button>
