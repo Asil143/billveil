@@ -15,9 +15,9 @@ const SECTION_ICONS = {
 export default function LearnStory({ story }) {
   const router = useRouter();
 
-  const related = stories
-    .filter(s => s.status === "live" && s.slug !== story.slug)
-    .slice(0, 3);
+  const liveStories = stories.filter(s => s.status === "live");
+  const caseNumber = liveStories.findIndex(s => s.slug === story.slug) + 1;
+  const related = liveStories.filter(s => s.slug !== story.slug).slice(0, 3);
 
   return (
     <div style={{ minHeight: "100vh", background: "#050810", fontFamily: FONT, color: "#f1f5f9" }}>
@@ -40,6 +40,16 @@ export default function LearnStory({ story }) {
       </div>
 
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 20px 80px" }}>
+
+        {/* Case File header */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28, flexWrap: "wrap", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 10, padding: "6px 14px" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#10b981", letterSpacing: "0.1em" }}>📁 CASE FILE #{String(caseNumber).padStart(3, "0")}</span>
+          </div>
+          <div style={{ fontSize: 11, color: "#334155", fontStyle: "italic" }}>
+            Illustrative scenario — not a real person
+          </div>
+        </div>
 
         {/* Story header */}
         <div style={{ marginBottom: 40 }}>
@@ -124,7 +134,7 @@ export default function LearnStory({ story }) {
         {/* Tool CTA */}
         <div style={{ marginTop: 40, background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 20, padding: "28px 28px", textAlign: "center" }}>
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8 }}>
-            {story.character.name} used this tool to solve the problem
+            This tool was used to resolve this case
           </div>
           <div style={{ fontSize: 22, fontWeight: 900, color: "#f1f5f9", marginBottom: 20 }}>
             Try {story.toolLabel}
@@ -142,7 +152,7 @@ export default function LearnStory({ story }) {
         {/* Related stories */}
         {related.length > 0 && (
           <div style={{ marginTop: 56 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#334155", letterSpacing: "0.12em", marginBottom: 20 }}>MORE STORIES</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#334155", letterSpacing: "0.12em", marginBottom: 20 }}>MORE CASE FILES</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {related.map(s => (
                 <div

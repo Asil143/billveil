@@ -230,8 +230,7 @@ export default function Landing() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          {/* Learn nav hidden — re-enable when stories are ready */}
-          {/* <button onClick={() => router.push("/learn")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Learn</button> */}
+          <button onClick={() => router.push("/learn")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Case Files</button>
           <button onClick={() => router.push("/about")} style={{ padding: "6px 12px", background: "transparent", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
 
           {user ? (
@@ -510,7 +509,24 @@ export default function Landing() {
 
       {/* Testimonials — hidden until real user testimonials are collected */}
 
-      {/* Real Stories strip — hidden until stories are ready to promote */}
+      {/* Case Files strip */}
+      <section style={{ position: "relative", zIndex: 1, background: "rgba(16,185,129,0.04)", borderTop: "1px solid rgba(16,185,129,0.12)", borderBottom: "1px solid rgba(16,185,129,0.12)", padding: "16px 20px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#475569", letterSpacing: "0.1em" }}>📁 CASE FILES</span>
+          {[
+            { label: "Surprise ER Bill", slug: "surprise-billing" },
+            { label: "Denied MRI Claim", slug: "denied-claim-appeal" },
+            { label: "Charity Care — Bill Erased", slug: "charity-care" },
+            { label: "Generic Drug Savings", slug: "generic-drug-savings" },
+          ].map(({ label, slug }) => (
+            <button key={slug} onClick={() => router.push(`/learn/${slug}`)} style={{ background: "none", border: "none", color: "#10b981", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, padding: 0 }}
+              onMouseEnter={e => e.currentTarget.style.opacity = "0.7"}
+              onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+              {label} →
+            </button>
+          ))}
+        </div>
+      </section>
 
       {/* FAQ */}
       <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "90px 20px", background: "rgba(255,255,255,0.015)" }}>
@@ -631,6 +647,7 @@ export default function Landing() {
               {/* Company + Legal inline */}
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 2 }}>Company</div>
+                <button className="footer-link" onClick={() => router.push("/learn")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Case Files</button>
                 <button className="footer-link" onClick={() => router.push("/about")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>About</button>
                 <a href="mailto:hello@billveil.com" className="footer-link" style={{ color: "#475569", fontSize: 12, fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}>Contact</a>
                 <button className="footer-link" onClick={() => router.push("/privacy")} style={{ background: "none", border: "none", color: "#475569", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT, textAlign: "left", padding: 0, transition: "color 0.15s" }}>Privacy Policy</button>

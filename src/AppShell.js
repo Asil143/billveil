@@ -270,7 +270,7 @@ export default function AppShell() {
             <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-0.02em", color: "#f1f5f9", fontFamily: FONT }}>BillVeil</span>
           </button>
           <div className="bv-nav-right" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {/* Learn nav hidden — re-enable when stories are ready */}
+            <button className="bv-about" onClick={() => router.push("/learn")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Case Files</button>
             <button className="bv-about" onClick={() => router.push("/about")} style={{ background: "none", border: "none", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>About</button>
 
             {user ? (
