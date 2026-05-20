@@ -66,15 +66,29 @@ async function convertPdfToImage(dataUrl) {
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
 
   const pdf = await getDocument({ data: bytes }).promise;
+
+  // Measure total pixels at scale 1 to calculate safe scale
+  const pages = [];
+  let totalPixelsAtOne = 0;
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const vp = page.getViewport({ scale: 1 });
+    totalPixelsAtOne += vp.width * vp.height;
+    pages.push(page);
+  }
+
+  // Groq limit is 33.18M pixels — stay under 30M to be safe
+  const MAX_PIXELS = 30_000_000;
+  const scale = Math.min(1.5, Math.sqrt(MAX_PIXELS / totalPixelsAtOne));
+
   const canvases = [];
   let totalHeight = 0;
 
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const viewport = page.getViewport({ scale: 1.5 });
+  for (const page of pages) {
+    const viewport = page.getViewport({ scale });
     const canvas = document.createElement("canvas");
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    canvas.width = Math.round(viewport.width);
+    canvas.height = Math.round(viewport.height);
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
