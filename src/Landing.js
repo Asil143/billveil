@@ -17,6 +17,7 @@ const CSS = `
   .tool-card:hover { border-color: rgba(16,185,129,0.4) !important; transform: translateY(-2px); }
   .feature-card:hover { border-color: rgba(16,185,129,0.3) !important; }
   .faq-item:hover { border-color: rgba(16,185,129,0.2) !important; }
+  .situation-card:hover { background: rgba(255,255,255,0.06) !important; transform: translateY(-2px) !important; box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important; }
   .result-card:hover { border-color: rgba(255,255,255,0.15) !important; transform: translateY(-2px); }
   .nav-tool:hover { color: #f1f5f9 !important; background: rgba(255,255,255,0.04) !important; }
   .testimonial-card:hover { border-color: rgba(16,185,129,0.25) !important; }
@@ -36,9 +37,13 @@ const CSS = `
     .footer-grid { grid-template-columns: 1fr 1fr !important; }
     .land-mobile-nav { display: flex !important; }
     body { padding-bottom: 68px; }
+    .stat-card { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+    .comp-table-wrap { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+    .comp-table-inner { min-width: 560px; }
   }
   @media (max-width: 480px) {
     .footer-grid { grid-template-columns: 1fr !important; }
+    .footer-tools-grid { grid-template-columns: 1fr 1fr !important; }
   }
 `;
 
@@ -179,7 +184,7 @@ export default function Landing() {
       <style>{CSS}</style>
 
       {/* Ambient glow */}
-      <div style={{ position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 1000, height: 700, background: "radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.03) 50%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
+      <div style={{ position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 1000, height: 700, background: "radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.04) 50%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
 
       {/* Nav */}
       <nav style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(5,8,16,0.9)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 28px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 60, gap: 16 }}>
@@ -251,7 +256,7 @@ export default function Landing() {
                 Log In
               </button>
               <button onClick={showLoginModal} style={{ padding: "7px 16px", background: "linear-gradient(135deg, #10b981, #059669)", border: "none", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 4px 16px rgba(16,185,129,0.35)" }}>
-                Sign Up →
+                Save Progress →
               </button>
             </>
           )}
@@ -267,9 +272,7 @@ export default function Landing() {
         </div>
 
         <h1 className="hero-h1" style={{ fontSize: "clamp(34px, 7.5vw, 62px)", fontWeight: 900, lineHeight: 1.06, letterSpacing: "-0.04em", marginBottom: 20, animation: "fadeUp 0.6s 0.1s ease both" }}>
-          Your hospital just<br />
-          <span style={{ color: "#10b981", textShadow: "0 0 40px rgba(16,185,129,0.4)" }}>overcharged you.</span><br />
-          Fight back.
+          Your hospital <span style={{ color: "#10b981", textShadow: "0 0 40px rgba(16,185,129,0.4)" }}>overcharged you.</span> Fight back.
         </h1>
 
         <p className="land-hero-p" style={{ fontSize: 18, color: "#94a3b8", lineHeight: 1.7, maxWidth: 500, margin: "0 auto 20px", animation: "fadeUp 0.6s 0.2s ease both" }}>
@@ -305,101 +308,34 @@ export default function Landing() {
         </div>
 
         <div style={{ animation: "fadeUp 0.6s 0.4s ease both" }}>
-          <div style={{ fontSize: 12, color: "#334155", marginBottom: 10 }}>No signup · No credit card · Results in 30 seconds</div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, flexWrap: "wrap" }}>
+          <div style={{ fontSize: 12, color: "#334155" }}>No signup · No credit card · Results in 30 seconds</div>
+        </div>
+      </section>
+
+      {/* Trust + Data sources — merged */}
+      <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "16px 20px", background: "rgba(16,185,129,0.02)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap", marginBottom: 12 }}>
             {[
               { icon: "🔒", text: "256-bit encrypted" },
-              { icon: "🚫", text: "Data never stored" },
+              { icon: "🚫", text: "No data stored" },
               { icon: "✅", text: "HIPAA-aware" },
+              { icon: "⚡", text: "Results in seconds" },
+              { icon: "💸", text: "Always free" },
             ].map(({ icon, text }) => (
-              <div key={text} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#334155", fontWeight: 600 }}>
-                <span style={{ fontSize: 13 }}>{icon}</span> {text}
+              <div key={text} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#475569", fontWeight: 600 }}>
+                <span style={{ fontSize: 14 }}>{icon}</span> {text}
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Social proof savings strip — hidden until real user data available */}
-
-      {/* Stats */}
-      <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "36px 20px", background: "rgba(255,255,255,0.02)" }}>
-        <div className="land-4col" style={{ maxWidth: 800, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 0 }}>
-          {[
-            { stat: "$935B", label: "Americans overpay yearly" },
-            { stat: "80%", label: "Of bills contain errors" },
-            { stat: "10x", label: "Hospital markup rate" },
-            { stat: "$0", label: "Cost to use BillVeil" },
-          ].map(({ stat, label }, i) => (
-            <div key={stat} style={{ textAlign: "center", padding: "16px 12px", borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
-              <div style={{ fontSize: 30, fontWeight: 900, color: "#10b981", letterSpacing: "-0.03em", marginBottom: 5, textShadow: "0 0 20px rgba(16,185,129,0.3)" }}>{stat}</div>
-              <div style={{ fontSize: 12, color: "#475569", fontWeight: 600 }}>{label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Trust bar */}
-      <section style={{ position: "relative", zIndex: 1, padding: "20px 20px", borderBottom: "1px solid rgba(255,255,255,0.04)", background: "rgba(16,185,129,0.02)" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
-          {[
-            { icon: "🔒", text: "256-bit encrypted" },
-            { icon: "🚫", text: "No data stored" },
-            { icon: "✅", text: "HIPAA-aware" },
-            { icon: "⚡", text: "Results in seconds" },
-            { icon: "💸", text: "Always free" },
-          ].map(({ icon, text }) => (
-            <div key={text} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#475569", fontWeight: 600 }}>
-              <span style={{ fontSize: 14 }}>{icon}</span> {text}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Data sources bar */}
-      <section style={{ position: "relative", zIndex: 1, padding: "24px 20px", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-        <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#334155", letterSpacing: "0.14em", marginBottom: 16, textTransform: "uppercase" }}>Powered by official data sources</div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
-            {[
-              { label: "CMS Medicare Rates", desc: "Official allowable rates" },
-              { label: "No Surprises Act 2022", desc: "Federal billing protection" },
-              { label: "USPSTF Guidelines", desc: "Preventive care standards" },
-              { label: "ACA / ERISA Law", desc: "Insurance appeal rights" },
-              { label: "HIPAA Regulations", desc: "Patient data rights" },
-              { label: "State Charity Care Laws", desc: "Hospital forgiveness rules" },
-            ].map(({ label, desc }) => (
-              <div key={label} title={desc} style={{ padding: "6px 14px", background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.12)", borderRadius: 8, fontSize: 11, color: "#475569", fontWeight: 700, letterSpacing: "0.01em" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 9, fontWeight: 700, color: "#334155", letterSpacing: "0.12em", textTransform: "uppercase", flexShrink: 0 }}>Powered by:</span>
+            {["CMS Medicare Rates", "No Surprises Act 2022", "ACA / ERISA Law", "HIPAA Regulations", "State Charity Care Laws"].map(label => (
+              <div key={label} style={{ padding: "3px 10px", background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.12)", borderRadius: 6, fontSize: 10, color: "#475569", fontWeight: 700 }}>
                 {label}
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Animated Stats */}
-      <AnimatedStats />
-
-      {/* Problem */}
-      <section style={{ position: "relative", zIndex: 1, padding: "90px 20px", maxWidth: 820, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 16 }}>THE PROBLEM</div>
-          <h2 style={{ fontSize: "clamp(26px, 5vw, 40px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 14 }}>The system is rigged against you.</h2>
-          <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.7, maxWidth: 500, margin: "0 auto" }}>Hospitals charge whatever they want. Insurance companies deny valid claims. Nobody explains anything.</p>
-        </div>
-        <div className="land-2col" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 14 }}>
-          {[
-            { icon: "💸", title: "Inflated charges", desc: "Hospitals charge 10x the actual cost. A $15 aspirin becomes $150. A $200 test becomes $4,000." },
-            { icon: "🤯", title: "Confusing codes", desc: "CPT codes, ICD codes, modifiers. Medical bills are designed to be unreadable so you give up." },
-            { icon: "🚫", title: "Denied claims", desc: "Insurance companies deny 1 in 7 claims. Most patients never appeal — they just pay." },
-            { icon: "😰", title: "No one to turn to", desc: "Medical billing advocates cost $300/hour. Most Americans can't afford to fight back." },
-          ].map(({ icon, title, desc }) => (
-            <div key={title} style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 16, padding: "24px 20px" }}>
-              <div style={{ fontSize: 26, marginBottom: 12 }}>{icon}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#f1f5f9", marginBottom: 8 }}>{title}</div>
-              <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.75 }}>{desc}</div>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -430,6 +366,9 @@ export default function Landing() {
       {/* Live Demo */}
       <LiveDemo onFullTool={() => router.push("/analyzer")} />
 
+      {/* Animated Stats */}
+      <AnimatedStats />
+
       {/* Situation Router */}
       <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "80px 20px", background: "rgba(255,255,255,0.01)" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
@@ -451,10 +390,9 @@ export default function Landing() {
             ].map(({ emoji, title, sub, path, color }) => (
               <button
                 key={path}
+                className="situation-card"
                 onClick={() => router.push(path)}
                 style={{ background: "rgba(255,255,255,0.03)", border: `1px solid rgba(255,255,255,0.08)`, borderLeft: `3px solid ${color}`, borderRadius: 14, padding: "20px 18px", cursor: "pointer", textAlign: "left", fontFamily: FONT, transition: "all 0.18s" }}
-                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.3)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
               >
                 <div style={{ fontSize: 28, marginBottom: 12 }}>{emoji}</div>
                 <div style={{ fontSize: 14, fontWeight: 800, color: "#f1f5f9", lineHeight: 1.4, marginBottom: 6 }}>{title}</div>
@@ -465,6 +403,9 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Comparison Table */}
+      <ComparisonTable onStart={() => router.push("/analyzer")} />
 
       {/* Services */}
       <section id="services" style={{ position: "relative", zIndex: 1, padding: "90px 20px", maxWidth: 900, margin: "0 auto" }}>
@@ -551,9 +492,6 @@ export default function Landing() {
 
       {/* Savings Calculator */}
       <SavingsCalculator onAction={(path) => router.push(path)} />
-
-      {/* Comparison Table */}
-      <ComparisonTable onStart={() => router.push("/analyzer")} />
 
       {/* Testimonials — hidden until real user testimonials are collected */}
 
@@ -709,7 +647,7 @@ export default function Landing() {
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", letterSpacing: "0.12em", textTransform: "uppercase" }}>All Tools</div>
                 <button className="footer-link" onClick={() => goTo("services")} style={{ background: "none", border: "none", color: "#10b981", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, padding: 0, transition: "color 0.15s" }}>Browse all 44 tools →</button>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px 32px" }}>
+              <div className="footer-tools-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px 32px" }}>
                 {ALL_SERVICES.map(cat => (
                   <div key={cat.label}>
                     <div style={{ fontSize: 10, fontWeight: 700, color: cat.color, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8, display: "flex", alignItems: "center", gap: 5 }}>
@@ -959,7 +897,7 @@ function AnimatedStats() {
 function StatCard({ target, suffix, prefix, label, sublabel, started }) {
   const count = useCountUp(target, 2200, started);
   return (
-    <div style={{ textAlign: "center", padding: "32px 20px", borderRight: "1px solid rgba(255,255,255,0.05)" }}>
+    <div className="stat-card" style={{ textAlign: "center", padding: "32px 20px", borderRight: "1px solid rgba(255,255,255,0.05)" }}>
       <div style={{ fontSize: "clamp(36px, 6vw, 56px)", fontWeight: 900, color: "#10b981", letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 10, fontVariantNumeric: "tabular-nums" }}>
         {prefix}{count.toLocaleString()}{suffix}
       </div>
@@ -1051,8 +989,8 @@ function ComparisonTable({ onStart }) {
           <h2 style={{ fontSize: "clamp(22px, 5vw, 36px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 10 }}>BillVeil vs. your other options</h2>
           <p style={{ fontSize: 14, color: "#475569" }}>Most people pay thousands for an advocate or do nothing. There's a better way.</p>
         </div>
-        <div style={{ borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr 1.5fr", background: "rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="comp-table-wrap" style={{ borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="comp-table-inner" style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr 1.5fr", background: "rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
             <div style={{ padding: "16px 20px" }} />
             <div style={{ padding: "16px 20px", textAlign: "center" }}>
               <div style={{ fontSize: 12, fontWeight: 800, color: "#10b981" }}>🛡️ BillVeil</div>
@@ -1068,7 +1006,7 @@ function ComparisonTable({ onStart }) {
             </div>
           </div>
           {rows.map((row, i) => (
-            <div key={row.feature} style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr 1.5fr", borderBottom: i < rows.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none", background: i % 2 === 0 ? "rgba(255,255,255,0.01)" : "transparent" }}>
+            <div key={row.feature} className="comp-table-inner" style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr 1.5fr", borderBottom: i < rows.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none", background: i % 2 === 0 ? "rgba(255,255,255,0.01)" : "transparent" }}>
               <div style={{ padding: "14px 20px", fontSize: 13, fontWeight: 600, color: "#64748b" }}>{row.feature}</div>
               <div style={{ padding: "14px 20px", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#10b981" }}>{row.billveil}</div>
               <div style={{ padding: "14px 20px", textAlign: "center", fontSize: 12, color: "#475569", borderLeft: "1px solid rgba(255,255,255,0.05)" }}>{row.advocate}</div>
