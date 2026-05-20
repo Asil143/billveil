@@ -1,25 +1,22 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": ".",
+  "name": "BillVeil — Medical Bill Transparency",
+  "short_name": "BillVeil",
+  "description": "44 free AI tools to fight medical billing. Find overcharges, appeal denials, reduce drug costs.",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "portrait",
+  "background_color": "#050810",
+  "theme_color": "#10b981",
+  "categories": ["health", "finance", "medical"],
+  "icons": [
+    { "src": "/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/logo192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/logo512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Analyze My Bill", "short_name": "Analyze", "url": "/analyzer", "icons": [{ "src": "/icon-192.svg", "sizes": "192x192" }] },
+    { "name": "Fight a Denial", "short_name": "Appeal", "url": "/denial", "icons": [{ "src": "/icon-192.svg", "sizes": "192x192" }] },
+    { "name": "Find Charity Care", "short_name": "Charity", "url": "/charitycare", "icons": [{ "src": "/icon-192.svg", "sizes": "192x192" }] }
+  ]
 }

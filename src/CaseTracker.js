@@ -37,6 +37,8 @@ const CASE_TYPES = [
 
 const IS = { width: "100%", padding: "10px 13px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, fontSize: 14, color: "#f1f5f9", fontFamily: FONT, outline: "none", boxSizing: "border-box" };
 
+const EMPTY_FORM = { title: "", type: "dispute", hospital: "", amountBilled: "", deadline: "", notes: "" };
+
 function DeadlineBadge({ deadline }) {
   if (!deadline) return null;
   const days = Math.ceil((new Date(deadline) - new Date()) / 86400000);
@@ -49,7 +51,64 @@ function DeadlineBadge({ deadline }) {
   );
 }
 
-const EMPTY_FORM = { title: "", type: "dispute", hospital: "", amountBilled: "", deadline: "", notes: "" };
+function ReminderBanner({ case: c, onDismiss }) {
+  const downloadIcs = () => {
+    const remind = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    const fmt = (d) => d.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//BillVeil//EN",
+      "BEGIN:VEVENT",
+      `DTSTART:${fmt(remind)}`,
+      `DTEND:${fmt(new Date(remind.getTime() + 3600000))}`,
+      `SUMMARY:Follow up: ${c.title || "medical bill case"}`,
+      "DESCRIPTION:Check your dispute status at billveil.com/casetracker",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+    const blob = new Blob([ics], { type: "text/calendar" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "billveil-followup.ics";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const provider = c.hospital ? ` at ${c.hospital}` : "";
+  const smsBody = encodeURIComponent(
+    `BillVeil reminder: Follow up on "${c.title || "your case"}"${provider} in 30 days → billveil.com/casetracker`
+  );
+
+  return (
+    <div style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.25)", borderRadius: 14, padding: "16px 18px", marginBottom: 16, fontFamily: FONT }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#34d399", marginBottom: 4 }}>✅ Case saved!</div>
+          <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.5 }}>
+            Set a 30-day reminder to follow up on your dispute.
+          </div>
+        </div>
+        <button onClick={onDismiss} style={{ background: "none", border: "none", color: "#475569", fontSize: 18, cursor: "pointer", lineHeight: 1, padding: 0, flexShrink: 0 }}>✕</button>
+      </div>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <button
+          onClick={downloadIcs}
+          style={{ padding: "8px 14px", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", borderRadius: 10, color: "#34d399", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}
+        >
+          📅 Add to Calendar
+        </button>
+        <a
+          href={`sms:?body=${smsBody}`}
+          style={{ display: "inline-flex", alignItems: "center", padding: "8px 14px", background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.25)", borderRadius: 10, color: "#60a5fa", fontSize: 13, fontWeight: 700, textDecoration: "none", fontFamily: FONT }}
+        >
+          💬 Text Yourself
+        </a>
+      </div>
+    </div>
+  );
+}
 
 export default function CaseTracker() {
   const { user, showLoginModal } = useAuth();
@@ -61,6 +120,7 @@ export default function CaseTracker() {
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [savedInputs, setSavedInputs] = useState({});
+  const [lastSaved, setLastSaved] = useState(null);
 
   useEffect(() => {
     if (user === undefined) return;
@@ -87,7 +147,8 @@ export default function CaseTracker() {
       });
       setForm(EMPTY_FORM);
       setShowForm(false);
-      trackEvent(user.uid, "case_created", { hasAmount: !!form.amountBilled, provider: form.provider || null });
+      setLastSaved({ title: form.title, hospital: form.hospital });
+      trackEvent(user.uid, "case_created", { hasAmount: !!form.amountBilled, provider: form.hospital || null });
     } finally {
       setSaving(false);
     }
@@ -178,6 +239,10 @@ export default function CaseTracker() {
       )}
 
       {loading && <div style={{ textAlign: "center", padding: 40, color: "#334155" }}>Loading cases...</div>}
+
+      {lastSaved && (
+        <ReminderBanner case={lastSaved} onDismiss={() => setLastSaved(null)} />
+      )}
 
       {!loading && cases.length === 0 && !showForm && (
         <div style={{ textAlign: "center", padding: "40px 20px" }}>
