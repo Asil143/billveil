@@ -455,6 +455,8 @@ export default function AppShell() {
                 <button onClick={() => { navigator.clipboard.writeText(result); setCopied(true); setTimeout(() => setCopied(false), 2000); }} style={{ fontSize: 12, color: copied ? "#10b981" : "#64748b", background: "rgba(255,255,255,0.04)", border: `1px solid ${copied ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`, padding: "5px 12px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}>
                   {copied ? "✓ Copied" : "Copy"}
                 </button>
+                <ShareButton result={result} />
+                <SavePdfButton result={result} bill={bill} />
                 <button className="reset-btn" onClick={() => { setResult(null); setBill(""); setTip(false); }} style={{ fontSize: 12, color: "#64748b", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", padding: "5px 12px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, transition: "all 0.2s" }}>← Analyze another</button>
               </div>
             </div>
@@ -511,5 +513,115 @@ export default function AppShell() {
         </>}
       </div>
     </div>
+  );
+}
+
+function SavePdfButton({ result, bill }) {
+  const save = () => {
+    const sections = [
+      { key: "WHAT IS THIS", label: "What Is This", color: "#1d4ed8" },
+      { key: "FAIR PRICE", label: "Fair Price", color: "#065f46" },
+      { key: "VERDICT", label: "Verdict", color: "#92400e" },
+      { key: "WHY", label: "Why", color: "#4c1d95" },
+      { key: "WHAT TO DO", label: "What To Do", color: "#065f46" },
+      { key: "MONEY YOU COULD SAVE", label: "Money You Could Save", color: "#065f46" },
+    ];
+    const clean = result.replace(/\*\*/g, "").replace(/^#{1,3}\s*/gm, "");
+    const parsed = sections.map(s => {
+      const m = clean.match(new RegExp(`(?:#{1,3}\\s*)?${s.key}:\\n([\\s\\S]*?)(?=\\n(?:#{1,3}\\s*)?[A-Z][A-Z ]+:|$)`));
+      return m ? { ...s, content: m[1].trim() } : null;
+    }).filter(Boolean);
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>BillVeil Analysis</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 680px; margin: 40px auto; padding: 0 24px; color: #1e293b; }
+  .header { border-bottom: 2px solid #10b981; padding-bottom: 16px; margin-bottom: 28px; }
+  .logo { font-size: 22px; font-weight: 900; color: #10b981; letter-spacing: -0.02em; }
+  .meta { font-size: 11px; color: #64748b; margin-top: 4px; }
+  .bill-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 18px; margin-bottom: 28px; font-family: monospace; font-size: 13px; color: #475569; white-space: pre-wrap; }
+  .bill-label { font-size: 10px; font-weight: 700; color: #94a3b8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; font-family: Georgia; }
+  .section { border-left: 3px solid #10b981; padding: 16px 20px; margin-bottom: 14px; background: #f8fafc; border-radius: 0 8px 8px 0; page-break-inside: avoid; }
+  .section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .section-content { font-size: 14px; line-height: 1.8; color: #334155; white-space: pre-line; }
+  .verdict-pill { display: inline-block; padding: 6px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; }
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; line-height: 1.8; }
+  @media print { body { margin: 20px; } }
+</style></head><body>
+<div class="header">
+  <div class="logo">🛡️ BillVeil</div>
+  <div class="meta">Medical Bill Analysis · ${new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · billveil.com</div>
+</div>
+${bill ? `<div class="bill-label">Bill Analyzed</div><div class="bill-box">${bill.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>` : ""}
+${parsed.map(s => {
+  const isVerdict = s.key === "VERDICT";
+  const verdictColor = s.content.includes("SIGNIFICANTLY") ? "#dc2626" : s.content.includes("POSSIBLY") ? "#d97706" : "#059669";
+  const verdictBg = s.content.includes("SIGNIFICANTLY") ? "#fef2f2" : s.content.includes("POSSIBLY") ? "#fffbeb" : "#f0fdf4";
+  return `<div class="section" style="border-left-color:${s.color}">
+  <div class="section-label" style="color:${s.color}">${s.label}</div>
+  ${isVerdict
+    ? `<div class="verdict-pill" style="background:${verdictBg};color:${verdictColor}">${s.content}</div>`
+    : `<div class="section-content">${s.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`}
+</div>`;
+}).join("")}
+<div class="footer">
+  <strong>Disclaimer:</strong> BillVeil provides informational analysis only. Results are based on Medicare allowable rates and publicly available pricing data. Always consult a healthcare professional or billing advocate for your specific situation.<br>
+  BillVeil does not store your bill data. This document was generated locally in your browser.
+</div>
+</body></html>`;
+
+    const w = window.open("", "_blank");
+    w.document.write(html);
+    w.document.close();
+    w.onload = () => w.print();
+  };
+
+  return (
+    <button onClick={save} style={{ fontSize: 12, color: "#64748b", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", padding: "5px 12px", borderRadius: 8, cursor: "pointer", fontFamily: "'Inter', system-ui, sans-serif", transition: "all 0.2s" }}>
+      Save PDF
+    </button>
+  );
+}
+
+function ShareButton({ result }) {
+  const [shared, setShared] = useState(false);
+
+  const buildShareText = () => {
+    const clean = result.replace(/\*\*/g, "").replace(/^#{1,3}\s*/gm, "");
+    const verdictMatch = clean.match(/VERDICT:\n([\s\S]*?)(?=\n[A-Z][A-Z ]+:|$)/);
+    const savingsMatch = clean.match(/MONEY YOU COULD SAVE:\n([\s\S]*?)(?=\n[A-Z][A-Z ]+:|$)/);
+    const verdict = verdictMatch ? verdictMatch[1].trim().split("\n")[0] : null;
+    const savings = savingsMatch ? savingsMatch[1].trim().split("\n")[0] : null;
+
+    if (verdict?.includes("SIGNIFICANTLY OVERCHARGED")) {
+      return `🚨 BillVeil just found I was SIGNIFICANTLY OVERCHARGED on my medical bill.${savings ? `\n\n💰 ${savings}` : ""}\n\nIt's 100% free → billveil.com`;
+    } else if (verdict?.includes("POSSIBLY OVERCHARGED")) {
+      return `⚠️ BillVeil flagged a possible overcharge on my medical bill.${savings ? `\n\n💰 ${savings}` : ""}\n\nCheck yours free → billveil.com`;
+    }
+    return `I just checked my medical bill with BillVeil — free AI that finds overcharges and tells you exactly how to fight back.\n\nbillveil.com`;
+  };
+
+  const share = async () => {
+    const text = buildShareText();
+    if (navigator.share) {
+      try {
+        await navigator.share({ text, url: "https://billveil.com" });
+        setShared(true);
+        setTimeout(() => setShared(false), 3000);
+        return;
+      } catch {}
+    }
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(tweetUrl, "_blank", "width=600,height=400");
+    setShared(true);
+    setTimeout(() => setShared(false), 3000);
+  };
+
+  return (
+    <button
+      onClick={share}
+      style={{ fontSize: 12, color: shared ? "#10b981" : "#64748b", background: shared ? "rgba(16,185,129,0.08)" : "rgba(255,255,255,0.04)", border: `1px solid ${shared ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`, padding: "5px 12px", borderRadius: 8, cursor: "pointer", fontFamily: "'Inter', system-ui, sans-serif", transition: "all 0.2s" }}
+    >
+      {shared ? "✓ Shared!" : "Share"}
+    </button>
   );
 }

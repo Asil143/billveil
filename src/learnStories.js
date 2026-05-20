@@ -804,7 +804,58 @@ export const stories = [
 
   // ─── COMING SOON ─────────────────────────────────────────────────────────────
 
-  { slug: "bill-analyzer", status: "coming-soon", emoji: "⚡", color: "#10b981", category: "Bills & Charges", character: { name: "Mark", age: 45, role: "Construction Foreman" }, title: "The 5-Minute Check That Found $1,100 in Overcharges on Mark's Lab Bill", hook: "He almost paid it without looking.", tool: "analyzer", toolLabel: "Bill Analyzer", tags: ["Lab Bill", "Overcharge", "CPT Codes"] },
+  {
+    slug: "bill-analyzer",
+    status: "live",
+    emoji: "⚡",
+    color: "#10b981",
+    category: "Bills & Charges",
+    character: { name: "Mark", age: 45, role: "Construction Foreman" },
+    title: "The 5-Minute Check That Found $1,100 in Overcharges on Mark's Lab Bill",
+    hook: "He almost paid it without looking.",
+    tool: "analyzer",
+    toolLabel: "Bill Analyzer",
+    savingsTag: "Saved $1,100",
+    tags: ["Lab Bill", "Overcharge", "CPT Codes"],
+    story: {
+      scene: {
+        heading: "A routine physical, an unreasonable bill",
+        body: [
+          "Mark, 45, went in for a routine annual physical — the kind his doctor has been ordering for years. Blood pressure check, cholesterol panel, basic metabolic panel. He was in and out in under an hour.",
+          "Six weeks later, a $1,380 bill arrived from his hospital's lab. His insurance had covered $280. He owed $1,100. For blood tests.",
+        ],
+      },
+      confusion: {
+        heading: "That can't be right — can it?",
+        body: [
+          "Mark's first thought was that his insurance made a mistake. He called the billing department. They confirmed the charges were correct. He was told his deductible hadn't been met.",
+          "What nobody told him: the CPT codes on his bill were for the most expensive version of each test. And several of the rates his hospital charged were 8–12x the Medicare rate for identical tests.",
+        ],
+      },
+      education: {
+        heading: "CPT codes and the chargemaster",
+        body: [
+          "Every medical service has a CPT code — a standardized number that identifies exactly what was done. Hospitals set their own price for each code in something called a chargemaster. These prices are often disconnected from reality.",
+          "Medicare publishes the fair allowable rate for every CPT code. A lab panel that Medicare pays $28 for might appear on your bill as $340. BillVeil compares your charges directly against Medicare rates to spot the gap.",
+        ],
+      },
+      steps: {
+        heading: "What Mark did",
+        items: [
+          "He typed the charges from his bill into BillVeil's Bill Analyzer: each line item, the CPT code if visible, and the amount charged.",
+          "The analysis came back: three line items were flagged as significantly overcharged — 8x, 10x, and 12x the Medicare allowable rate.",
+          "BillVeil generated a dispute letter citing the specific CPT codes and the fair price benchmark, requesting an itemized bill and a rate review.",
+          "Mark mailed the dispute letter to the hospital's billing department via certified mail and followed up by phone two weeks later.",
+          "He also asked his insurance to reprocess the claim under in-network rates, which they agreed to review.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "After the dispute, the hospital reduced two of the three line items and his insurer reclassified one charge. His final bill came to $280 — the same amount insurance had already covered. He paid nothing out of pocket.",
+        highlight: "$1,100 saved",
+      },
+    },
+  },
 
   { slug: "bill-scan", status: "coming-soon", emoji: "📷", color: "#f59e0b", category: "Bills & Charges", character: { name: "Emma", age: 31, role: "Nurse" }, title: "Emma's Camera Caught a $600 Billing Error Her Eyes Missed", hook: "She knew bills had errors. She just didn't know how to find them.", tool: "billscan", toolLabel: "Bill Scanner", tags: ["Bill Scan", "Billing Error", "OCR"] },
 
@@ -825,11 +876,164 @@ export const stories = [
 
   { slug: "community-price-board", status: "coming-soon", emoji: "🌐", color: "#34d399", category: "Bills & Charges", character: { name: "Patricia", age: 47, role: "Dental Hygienist" }, title: "Patricia Checked the Community Board and Found She Was Paying 3x the Fair Price", hook: "Real people, real prices. What your neighbors actually paid.", tool: "priceboard", toolLabel: "Community Price Board", tags: ["Price Comparison", "Community", "MRI"] },
 
-  { slug: "insurance-finder", status: "coming-soon", emoji: "🛡️", color: "#10b981", category: "Insurance", character: { name: "Nicole", age: 29, role: "Barista" }, title: "After Losing Her Job, Nicole Found $180/Month Coverage in 48 Hours", hook: "COBRA wasn't her only option. She just didn't know the others existed.", tool: "insurance", toolLabel: "Insurance Finder", tags: ["Marketplace", "COBRA", "Job Loss", "ACA"] },
+  {
+    slug: "insurance-finder",
+    status: "live",
+    emoji: "🛡️",
+    color: "#10b981",
+    category: "Insurance",
+    character: { name: "Nicole", age: 29, role: "Barista" },
+    title: "After Losing Her Job, Nicole Found $180/Month Coverage in 48 Hours",
+    hook: "COBRA wasn't her only option. She just didn't know the others existed.",
+    tool: "insurance",
+    toolLabel: "Insurance Finder",
+    savingsTag: "Saved $7,200/year",
+    tags: ["Marketplace", "COBRA", "Job Loss", "ACA"],
+    story: {
+      scene: {
+        heading: "Laid off on a Tuesday",
+        body: [
+          "Nicole, 29, had been a barista at a small coffee chain for three years. She had decent health insurance through her job — $140 a month in premiums, which she thought was reasonable. Then the chain announced layoffs. Her last day was a Tuesday.",
+          "On Wednesday, she received a COBRA continuation notice. To keep her current plan, she would owe $780 per month — more than 5x what she had been paying, because now she had to cover both her share and her employer's share.",
+        ],
+      },
+      confusion: {
+        heading: "Is COBRA the only option?",
+        body: [
+          "Nicole panicked. $780 a month was nearly her entire rent. She assumed COBRA was the only way to keep coverage without a gap. That's what the paperwork implied.",
+          "What nobody told her: losing a job is a qualifying life event that opens a 60-day Special Enrollment Period on the ACA Marketplace. And at her income level, she qualified for substantial subsidies.",
+        ],
+      },
+      education: {
+        heading: "The ACA Marketplace and job-loss subsidies",
+        body: [
+          "The Affordable Care Act created a marketplace where you can buy individual health insurance. During a Special Enrollment Period — triggered by job loss, marriage, having a baby, and other life events — you can enroll outside the regular November–January window.",
+          "Premium tax credits (subsidies) are available based on your income. For Nicole, projected at part-time earnings, the federal subsidy reduced her marketplace premium by over 75%. Her COBRA coverage would have cost $780/month. The ACA alternative: $180.",
+        ],
+      },
+      steps: {
+        heading: "What Nicole did",
+        items: [
+          "She opened BillVeil's Insurance Finder and entered her situation: job loss, age 29, estimated income, her state.",
+          "The tool walked her through her SEP eligibility and estimated her subsidy based on projected income.",
+          "She was shown three plan tiers — Bronze, Silver, and Gold — with the subsidy applied to each.",
+          "She enrolled in a Silver plan through healthcare.gov within 48 hours of her last day.",
+          "She declined COBRA — she had 60 days to decide, and ACA coverage was dramatically cheaper for her situation.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "Nicole enrolled in a Silver plan for $180/month — down from the $780 COBRA would have cost. Her new plan covered her primary care doctor and included prescription coverage. Over the next year, she saved $7,200 compared to COBRA.",
+        highlight: "$7,200 saved in year one",
+      },
+    },
+  },
 
-  { slug: "cobra-calculator", status: "coming-soon", emoji: "📉", color: "#f87171", category: "Insurance", character: { name: "Jake", age: 35, role: "Marketing Director" }, title: "Jake Paid $780/Month for COBRA When Marketplace Coverage Was $220", hook: "He assumed COBRA was the safe choice. He was paying $6,720 too much.", tool: "cobra", toolLabel: "COBRA Calculator", tags: ["COBRA", "Job Loss", "Cost Comparison"] },
+  {
+    slug: "cobra-calculator",
+    status: "live",
+    emoji: "📉",
+    color: "#f87171",
+    category: "Insurance",
+    character: { name: "Jake", age: 35, role: "Marketing Director" },
+    title: "Jake Paid $780/Month for COBRA When Marketplace Coverage Was $220",
+    hook: "He assumed COBRA was the safe choice. He was paying $6,720 too much.",
+    tool: "cobra",
+    toolLabel: "COBRA Calculator",
+    savingsTag: "Saved $6,720/year",
+    tags: ["COBRA", "Job Loss", "Cost Comparison"],
+    story: {
+      scene: {
+        heading: "The job he was sure about",
+        body: [
+          "Jake, 35, had been a marketing director at a mid-size tech company for four years. When the company did a round of layoffs, he was caught in it. His manager said he'd have a great reference. HR handed him a packet. Inside: a COBRA continuation notice.",
+          "Jake's instinct was to sign up immediately. He had a wife and a six-year-old. He wasn't going to risk a gap in coverage. He enrolled in COBRA that week at $780 per month.",
+        ],
+      },
+      confusion: {
+        heading: "Was that actually the right move?",
+        body: [
+          "For eight months, Jake paid $780/month — $6,240 — and felt like he was doing the responsible thing. Then a friend mentioned that losing a job opens a Special Enrollment Period on the ACA Marketplace, and that subsidies had gotten much more generous under the Inflation Reduction Act.",
+          "Jake went online and got confused by the options. He wasn't sure if he could switch mid-year, or if he'd already missed his window.",
+        ],
+      },
+      education: {
+        heading: "COBRA vs. ACA: what most people don't calculate",
+        body: [
+          "COBRA lets you keep your exact employer plan, but you pay the full premium — both your share and what your employer used to cover. It's often 3–5x what you were paying before. Most people assume it's their only option.",
+          "But job loss is a qualifying event that opens a 60-day Special Enrollment Period. And since 2021, enhanced premium tax credits under the ARP and IRA have dramatically lowered ACA marketplace costs — often below COBRA — especially for anyone between jobs with reduced income.",
+        ],
+      },
+      steps: {
+        heading: "What Jake eventually did",
+        items: [
+          "He found BillVeil's COBRA Calculator and entered his current COBRA premium, family size, and estimated income for the year.",
+          "The calculator showed his estimated marketplace premium with subsidies applied: $220/month for comparable Silver-tier family coverage.",
+          "It also confirmed he still had a SEP window — he had never lost eligibility, he had just never used it.",
+          "He enrolled his family in a Silver plan through healthcare.gov and cancelled COBRA.",
+          "He also checked that his family's existing doctors were in the new plan's network before switching.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "Jake switched from $780/month COBRA to $220/month ACA marketplace coverage. His new plan covered his family's primary care doctors and had comparable deductibles. He wishes he had checked eight months earlier — the $6,720 he paid in COBRA was unnecessary.",
+        highlight: "$6,720 saved per year",
+      },
+    },
+  },
 
-  { slug: "preventive-care", status: "coming-soon", emoji: "🩺", color: "#2dd4bf", category: "Insurance", character: { name: "Sandra", age: 54, role: "Librarian" }, title: "The Free Screening Sandra Almost Skipped Found Her Pre-Cancer", hook: "Under the ACA, preventive care is 100% covered. Most people skip it anyway.", tool: "preventive", toolLabel: "Preventive Care Checker", tags: ["Preventive Care", "Free Screenings", "ACA", "Cancer"] },
+  {
+    slug: "preventive-care",
+    status: "live",
+    emoji: "🩺",
+    color: "#2dd4bf",
+    category: "Insurance",
+    character: { name: "Sandra", age: 54, role: "Librarian" },
+    title: "The Free Screening Sandra Almost Skipped Found Her Pre-Cancer",
+    hook: "Under the ACA, preventive care is 100% covered. Most people skip it anyway.",
+    tool: "preventive",
+    toolLabel: "Preventive Care Checker",
+    savingsTag: "Caught early — $40,000+ avoided",
+    tags: ["Preventive Care", "Free Screenings", "ACA", "Cancer"],
+    story: {
+      scene: {
+        heading: "She kept putting it off",
+        body: [
+          "Sandra, 54, had a high-deductible health plan and had grown accustomed to avoiding the doctor unless something was clearly wrong. Doctor visits meant bills, and bills meant stress.",
+          "She had skipped her colonoscopy for three years running. Her primary care doctor had mentioned it at every annual visit. Sandra always said she'd schedule it soon. She never did.",
+        ],
+      },
+      confusion: {
+        heading: "She assumed it would cost her money",
+        body: [
+          "Sandra's reasoning: with a $3,000 deductible, any procedure was going to cost something. She had once received a $400 bill after what she thought was a covered preventive visit. She didn't trust that \"free\" actually meant free.",
+          "What she didn't know: the ACA mandates that specific preventive services — including colonoscopies for adults over 50 — must be covered at zero cost to the patient. No deductible. No copay. By law.",
+        ],
+      },
+      education: {
+        heading: "What the ACA covers at no cost",
+        body: [
+          "The Affordable Care Act requires non-grandfathered insurance plans to cover a list of preventive services without cost-sharing. For women over 50, this includes mammograms, colonoscopies, blood pressure checks, cholesterol panels, diabetes screenings, and more.",
+          "The confusion arises because the visit must be coded correctly as preventive. If your doctor orders additional tests during a preventive visit, those add-ons can be billed separately. BillVeil's Preventive Care Checker shows exactly what's covered for your age and sex — and how to make sure it's billed correctly.",
+        ],
+      },
+      steps: {
+        heading: "What Sandra did",
+        items: [
+          "She opened BillVeil's Preventive Care Checker and entered her age (54) and insurance type.",
+          "The tool confirmed: colonoscopy is a fully covered preventive service for her age, with no cost-sharing required.",
+          "It also gave her language to use when scheduling: \"I'd like this billed as a routine preventive colonoscopy under ACA preventive care guidelines.\"",
+          "She scheduled the procedure, confirmed coverage with her insurer before the appointment, and paid nothing on the day.",
+          "Her gastroenterologist found a pre-cancerous polyp during the procedure. It was removed on the spot.",
+        ],
+      },
+      outcome: {
+        heading: "The result",
+        body: "Sandra's colonoscopy cost her zero dollars. The pre-cancerous polyp her doctor removed would, if left untreated for another two to three years, likely have become colon cancer — the treatment for which averages $40,000–$150,000. She caught it because she finally learned the screening was free.",
+        highlight: "Caught early — treatment avoided",
+      },
+    },
+  },
 
   { slug: "patient-rights", status: "coming-soon", emoji: "📜", color: "#60a5fa", category: "Debt & Rights", character: { name: "Marcus", age: 44, role: "Truck Driver" }, title: "The Rights Every Patient Has — That Nobody Ever Tells You", hook: "You can dispute any bill. You can request any record. You have more power than you think.", tool: "patientrights", toolLabel: "Patient Rights Guide", tags: ["Patient Rights", "Billing", "Medical Records"] },
 
