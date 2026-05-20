@@ -377,6 +377,9 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Animated Stats */}
+      <AnimatedStats />
+
       {/* Problem */}
       <section style={{ position: "relative", zIndex: 1, padding: "90px 20px", maxWidth: 820, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 52 }}>
@@ -545,6 +548,12 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Savings Calculator */}
+      <SavingsCalculator onAction={(path) => router.push(path)} />
+
+      {/* Comparison Table */}
+      <ComparisonTable onStart={() => router.push("/analyzer")} />
 
       {/* Testimonials — hidden until real user testimonials are collected */}
 
@@ -887,6 +896,190 @@ function LiveDemo({ onFullTool }) {
               </div>
             </div>
           )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function useCountUp(target, duration = 2000, start = false) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!start) return;
+    let startTime = null;
+    const step = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [start, target, duration]);
+  return count;
+}
+
+function AnimatedStats() {
+  const [started, setStarted] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setStarted(true); },
+      { threshold: 0.3 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const stats = [
+    { target: 935, suffix: "B", prefix: "$", label: "Overpaid yearly on medical bills", sublabel: "by American patients" },
+    { target: 80, suffix: "%", prefix: "", label: "Of medical bills contain errors", sublabel: "BMJ & JAMA studies" },
+    { target: 73, suffix: "%", prefix: "", label: "Of denied claims overturned", sublabel: "when patients appeal" },
+    { target: 44, suffix: "", prefix: "", label: "Free tools to fight back", sublabel: "all free, forever" },
+  ];
+
+  return (
+    <section ref={ref} style={{ position: "relative", zIndex: 1, padding: "80px 20px", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(16,185,129,0.02)" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 12 }}>BY THE NUMBERS</div>
+          <h2 style={{ fontSize: "clamp(22px, 4vw, 34px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9" }}>The system is broken. The numbers prove it.</h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 2 }}>
+          {stats.map(({ target, suffix, prefix, label, sublabel }) => (
+            <StatCard key={label} target={target} suffix={suffix} prefix={prefix} label={label} sublabel={sublabel} started={started} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StatCard({ target, suffix, prefix, label, sublabel, started }) {
+  const count = useCountUp(target, 2200, started);
+  return (
+    <div style={{ textAlign: "center", padding: "32px 20px", borderRight: "1px solid rgba(255,255,255,0.05)" }}>
+      <div style={{ fontSize: "clamp(36px, 6vw, 56px)", fontWeight: 900, color: "#10b981", letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 10, fontVariantNumeric: "tabular-nums" }}>
+        {prefix}{count.toLocaleString()}{suffix}
+      </div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9", marginBottom: 4, lineHeight: 1.4 }}>{label}</div>
+      <div style={{ fontSize: 11, color: "#334155", fontWeight: 500 }}>{sublabel}</div>
+    </div>
+  );
+}
+
+function SavingsCalculator({ onAction }) {
+  const [billAmount, setBillAmount] = useState("");
+  const [situation, setSituation] = useState(null);
+
+  const amount = parseFloat(billAmount.replace(/[^0-9.]/g, "")) || 0;
+  const lowSave = Math.round(amount * 0.3);
+  const highSave = Math.round(amount * 0.75);
+
+  const situations = [
+    { key: "hospital", label: "Hospital / ER bill", path: "/analyzer", color: "#f87171" },
+    { key: "denied", label: "Insurance denial", path: "/denial", color: "#fb923c" },
+    { key: "cantafford", label: "Can't afford it", path: "/charitycare", color: "#34d399" },
+    { key: "drugs", label: "Drug costs", path: "/drug", color: "#a78bfa" },
+  ];
+
+  const selected = situations.find(s => s.key === situation);
+
+  return (
+    <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "90px 20px", background: "#050810" }}>
+      <div style={{ maxWidth: 680, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 14 }}>SAVINGS ESTIMATOR</div>
+          <h2 style={{ fontSize: "clamp(22px, 5vw, 36px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 10 }}>How much could you save?</h2>
+          <p style={{ fontSize: 14, color: "#475569" }}>Enter your bill amount and we'll estimate your potential savings.</p>
+        </div>
+        <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 20, padding: "32px 28px" }}>
+          <div style={{ marginBottom: 24 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: "#475569", display: "block", marginBottom: 8, letterSpacing: "0.08em", textTransform: "uppercase" }}>Your bill amount</label>
+            <div style={{ position: "relative" }}>
+              <span style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: "#475569", fontSize: 18, fontWeight: 700 }}>$</span>
+              <input type="text" value={billAmount} onChange={e => setBillAmount(e.target.value.replace(/[^0-9]/g, ""))} placeholder="0" style={{ width: "100%", padding: "14px 16px 14px 36px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, fontSize: 24, fontWeight: 800, color: "#f1f5f9", fontFamily: FONT, boxSizing: "border-box" }} />
+            </div>
+          </div>
+          <div style={{ marginBottom: 24 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: "#475569", display: "block", marginBottom: 10, letterSpacing: "0.08em", textTransform: "uppercase" }}>What's your situation?</label>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {situations.map(s => (
+                <button key={s.key} onClick={() => setSituation(s.key)} style={{ padding: "11px 14px", background: situation === s.key ? `${s.color}15` : "rgba(255,255,255,0.03)", border: `1px solid ${situation === s.key ? s.color + "60" : "rgba(255,255,255,0.08)"}`, borderRadius: 10, color: situation === s.key ? s.color : "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all 0.15s" }}>
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {amount > 0 && (
+            <div style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 16, padding: "24px", marginBottom: 20, textAlign: "center" }}>
+              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>Estimated savings range</div>
+              <div style={{ fontSize: "clamp(28px, 6vw, 44px)", fontWeight: 900, color: "#10b981", letterSpacing: "-0.03em", marginBottom: 6 }}>
+                ${lowSave.toLocaleString()} – ${highSave.toLocaleString()}
+              </div>
+              <div style={{ fontSize: 12, color: "#475569" }}>Based on 30–75% recovery rate for patients who dispute their bills</div>
+            </div>
+          )}
+          <button onClick={() => onAction(selected?.path || "/analyzer")} style={{ width: "100%", padding: "14px", background: "linear-gradient(135deg,#10b981,#059669)", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 8px 28px rgba(16,185,129,0.3)" }}>
+            {selected ? `Go to ${selected.label} tool →` : "Find the right tool for you →"}
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ComparisonTable({ onStart }) {
+  const rows = [
+    { feature: "Cost", billveil: "Free, forever", advocate: "$50–$200/hour", nothing: "$0 upfront" },
+    { feature: "Time to start", billveil: "Instant", advocate: "Days to weeks", nothing: "—" },
+    { feature: "Finds billing errors", billveil: "✓ AI-powered", advocate: "✓ Manual", nothing: "✗ Never" },
+    { feature: "Writes dispute letters", billveil: "✓ 30 seconds", advocate: "✓ Hours", nothing: "✗ Never" },
+    { feature: "Knows your legal rights", billveil: "✓ All 20+ rights", advocate: "✓ Expert", nothing: "✗ Rarely" },
+    { feature: "Appeals denied claims", billveil: "✓ Instantly", advocate: "✓ Expensive", nothing: "✗ Never" },
+    { feature: "Finds charity care", billveil: "✓ Built in", advocate: "Sometimes", nothing: "✗ Never" },
+    { feature: "Available 24/7", billveil: "✓ Always", advocate: "✗ Business hours", nothing: "✓ (do nothing)" },
+    { feature: "Your data stays private", billveil: "✓ Never stored", advocate: "Shared with firm", nothing: "✓" },
+  ];
+
+  return (
+    <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "90px 20px", background: "rgba(255,255,255,0.01)" }}>
+      <div style={{ maxWidth: 820, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 14 }}>WHY BILLVEIL</div>
+          <h2 style={{ fontSize: "clamp(22px, 5vw, 36px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 10 }}>BillVeil vs. your other options</h2>
+          <p style={{ fontSize: 14, color: "#475569" }}>Most people pay thousands for an advocate or do nothing. There's a better way.</p>
+        </div>
+        <div style={{ borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr 1.5fr", background: "rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+            <div style={{ padding: "16px 20px" }} />
+            <div style={{ padding: "16px 20px", textAlign: "center" }}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: "#10b981" }}>🛡️ BillVeil</div>
+              <div style={{ fontSize: 10, color: "#10b981", opacity: 0.7 }}>Free</div>
+            </div>
+            <div style={{ padding: "16px 20px", textAlign: "center", borderLeft: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: "#64748b" }}>Medical Advocate</div>
+              <div style={{ fontSize: 10, color: "#475569" }}>$50–$200/hr</div>
+            </div>
+            <div style={{ padding: "16px 20px", textAlign: "center", borderLeft: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: "#475569" }}>Do Nothing</div>
+              <div style={{ fontSize: 10, color: "#334155" }}>Pay full bill</div>
+            </div>
+          </div>
+          {rows.map((row, i) => (
+            <div key={row.feature} style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr 1.5fr", borderBottom: i < rows.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none", background: i % 2 === 0 ? "rgba(255,255,255,0.01)" : "transparent" }}>
+              <div style={{ padding: "14px 20px", fontSize: 13, fontWeight: 600, color: "#64748b" }}>{row.feature}</div>
+              <div style={{ padding: "14px 20px", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#10b981" }}>{row.billveil}</div>
+              <div style={{ padding: "14px 20px", textAlign: "center", fontSize: 12, color: "#475569", borderLeft: "1px solid rgba(255,255,255,0.05)" }}>{row.advocate}</div>
+              <div style={{ padding: "14px 20px", textAlign: "center", fontSize: 12, color: "#334155", borderLeft: "1px solid rgba(255,255,255,0.05)" }}>{row.nothing}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", marginTop: 32 }}>
+          <button onClick={onStart} style={{ padding: "14px 36px", background: "linear-gradient(135deg,#10b981,#059669)", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: FONT, boxShadow: "0 8px 28px rgba(16,185,129,0.3)" }}>
+            Start for free — no signup needed →
+          </button>
         </div>
       </div>
     </section>
