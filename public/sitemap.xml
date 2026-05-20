@@ -67,6 +67,18 @@
   <url><loc>https://billveil.com/learn/cpt-code-lookup</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://billveil.com/learn/medical-credit-card</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://billveil.com/learn/insurance-plan-decoder</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/bill-analyzer</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/insurance-finder</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/cobra-calculator</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/learn/preventive-care</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Blog -->
+  <url><loc>https://billveil.com/blog</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/blog/how-to-dispute-a-medical-bill</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/blog/how-to-appeal-insurance-denial</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/blog/how-to-read-explanation-of-benefits</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/blog/how-to-negotiate-a-hospital-bill</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://billveil.com/blog/what-is-hospital-charity-care</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://billveil.com/blog/cobra-vs-marketplace-insurance</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <!-- Static pages -->
   <url><loc>https://billveil.com/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://billveil.com/privacy</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
