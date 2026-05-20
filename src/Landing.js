@@ -427,6 +427,42 @@ export default function Landing() {
       {/* Live Demo */}
       <LiveDemo onFullTool={() => router.push("/analyzer")} />
 
+      {/* Situation Router */}
+      <section style={{ position: "relative", zIndex: 1, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "80px 20px", background: "rgba(255,255,255,0.01)" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#10b981", letterSpacing: "0.14em", marginBottom: 14 }}>WHAT'S YOUR SITUATION?</div>
+            <h2 style={{ fontSize: "clamp(22px, 5vw, 36px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#f1f5f9", marginBottom: 10 }}>
+              Tell us what happened — we'll take you to the right tool.
+            </h2>
+            <p style={{ fontSize: 14, color: "#475569" }}>No browsing required. Pick your situation and go.</p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
+            {[
+              { emoji: "🏥", title: "I got a hospital or medical bill", sub: "Find overcharges, compare to Medicare rates", path: "/analyzer", color: "#f87171" },
+              { emoji: "🚫", title: "My insurance claim was denied", sub: "AI writes your appeal letter in 30 seconds", path: "/denial", color: "#fb923c" },
+              { emoji: "🤝", title: "I can't afford my bill", sub: "Find charity care that can erase it", path: "/charitycare", color: "#34d399" },
+              { emoji: "📞", title: "Debt collectors are calling me", sub: "Know your rights, stop illegal harassment", path: "/debtrights", color: "#60a5fa" },
+              { emoji: "💊", title: "My prescriptions cost too much", sub: "Find the same drug for up to 90% less", path: "/drug", color: "#a78bfa" },
+              { emoji: "❓", title: "I don't understand my bill or EOB", sub: "Plain English explanation of every charge", path: "/eob", color: "#fbbf24" },
+            ].map(({ emoji, title, sub, path, color }) => (
+              <button
+                key={path}
+                onClick={() => router.push(path)}
+                style={{ background: "rgba(255,255,255,0.03)", border: `1px solid rgba(255,255,255,0.08)`, borderLeft: `3px solid ${color}`, borderRadius: 14, padding: "20px 18px", cursor: "pointer", textAlign: "left", fontFamily: FONT, transition: "all 0.18s" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.3)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+              >
+                <div style={{ fontSize: 28, marginBottom: 12 }}>{emoji}</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: "#f1f5f9", lineHeight: 1.4, marginBottom: 6 }}>{title}</div>
+                <div style={{ fontSize: 12, color: "#475569", lineHeight: 1.6, marginBottom: 12 }}>{sub}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color }}>Get help →</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Services */}
       <section id="services" style={{ position: "relative", zIndex: 1, padding: "90px 20px", maxWidth: 900, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 56 }}>
