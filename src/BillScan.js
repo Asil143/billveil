@@ -57,6 +57,44 @@ async function compressImage(file) {
   });
 }
 
+async function convertPdfToImage(dataUrl) {
+  const { getDocument, GlobalWorkerOptions } = await import("pdfjs-dist");
+  GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+  const binary = atob(dataUrl.split(",")[1]);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+
+  const pdf = await getDocument({ data: bytes }).promise;
+  const canvases = [];
+  let totalHeight = 0;
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const viewport = page.getViewport({ scale: 1.5 });
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    await page.render({ canvasContext: ctx, viewport }).promise;
+    canvases.push(canvas);
+    totalHeight += canvas.height;
+  }
+
+  const combined = document.createElement("canvas");
+  combined.width = canvases[0].width;
+  combined.height = totalHeight;
+  const ctx = combined.getContext("2d");
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, combined.width, combined.height);
+  let y = 0;
+  for (const c of canvases) { ctx.drawImage(c, 0, y); y += c.height; }
+
+  return combined.toDataURL("image/jpeg", 0.85);
+}
+
 export default function BillScan() {
   const { consumeCredit } = useAuth();
   const router = useRouter();
@@ -86,10 +124,21 @@ export default function BillScan() {
     setFileName(file.name);
     setIsPdf(pdf);
     if (pdf) {
-      const reader = new FileReader();
-      reader.onload = (e) => setPreview(e.target.result);
-      reader.onerror = () => setError("Could not read the PDF. Please try another file.");
-      reader.readAsDataURL(file);
+      setLoading(true);
+      try {
+        const dataUrl = await new Promise((res, rej) => {
+          const reader = new FileReader();
+          reader.onload = (e) => res(e.target.result);
+          reader.onerror = rej;
+          reader.readAsDataURL(file);
+        });
+        const imageDataUrl = await convertPdfToImage(dataUrl);
+        setPreview(imageDataUrl);
+      } catch (e) {
+        setError("Could not process this PDF. Try uploading a photo of the bill instead.");
+      } finally {
+        setLoading(false);
+      }
     } else {
       try {
         const dataUrl = await compressImage(file);
@@ -115,7 +164,7 @@ export default function BillScan() {
     setError(null);
     try {
       const base64 = preview.split(",")[1];
-      const mimeType = isPdf ? "application/pdf" : preview.split(";")[0].split(":")[1];
+      const mimeType = preview.split(";")[0].split(":")[1];
       const r = await axios.post("/api/billscan", { image: base64, mimeType });
       setResult(r.data.result);
     } catch (err) {
@@ -206,8 +255,8 @@ export default function BillScan() {
               style={{ width: "100%", padding: 14, background: loading ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #10b981, #059669)", color: loading ? "#334155" : "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, fontFamily: FONT, boxShadow: loading ? "none" : "0 8px 28px rgba(16,185,129,0.35)" }}
             >
               {loading
-                ? <><span style={{ width: 17, height: 17, border: "2px solid rgba(255,255,255,0.15)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />{isPdf ? "Reading PDF..." : "Reading your bill..."}</>
-                : isPdf ? "📄 Extract Bill from PDF" : "📸 Scan This Bill"}
+                ? <><span style={{ width: 17, height: 17, border: "2px solid rgba(255,255,255,0.15)", borderTop: "2px solid #10b981", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />Reading your bill...</>
+                : isPdf ? "📄 Scan Bill from PDF" : "📸 Scan This Bill"}
             </button>
           )}
         </div>
