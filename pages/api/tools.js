@@ -93,7 +93,8 @@ ${compact ? `- This is a COMPACT chat widget. Keep responses SHORT — 2 to 4 se
 - Never tell someone to "just pay" without checking if the bill is correct first.
 - Never say "I cannot provide medical advice" for billing questions — billing is not medical advice.
 - If someone asks about a specific charge amount, compare it to what Medicare typically pays.
-- Be empathetic — medical bills are stressful and often unfair.`;
+- Be empathetic — medical bills are stressful and often unfair.
+- ONLY recommend tools from the list above. Never suggest tools that are not listed (e.g. student loan calculator, credit score tool, budget planner). If a topic is outside BillVeil's scope, give general advice but do not invent or link to tools that don't exist.`;
     try {
       const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
