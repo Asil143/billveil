@@ -1,4 +1,5 @@
-import pdfParse from "pdf-parse";
+// Import from internal path to avoid pdf-parse loading its test file on startup (crashes in Next.js)
+const pdfParse = require("pdf-parse/lib/pdf-parse");
 
 const STRUCTURE_PROMPT = (rawText) => `You are a medical bill data extraction expert. Below is raw text extracted from a medical bill PDF. Structure it into the exact format shown.
 
