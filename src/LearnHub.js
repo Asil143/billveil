@@ -132,7 +132,7 @@ function StoryCard({ story, caseNumber, onClick }) {
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: isLive ? 16 : 0 }}>
         {story.tags.map(tag => (
-          <span key={tag} style={{ fontSize: 10, fontWeight: 600, color: "#334155", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", padding: "3px 8px", borderRadius: 8 }}>
+          <span key={tag} style={{ fontSize: 10, fontWeight: 600, color: "#94a3b8", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", padding: "3px 8px", borderRadius: 8 }}>
             {tag}
           </span>
         ))}

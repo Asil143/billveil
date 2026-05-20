@@ -82,7 +82,7 @@ export default function LearnStory({ story }) {
               </div>
             )}
             {story.tags.map(tag => (
-              <span key={tag} style={{ fontSize: 11, fontWeight: 600, color: "#475569", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", padding: "4px 10px", borderRadius: 10 }}>
+              <span key={tag} style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", padding: "4px 10px", borderRadius: 10 }}>
                 {tag}
               </span>
             ))}
