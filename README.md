@@ -1,70 +1,186 @@
-# Getting Started with Create React App
+<h1 align="center">
+  <br>
+  🔍 BillVeil
+  <br>
+</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h3 align="center">Drop a bill. Get a full AI breakdown in seconds.</h3>
 
-## Available Scripts
+<p align="center">
+  <img src="https://img.shields.io/badge/Groq-Llama_4_Scout-f54242?style=flat-square" />
+  <img src="https://img.shields.io/badge/Anthropic-Claude-d97706?style=flat-square" />
+  <img src="https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=nextdotjs" />
+  <img src="https://img.shields.io/badge/Vision-PDF_%2F_Image-8b5cf6?style=flat-square" />
+  <img src="https://img.shields.io/badge/Status-Live-brightgreen?style=flat-square" />
+</p>
 
-In the project directory, you can run:
+<p align="center">
+  Medical bills, utility invoices, restaurant receipts — AI reads them so you don't have to.
+  Upload any bill, get a structured breakdown, spot hidden charges instantly.
+</p>
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## What is BillVeil?
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+BillVeil is an AI-powered bill analyzer. You upload a bill (PDF or image), and it uses computer vision + large language models to:
 
-### `npm test`
+- Extract every line item with amounts
+- Identify overcharges, duplicates, and hidden fees
+- Explain charges in plain English
+- Flag anything that looks wrong
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+No more squinting at medical bills or mystery utility charges.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## How It Works
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+User uploads PDF/Image
+        │
+        ▼
+  PDF.js renders to canvas
+  (client-side, no server upload)
+        │
+        ▼
+  Canvas → JPEG conversion
+  (auto-scaled to stay under 33M pixel limit)
+        │
+        ▼
+  Groq Vision API
+  (Llama 4 Scout — multimodal, ultra-fast)
+        │
+        ▼
+  Structured extraction
+  (line items, totals, dates, provider)
+        │
+        ▼
+  Groq / Claude analysis
+  (Llama 3.3-70b or Claude for reasoning)
+        │
+        ▼
+  Clean, readable breakdown
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The entire PDF rendering pipeline runs **in the browser** — your bill never hits a third-party storage server.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 📄 Universal Bill Support
+- PDF documents (multi-page)
+- Images (PNG, JPG, HEIC)
+- Handles poor scans and low-contrast documents
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 🧠 Dual AI Pipeline
+- **Groq Llama 4 Scout** — multimodal vision model for fast extraction
+- **Groq Llama 3.3-70b / Claude** — reasoning model for anomaly detection and explanation
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🔎 What It Extracts
+- Provider name, date, account number
+- Every line item and its cost
+- Subtotal, taxes, fees, total due
+- Due date and payment methods
 
-## Learn More
+### ⚠️ Anomaly Detection
+- Duplicate charges
+- Items billed but not received
+- Unusual fee labels
+- Totals that don't add up
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 🔒 Privacy-First
+- PDF rendering happens client-side in the browser
+- No bill data stored after session ends
+- Firebase for auth only — not bill storage
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## Tech Stack
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 14 |
+| AI Vision | Groq API (Llama 4 Scout — multimodal) |
+| AI Reasoning | Groq (Llama 3.3-70b) + Anthropic Claude |
+| PDF Rendering | PDF.js (client-side canvas rendering) |
+| Auth | Firebase Authentication |
+| Analytics | Vercel Analytics |
+| Deployment | Vercel |
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Project Structure
 
-### Making a Progressive Web App
+```
+billveil/
+├── app/
+│   ├── page.js             ← Landing + upload interface
+│   ├── api/
+│   │   ├── analyze/        ← Main AI analysis endpoint
+│   │   └── extract/        ← Bill extraction pipeline
+│   └── about/              ← How it works
+├── src/
+│   └── components/         ← Upload UI, results display
+├── public/                 ← Static assets
+└── server.js               ← Express server (for Procfile/Railway)
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Getting Started
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Prerequisites
+- Node.js 18+
+- [Groq API key](https://console.groq.com) (free tier available)
+- [Anthropic API key](https://console.anthropic.com) (optional — Groq fallback works)
+- Firebase project (for auth)
 
-### Deployment
+### Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```bash
+git clone https://github.com/Asil143/billveil.git
+cd billveil
+npm install
+```
 
-### `npm run build` fails to minify
+Create `.env.local`:
+```env
+GROQ_API_KEY=your_groq_api_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) and upload any bill.
+
+---
+
+## Key Engineering Decisions
+
+**Why client-side PDF rendering?**
+PDFs can contain sensitive financial data. Rendering in the browser via PDF.js means the raw file never leaves the user's machine — only the extracted JPEG gets sent to the AI API.
+
+**Why Groq over OpenAI vision?**
+Groq's inference speed is 10–50x faster than OpenAI for equivalent models. For a bill analyzer where users expect near-instant results, this matters a lot.
+
+**Why dual models?**
+Scout handles the visual extraction (reading the actual pixels). A text-optimized model then does the reasoning pass — flagging anomalies and generating the explanation. This separation makes the pipeline more accurate than a single model doing both.
+
+---
+
+## License
+
+MIT
+
+---
+
+<p align="center">
+  Drop any bill. Understand it instantly.
+</p>
