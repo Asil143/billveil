@@ -44,22 +44,6 @@ Drop in your medical bill, a charge code, a denial letter, or just describe your
 
 ---
 
-## Real Results
-
-> *"I disputed a $4,200 ER bill and got it reduced to $800. BillVeil wrote the dispute letter in 30 seconds."*
-> — Sarah M., Dallas TX · **Saved $3,400**
-
-> *"My insurance denied my MRI claim. BillVeil found 3 legal reasons the denial was invalid. They reversed it in 2 weeks."*
-> — Robert K., Orlando FL · **$3,800 claim approved**
-
-> *"I was paying $89/month for Lisinopril. BillVeil showed me I could get it for $4 at Cost Plus Drugs."*
-> — Maria L., Los Angeles CA · **Saves $1,020/year**
-
-> *"The hospital billed $385 for a 10-minute visit. BillVeil told me the fair price was $120 and gave me a script to negotiate. I paid $130."*
-> — James T., Chicago IL · **Saved $255**
-
----
-
 ## 30+ AI-Powered Tools
 
 ### Fight Your Bill
