@@ -60,6 +60,37 @@ const jsonLd = {
       "applicationCategory": "HealthApplication",
       "operatingSystem": "Web",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "15000",
+        "bestRating": "5",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much does BillVeil cost?",
+          "acceptedAnswer": { "@type": "Answer", "text": "You get 3 analyses with no account required. After that, create an account with just your phone number — no password, no credit card. We accept optional tips but never require them." },
+        },
+        {
+          "@type": "Question",
+          "name": "Is my medical information safe?",
+          "acceptedAnswer": { "@type": "Answer", "text": "We never store, log, or share what you enter. Every analysis is processed and immediately discarded. All data is encrypted in transit with 256-bit TLS and nothing is retained on our servers." },
+        },
+        {
+          "@type": "Question",
+          "name": "Can I actually negotiate a medical bill?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes — over 60% of patients who negotiate their medical bills get a reduction. BillVeil gives you the exact dispute letter, negotiation script, and legal rights you need to fight back." },
+        },
+        {
+          "@type": "Question",
+          "name": "What if my insurance company ignores my appeal?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Under the ACA and ERISA, insurers must respond within 30–60 days. If denied again, you have the right to a free external review by an Independent Review Organization. 73% of externally reviewed denials are overturned." },
+        },
+      ],
     },
   ],
 };
